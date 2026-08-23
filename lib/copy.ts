@@ -2,9 +2,6 @@ export type Locale = "en" | "bn";
 
 const en = {
   nav: {
-    map: "Live map",
-    predictor: "Predictor",
-    report: "Submit a report",
     language: "বাংলা",
   },
   hero: {
@@ -208,9 +205,6 @@ const en = {
 
 const bn = {
   nav: {
-    map: "লাইভ ম্যাপ",
-    predictor: "পূর্বাভাস",
-    report: "রিপোর্ট দিন",
     language: "English",
   },
   hero: {
