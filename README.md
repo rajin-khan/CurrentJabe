@@ -41,10 +41,10 @@ It is built around a practical question: **when should I charge, plan, study, wo
 
 | Result | Minimum evidence | Behaviour |
 | --- | --- | --- |
-| Live status | 10 independent contributors within a rolling 30-minute window | The area appears on or out. The state expires after one hour unless qualifying reports refresh or reverse it. |
+| Live status | 10 independent contributors within a rolling 24-hour window | The area appears on or out. The state expires after one hour unless qualifying reports refresh or reverse it. |
 | Next-24-hour prediction | 10 independent contributors, 10 usable timed events, reports across 3 days, and recent evidence | The strongest recurring outage windows appear with their sample size and evidence range. |
 
-The initial model compares observations in 30-minute bins and presents the strongest contiguous patterns as clear one-hour windows. Recent, independent evidence receives more weight.
+The predictor compares outage overlap in half-hour time-of-day bins, separate from the 24-hour live-confirmation window, and presents the strongest contiguous patterns as clear one-hour windows. Recent, independent evidence receives more weight.
 
 Silence is never treated as proof that electricity is on. Without enough qualifying evidence, the status remains **unknown**.
 

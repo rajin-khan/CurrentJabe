@@ -174,6 +174,9 @@ export function validateDailyReport(value: unknown, now = new Date()): Normalize
     throw new ValidationError(`windows must be an array with at most ${MAX_DAILY_OUTAGES} entries.`);
   }
   const windows = input.windows.map((window) => normalizeWindow(input.date as string, window));
+  if (windows.some((window) => Date.parse(window.endedAt) > now.getTime() + 5 * 60 * 1000)) {
+    throw new ValidationError("Outage times cannot end in the future.");
+  }
   if (input.countKnown && outageCount !== null && windows.length > outageCount) {
     throw new ValidationError("There cannot be more remembered windows than the reported daily outage count.");
   }

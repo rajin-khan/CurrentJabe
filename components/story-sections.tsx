@@ -38,8 +38,8 @@ export function StorySections() {
             <span>{text.proof.tenLabel}</span>
           </div>
           <div>
-            <strong>{text.proof.thirty}</strong>
-            <span>{text.proof.thirtyLabel}</span>
+            <strong>{text.proof.window}</strong>
+            <span>{text.proof.windowLabel}</span>
           </div>
           <div>
             <strong>{text.proof.zero}</strong>

@@ -19,7 +19,7 @@ export default function MethodologyPage() {
       <h2>Live community status</h2>
       <p>
         An area appears out only after at least ten independent private contributor identities
-        report an outage within a rolling 30-minute window. The state expires after one hour
+        report an outage within a rolling 24-hour window. The state expires after one hour
         unless newer qualifying reports refresh it. Ten recent positive confirmations can clear
         it earlier. To make cookie-reset spam less useful, no more than three contributors from
         the same daily rotating, one-way network token count toward either threshold. Raw IP
@@ -49,10 +49,11 @@ export default function MethodologyPage() {
 
       <h2>Time windows</h2>
       <p>
-        Exact timestamps are retained, while the initial model analyses overlap in 30-minute
-        internal bins. Recent, independent evidence receives more weight. The interface presents
-        the strongest contiguous patterns as simple one-hour windows. Missing or forgotten times
-        are never invented.
+        Exact timestamps are retained, while the predictor analyses overlap in half-hour
+        time-of-day bins. This is forecast resolution, separate from the 24-hour live-confirmation
+        window. Recent, independent evidence receives more weight. The interface presents the
+        strongest contiguous patterns as simple one-hour windows. Missing or forgotten times are
+        never invented.
       </p>
 
       <h2>Accuracy</h2>

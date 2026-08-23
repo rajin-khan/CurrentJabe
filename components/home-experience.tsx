@@ -114,7 +114,7 @@ export function HomeExperience() {
   return (
     <>
       <section className="hero" id="live-map">
-        <div className="hero__copy" id="predictor">
+        <div className="hero__copy">
           <p className="eyebrow">{text.hero.eyebrow}</p>
           <h1>
             {titleBeforeHighlight}

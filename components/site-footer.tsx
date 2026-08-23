@@ -24,7 +24,14 @@ export function SiteFooter() {
           </a>
           <span className="footer-signature">
             <span>x</span>
-            <span>Rajin Khan</span>
+            <a
+              href="https://rajinkhan.com"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Visit Rajin Khan"
+            >
+              Rajin Khan
+            </a>
           </span>
         </div>
         <div className="footer-center">

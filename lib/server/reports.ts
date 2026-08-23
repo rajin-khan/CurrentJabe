@@ -45,6 +45,8 @@ type ReputationRow = {
   score: number | string;
 };
 
+const LIVE_EVIDENCE_WINDOW_MS = 24 * 60 * 60 * 1000;
+
 type LiveEvidenceSummary = {
   onCount: number;
   outCount: number;
@@ -88,7 +90,7 @@ async function fallbackLiveEvidenceSummary(
     provider_id: location.providerId ? `eq.${location.providerId}` : undefined,
     feeder_id: location.feederId ? `eq.${location.feederId}` : undefined,
     suppressed_at: "is.null",
-    observed_at: `gte.${new Date(Date.now() - 30 * 60 * 1000).toISOString()}`,
+    observed_at: `gte.${new Date(Date.now() - LIVE_EVIDENCE_WINDOW_MS).toISOString()}`,
     order: "observed_at.desc,id.desc",
     limit: 500,
   });

@@ -172,6 +172,9 @@ export function AreaSignal({
       {unavailable ? (
         <p className="service-notice" role="status">{text.common.unavailable}</p>
       ) : null}
+
+      <ForecastCard snapshot={snapshot} onReport={() => setReportMode("daily")} />
+
       <section className="live-signal" aria-live="polite">
         <div className="live-signal__header">
           <div>
@@ -222,8 +225,6 @@ export function AreaSignal({
         <p className="signal-disclaimer">{text.status.disclaimer}</p>
       </section>
 
-      <ForecastCard snapshot={snapshot} onReport={() => setReportMode("daily")} />
-
       {reportMode ? (
         <ReportDialog
           area={area}
@@ -254,7 +255,7 @@ function ForecastCard({
   ];
 
   return (
-    <section className="forecast-card">
+    <section className="forecast-card" id="predictor">
       <div className="forecast-card__header">
         <div>
           <p className="eyebrow">{text.forecast.eyebrow}</p>

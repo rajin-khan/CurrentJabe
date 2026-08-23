@@ -15,7 +15,6 @@ export function SiteHeader({ inverse = false }: { inverse?: boolean }) {
       </Link>
       <nav className="site-header__nav" aria-label="Primary navigation">
         <Link href="/#live-map">{text.nav.map}</Link>
-        <Link href="/#predictor">{text.nav.predictor}</Link>
       </nav>
       <div className="site-header__actions">
         <button className="language-toggle" type="button" onClick={toggleLocale}>
