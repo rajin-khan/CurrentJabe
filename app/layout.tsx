@@ -67,7 +67,7 @@ export const metadata: Metadata = {
     "load shedding predictor",
     "community outage map",
   ],
-  authors: [{ name: "The Program Company", url: "https://theprogram.company" }],
+  authors: [{ name: "The Program Company", url: "https://theprogramcompany.vercel.app" }],
   creator: "The Program Company",
   openGraph: {
     type: "website",

@@ -1,24 +1,78 @@
-# CurrentJabe
+<p align="center">
+  <img src="./public/brand/currentjabe-mark-v3.png" alt="CurrentJabe lightning mark" width="104" />
+</p>
 
-CurrentJabe is a community-powered electricity-status map and outage forecaster for Bangladesh. It accepts anonymous live confirmations and today/yesterday outage history, then reveals a forecast only after an area has enough independent evidence.
+<h1 align="center">CurrentJabe</h1>
 
-The app is a standalone Next.js project for a new Vercel project and a new, isolated Supabase project. It does not need a custom domain and does not contain fake launch data.
+<p align="center">
+  <strong>Current Jabe Kokhon?</strong><br />
+  A community-powered electricity outage map and predictor for Bangladesh.
+</p>
 
-## What is included
+<p align="center">
+  <a href="#what-you-can-do">Features</a> ·
+  <a href="#how-it-works">How it works</a> ·
+  <a href="#privacy-by-design">Privacy</a> ·
+  <a href="#run-locally">Local setup</a>
+</p>
 
-- Searchable nationwide catalog: 495 upazilas, 61 metropolitan thanas and the sourced Mirpur DOHS locality across 64 districts
-- Interactive Bangladesh boundary map with district fallback for 12 newer upazilas and an explicitly approximate Pallabi–Turag highlight for Mirpur DOHS
-- English-first UI with a persistent Bangla toggle
-- Anonymous live `on` / `out` confirmations and two-step daily history reporting
-- Evidence-gated, one-hour forecast windows built from 30-minute internal bins
-- Shareable, indexed area pages with dynamic social cards
-- Private, noindex operator CMS at `/signal-room`
-- Aggregate-only analytics, hard deletion by browser identity, and no PII/GPS collection
-- Full Supabase schema, RLS lockdown, rate limits, deduplication, forecast evaluation, and audit log
+CurrentJabe turns small, anonymous community reports into a clearer picture of local electricity outages. People can check recent reports, contribute the outage times they remember, and see likely outage windows once their area has gathered enough evidence.
+
+It is built around a practical question: **when should I charge, plan, study, work, or prepare for the power to go out?**
+
+> CurrentJabe publishes community estimates, not official utility schedules. It shows “not enough data” instead of inventing certainty.
+
+## What you can do
+
+- Search all 64 districts, 495 upazilas, supported metropolitan thanas, and selected smaller localities such as Mirpur DOHS.
+- Explore a responsive, interactive map of Bangladesh.
+- Check whether an area has a recent community signal: **on**, **out**, or **unknown**.
+- Report the current status in seconds without creating an account.
+- Add remembered outage windows from today or yesterday, even if you remember only one.
+- View a next-24-hour community prediction after the area earns enough evidence.
+- Share a direct area page with its live status and prediction.
+- Use the interface in English or Bangla.
+
+## How it works
+
+1. **Report** — someone says the current is on or out, or records a recent outage window.
+2. **Corroborate** — independent reports from the same area strengthen or contradict the signal.
+3. **Predict** — recurring time patterns become visible only after the area crosses the evidence threshold.
+
+| Result | Minimum evidence | Behaviour |
+| --- | --- | --- |
+| Live status | 10 independent contributors within a rolling 30-minute window | The area appears on or out. The state expires after one hour unless qualifying reports refresh or reverse it. |
+| Next-24-hour prediction | 10 independent contributors, 10 usable timed events, reports across 3 days, and recent evidence | The strongest recurring outage windows appear with their sample size and evidence range. |
+
+The initial model compares observations in 30-minute bins and presents the strongest contiguous patterns as clear one-hour windows. Recent, independent evidence receives more weight.
+
+Silence is never treated as proof that electricity is on. Without enough qualifying evidence, the status remains **unknown**.
+
+## Privacy by design
+
+CurrentJabe does not ask contributors for a name, email address, phone number, street address, or precise GPS location.
+
+Abuse controls use a private browser identifier and a daily rotating, one-way network token. Raw IP addresses are not stored. Public results are aggregated so individual reports are not exposed as personal activity.
+
+## Geographic accuracy
+
+Electricity networks do not follow administrative borders perfectly. Reports are grouped at the most precise shared level that can be supported: a known feeder or local utility office, a locality, or an upazila-wide fallback.
+
+Administrative boundaries are used for orientation and are **not** presented as electricity feeder boundaries. Boundary data comes from the Bangladesh Bureau of Statistics and OCHA ROAP via geoBoundaries under CC BY 3.0 IGO. Provider hints are included only when supported by public information from the relevant electricity authority.
+
+See [`data/SOURCES.md`](./data/SOURCES.md) for full provenance, pinned revisions, attribution, and known limitations.
+
+## Technology
+
+- Next.js and React
+- TypeScript
+- Supabase Postgres with Row Level Security
+- Responsive, code-native SVG map geometry
+- Vercel-ready deployment
 
 ## Run locally
 
-Requirements: Node.js 22+ and pnpm.
+Requirements: Node.js 22+ and [pnpm](https://pnpm.io/).
 
 ```sh
 pnpm install
@@ -26,9 +80,21 @@ cp .env.example .env.local
 pnpm dev
 ```
 
-The public UI intentionally degrades to an explicit “temporarily unavailable” state until its isolated Supabase project is configured.
+Open [http://localhost:3000](http://localhost:3000). The interface can render without live community data, but reporting and predictions require a configured Supabase project.
 
-Useful checks:
+### Configure Supabase
+
+Use a dedicated Supabase project for CurrentJabe. Apply the SQL files in [`supabase/migrations`](./supabase/migrations) in filename order, then configure the variables documented in [`.env.example`](./.env.example).
+
+Generate the administrator password hash locally without storing the password in source:
+
+```sh
+printf '%s' 'a-long-unique-password' | node scripts/hash-admin-password.mjs
+```
+
+Keep the service-role key, visitor secret, password hash, and session secret server-side. Never expose them through a `NEXT_PUBLIC_` variable or commit a populated environment file.
+
+### Quality checks
 
 ```sh
 pnpm typecheck
@@ -36,57 +102,28 @@ pnpm build
 node scripts/geo/validate.mjs
 ```
 
-## Configure the isolated backend
+## Deploy
 
-Create a brand-new Supabase project for CurrentJabe. Do not point this project at an existing production database.
+Import the `currentjabe` directory into Vercel, keep the detected Next.js settings, add the environment variables from `.env.example`, and set `NEXT_PUBLIC_SITE_URL` to the public origin.
 
-Apply the five files in [`supabase/migrations`](./supabase/migrations) in filename order using the new project’s SQL editor. No reset, drop, or destructive database command is needed. The complete schema, security model, API contract, and smoke tests are documented in [`supabase/README.md`](./supabase/README.md).
+The core application can run within the free allowances of Vercel and Supabase, subject to each provider’s current usage limits.
 
-Set these values locally and in the new Vercel project:
+## Contributing
 
-```text
-SUPABASE_URL=https://YOUR-PROJECT.supabase.co
-SUPABASE_SERVICE_ROLE_KEY=...
-VISITOR_HASH_SECRET=32-or-more-random-characters
-ADMIN_USERNAME=...
-ADMIN_PASSWORD_HASH=pbkdf2_sha256$...
-ADMIN_SESSION_SECRET=32-or-more-random-characters
-NEXT_PUBLIC_SITE_URL=https://YOUR-PROJECT.vercel.app
-```
+Issues and pull requests are welcome for:
 
-Generate the administrator password hash locally:
+- administrative-name and geography corrections;
+- responsibly sourced electricity-provider mappings;
+- Bangla translations;
+- accessibility and responsive-design improvements;
+- methodology, privacy, and abuse-resistance fixes.
 
-```sh
-printf '%s' 'a-long-unique-password' | node scripts/hash-admin-password.mjs
-```
+Please include a reliable public source with any geographic or electricity-provider correction. Do not submit personal outage details, precise household locations, credentials, or private utility records.
 
-Keep the service-role key, visitor secret, password hash, and session secret server-only. None may use a `NEXT_PUBLIC_` prefix.
+## Disclaimer
 
-## Deploy on Vercel
+CurrentJabe is independent community software. It is not affiliated with an electricity provider or government authority, and its estimates can be incomplete or wrong. Do not rely on it for medical, emergency, or safety-critical decisions.
 
-1. Import the `currentjabe` directory as a new Vercel project.
-2. Keep the detected Next.js framework settings and use pnpm.
-3. Add the environment variables above for Production and Preview as appropriate.
-4. Deploy, then run the smoke tests in [`supabase/README.md`](./supabase/README.md).
-5. Sign in at `/signal-room` and leave submissions enabled.
+## Credits
 
-The architecture has no required paid service beyond usage that exceeds the hosting/database providers’ available free quotas. A custom domain can be attached later without changing the app.
-
-## Evidence rules
-
-- Live states require 10 independent, non-suppressed contributors in a rolling 30-minute window.
-- No more than three contributors from one daily rotating network token count toward a threshold; raw IP addresses are never stored.
-- A qualifying state lasts one hour and can be refreshed by new independent evidence.
-- An abandoned open-ended live outage is closed after one hour for forecast evidence.
-- Ten stronger/fresher positive confirmations can clear an outage early.
-- Silence is always “No recent status,” never proof that electricity is on.
-- Forecasts require 10 independent contributors, 10 timed events, three reporting days, recent evidence, and the same network cap.
-- Exact observations stay exact in storage; public predictions are rounded to useful one-hour windows.
-
-## Geography and attribution
-
-Source provenance, pinned revisions, licensing, known geometry gaps, and provider-hint limitations live in [`data/SOURCES.md`](./data/SOURCES.md). Administrative borders are orientation only and are not claimed to be utility feeder boundaries.
-
-## Brand
-
-CurrentJabe is presented as a community utility by [The Program Company](https://theprogram.company). The full company logo and “Who we are” link appear in the public footer.
+Built by [The Program Company](https://theprogramcompany.vercel.app) × Rajin Khan.

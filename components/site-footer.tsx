@@ -13,7 +13,7 @@ export function SiteFooter() {
         <div className="footer-brand">
           <a
             className="footer-logo"
-            href="https://theprogram.company"
+            href="https://theprogramcompany.vercel.app"
             target="_blank"
             rel="noreferrer"
             aria-label="Visit The Program Company"
@@ -38,7 +38,7 @@ export function SiteFooter() {
         <div className="footer-credit">
           <a
             className="who-we-are"
-            href="https://theprogram.company"
+            href="https://theprogramcompany.vercel.app"
             target="_blank"
             rel="noreferrer"
           >

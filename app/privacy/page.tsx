@@ -61,7 +61,7 @@ export default function PrivacyPage() {
       <h2>Questions</h2>
       <p>
         For privacy questions, contact The Program Company through
-        {" "}<a href="https://theprogram.company">theprogram.company</a>.
+        {" "}<a href="https://theprogramcompany.vercel.app">theprogramcompany.vercel.app</a>.
       </p>
     </LegalShell>
   );
