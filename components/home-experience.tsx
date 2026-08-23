@@ -37,6 +37,7 @@ export function HomeExperience() {
   const [areaUnavailable, setAreaUnavailable] = useState(false);
   const [statuses, setStatuses] = useState<Record<string, LiveStateName>>({});
   const resultRef = useRef<HTMLElement>(null);
+  const areaRequestRef = useRef(0);
 
   const refreshStatuses = useCallback(async () => {
     try {
@@ -49,16 +50,24 @@ export function HomeExperience() {
     }
   }, []);
 
-  const refreshArea = useCallback(async (location: LocationRecord) => {
-    setLoadingArea(true);
+  const refreshArea = useCallback(async (
+    location: LocationRecord,
+    options: { silent?: boolean } = {},
+  ): Promise<AreaSnapshot | null> => {
+    const requestId = ++areaRequestRef.current;
+    if (!options.silent) setLoadingArea(true);
     try {
       const response = await getAreaSnapshot(location.slug);
-      setSnapshot(response);
-      setAreaUnavailable(false);
+      if (requestId === areaRequestRef.current) {
+        setSnapshot(response);
+        setAreaUnavailable(false);
+      }
+      return response;
     } catch {
-      setAreaUnavailable(true);
+      if (requestId === areaRequestRef.current && !options.silent) setAreaUnavailable(true);
+      return null;
     } finally {
-      setLoadingArea(false);
+      if (requestId === areaRequestRef.current && !options.silent) setLoadingArea(false);
     }
   }, []);
 
@@ -97,7 +106,7 @@ export function HomeExperience() {
   useEffect(() => {
     if (!selected) return;
     const interval = window.setInterval(() => {
-      void refreshArea(selected);
+      void refreshArea(selected, { silent: true });
     }, 60_000);
     return () => window.clearInterval(interval);
   }, [refreshArea, selected]);
@@ -132,8 +141,8 @@ export function HomeExperience() {
             loading={loadingArea}
             snapshot={snapshot}
             unavailable={areaUnavailable}
-            onRefresh={() => {
-              void refreshArea(selected);
+            onRefresh={async () => {
+              await refreshArea(selected, { silent: true });
               void refreshStatuses();
             }}
           />

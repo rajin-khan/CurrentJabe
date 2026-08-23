@@ -5,6 +5,10 @@ export type LiveStateName = "unknown" | "appears_on" | "appears_out";
 export type LiveState = {
   state: LiveStateName;
   contributorCount: number;
+  recentContributorCount: number;
+  onContributorCount: number;
+  outContributorCount: number;
+  leadingState: "on" | "out" | null;
   observedAt: string | null;
   expiresAt: string | null;
   precision: string | null;
@@ -106,6 +110,10 @@ export function emptyAreaSnapshot(area: AreaSnapshot["area"]): AreaSnapshot {
     liveState: {
       state: "unknown",
       contributorCount: 0,
+      recentContributorCount: 0,
+      onContributorCount: 0,
+      outContributorCount: 0,
+      leadingState: null,
       observedAt: null,
       expiresAt: null,
       precision: "upazila",

@@ -8,6 +8,7 @@ import {
   submitDailyReport,
   submitLiveReport,
   type DailyWindowInput,
+  type LiveState,
 } from "@/lib/client-api";
 import { getDhakaDate } from "@/lib/dhaka-date";
 import { CheckIcon, CloseIcon, PlusIcon, TrashIcon } from "@/components/icons";
@@ -24,6 +25,19 @@ export type ReportArea = {
 
 export type ReportMode = "out" | "on" | "daily";
 
+export type ReportSubmissionReceipt =
+  | {
+      mode: "out" | "on";
+      duplicate: boolean;
+      liveState: LiveState;
+    }
+  | {
+      mode: "daily";
+      duplicate: boolean;
+      insertedTimedEvents: number;
+      date: string;
+    };
+
 type TimeWindowDraft = {
   id: string;
   startTime: string;
@@ -39,19 +53,25 @@ export function ReportDialog({
   area,
   mode,
   onClose,
+  onSubmitting,
   onSubmitted,
+  onSubmissionError,
 }: {
   area: ReportArea;
   mode: ReportMode;
   onClose: () => void;
-  onSubmitted?: () => void;
+  onSubmitting?: (mode: ReportMode) => void;
+  onSubmitted?: (receipt: ReportSubmissionReceipt) => void | Promise<void>;
+  onSubmissionError?: () => void;
 }) {
   const { locale, text } = useLanguage();
   const titleId = useId();
   const panelRef = useRef<HTMLDivElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
+  const submittingRef = useRef(false);
   const [step, setStep] = useState<"form" | "times" | "success">("form");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [receipt, setReceipt] = useState<ReportSubmissionReceipt | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [dateOffset, setDateOffset] = useState<0 | -1>(0);
   const [countKnown, setCountKnown] = useState(true);
@@ -83,7 +103,7 @@ export function ReportDialog({
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        onClose();
+        if (!submittingRef.current) onClose();
         return;
       }
       if (event.key !== "Tab" || !panelRef.current) return;
@@ -125,28 +145,46 @@ export function ReportDialog({
     if (bodyRef.current) bodyRef.current.scrollTop = 0;
   }, [step]);
 
-  const finishSuccess = async () => {
+  const finishSuccess = (nextReceipt: ReportSubmissionReceipt) => {
+    setReceipt(nextReceipt);
     setStep("success");
-    await recordAnalytics("report_completed", area.id);
-    onSubmitted?.();
+    void recordAnalytics("report_completed", area.id);
+    void Promise.resolve(onSubmitted?.(nextReceipt));
   };
 
   const submitLive = async () => {
+    if (submittingRef.current) return;
+    submittingRef.current = true;
     setIsSubmitting(true);
     setError(null);
+    onSubmitting?.(mode);
     try {
-      await submitLiveReport(mode as "out" | "on", area.id);
-      await finishSuccess();
+      const result = await submitLiveReport(mode as "out" | "on", area.id);
+      finishSuccess({
+        mode: mode as "out" | "on",
+        duplicate: result.duplicate,
+        liveState: result.liveState,
+      });
     } catch (requestError) {
+      onSubmissionError?.();
       setError(
         requestError instanceof ApiError ? requestError.message : text.report.error,
       );
     } finally {
+      submittingRef.current = false;
       setIsSubmitting(false);
     }
   };
 
   const submitDaily = async () => {
+    if (submittingRef.current) return;
+    const hasIncompleteWindow = rememberTimes && windows.some(
+      (window) => Boolean(window.startTime) !== Boolean(window.endTime),
+    );
+    if (hasIncompleteWindow) {
+      setError(text.report.incompleteWindow);
+      return;
+    }
     const usableWindows: DailyWindowInput[] = rememberTimes
       ? windows.flatMap((window) =>
           window.startTime && window.endTime
@@ -166,22 +204,32 @@ export function ReportDialog({
       return;
     }
 
+    submittingRef.current = true;
     setIsSubmitting(true);
     setError(null);
+    onSubmitting?.("daily");
     try {
-      await submitDailyReport({
+      const date = getDhakaDate(dateOffset);
+      const result = await submitDailyReport({
         upazilaId: area.id,
-        date: getDhakaDate(dateOffset),
+        date,
         countKnown,
         outageCount,
         windows: usableWindows,
       });
-      await finishSuccess();
+      finishSuccess({
+        mode: "daily",
+        duplicate: result.duplicate,
+        insertedTimedEvents: result.insertedEventIds.length,
+        date,
+      });
     } catch (requestError) {
+      onSubmissionError?.();
       setError(
         requestError instanceof ApiError ? requestError.message : text.report.error,
       );
     } finally {
+      submittingRef.current = false;
       setIsSubmitting(false);
     }
   };
@@ -216,18 +264,38 @@ export function ReportDialog({
         ? text.report.titleOn
         : text.report.titleHistory;
 
+  const successBody = receipt?.mode === "daily"
+    ? text.report.successDaily
+    : receipt?.duplicate
+      ? text.report.successDuplicate
+      : receipt
+        ? text.report.successLive.replace(
+            "{count}",
+            locale === "bn"
+              ? receipt.liveState.recentContributorCount.toLocaleString("bn-BD")
+              : String(receipt.liveState.recentContributorCount),
+          )
+        : text.report.successBody;
+
   return createPortal(
-    <div className="report-overlay" role="presentation" onMouseDown={onClose}>
+    <div
+      className="report-overlay"
+      role="presentation"
+      onMouseDown={() => {
+        if (!submittingRef.current) onClose();
+      }}
+    >
       <div
         aria-labelledby={titleId}
         aria-modal="true"
+        aria-busy={isSubmitting}
         className="report-dialog"
         onMouseDown={(event) => event.stopPropagation()}
         ref={panelRef}
         role="dialog"
         tabIndex={-1}
       >
-        <button className="dialog-close" type="button" onClick={onClose} aria-label={text.actions.close}>
+        <button className="dialog-close" disabled={isSubmitting} type="button" onClick={onClose} aria-label={text.actions.close}>
           <CloseIcon />
         </button>
         <div className="report-dialog__body" ref={bodyRef}>
@@ -236,10 +304,15 @@ export function ReportDialog({
               <span className="report-success__icon"><CheckIcon /></span>
               <p className="eyebrow">{text.report.received}</p>
               <h2 id={titleId}>{text.report.successTitle}</h2>
-              <p>{text.report.successBody}</p>
-              <button className="button-dark" type="button" onClick={onClose}>
-                {text.actions.done}
-              </button>
+              <p role="status" aria-live="polite">{successBody}</p>
+              <div className="report-success__actions">
+                <a className="button-dark" href={`/area/${area.slug}`}>
+                  {locale === "bn" ? "আপডেট করা এলাকা দেখুন" : "View updated area"}
+                </a>
+                <button className="button-ghost" type="button" onClick={onClose}>
+                  {text.actions.done}
+                </button>
+              </div>
             </div>
           ) : (
             <>
@@ -261,7 +334,7 @@ export function ReportDialog({
                     type="button"
                     onClick={submitLive}
                   >
-                    {isSubmitting ? text.common.loading : mode === "out" ? text.actions.out : text.actions.on}
+                    {isSubmitting ? text.status.submitting : mode === "out" ? text.actions.out : text.actions.on}
                   </button>
                 </div>
               ) : step === "form" ? (
@@ -314,6 +387,7 @@ export function ReportDialog({
                   <div>
                     <h3>{text.report.rememberQuestion}</h3>
                     <p>{text.report.rememberHelp}</p>
+                    <p className="daily-evidence-note">{text.report.countOnlyNote}</p>
                   </div>
                   {countKnown ? (
                     <label className="memory-toggle">
@@ -409,7 +483,7 @@ export function ReportDialog({
                       {text.actions.back}
                     </button>
                     <button className="button-primary" disabled={isSubmitting} type="button" onClick={submitDaily}>
-                      {isSubmitting ? text.common.loading : text.actions.submit}
+                      {isSubmitting ? text.status.submitting : text.actions.submit}
                     </button>
                   </div>
                 </div>

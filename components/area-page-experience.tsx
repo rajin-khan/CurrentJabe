@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AreaSignal } from "@/components/area-signal";
 import { LazyBangladeshMap } from "@/components/lazy-bangladesh-map";
@@ -32,19 +32,24 @@ export function AreaPageExperience({ location }: { location: LocationRecord }) {
   const [statuses, setStatuses] = useState<Record<string, LiveStateName>>({});
   const [loading, setLoading] = useState(true);
   const [unavailable, setUnavailable] = useState(false);
+  const requestRef = useRef(0);
   const areaName = locale === "bn" && location.upazilaBn ? location.upazilaBn : location.upazila;
   const districtName = locale === "bn" && location.districtBn ? location.districtBn : location.district;
 
-  const refresh = useCallback(async () => {
-    setLoading(true);
+  const refresh = useCallback(async (
+    options: { silent?: boolean } = {},
+  ): Promise<AreaSnapshot | null> => {
+    const requestId = ++requestRef.current;
+    if (!options.silent) setLoading(true);
     const [areaResult, mapResult] = await Promise.allSettled([
       getAreaSnapshot(location.slug),
       getMapStatuses(),
     ]);
+    if (requestId !== requestRef.current) return null;
     if (areaResult.status === "fulfilled") {
       setSnapshot(areaResult.value);
       setUnavailable(false);
-    } else {
+    } else if (!options.silent) {
       setUnavailable(true);
     }
     if (mapResult.status === "fulfilled") {
@@ -52,14 +57,15 @@ export function AreaPageExperience({ location }: { location: LocationRecord }) {
       for (const area of mapResult.value.areas) nextStatuses[area.slug] = area.state;
       setStatuses(nextStatuses);
     }
-    setLoading(false);
+    if (!options.silent) setLoading(false);
+    return areaResult.status === "fulfilled" ? areaResult.value : null;
   }, [location.slug]);
 
   useEffect(() => {
     void refresh();
     void recordAnalytics("forecast_view", location.id);
     const interval = window.setInterval(() => {
-      void refresh();
+      void refresh({ silent: true });
     }, 60_000);
     return () => window.clearInterval(interval);
   }, [location.id, refresh]);
@@ -98,7 +104,9 @@ export function AreaPageExperience({ location }: { location: LocationRecord }) {
           loading={loading}
           snapshot={snapshot}
           unavailable={unavailable}
-          onRefresh={refresh}
+          onRefresh={async () => {
+            await refresh({ silent: true });
+          }}
         />
 
         <div className="official-links">

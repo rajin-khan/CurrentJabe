@@ -45,6 +45,10 @@ export type NormalizedDailyReport = Omit<DailyReportInput, "windows"> & {
 export type LiveAreaState = {
   state: PublicPowerState;
   contributorCount: number;
+  recentContributorCount: number;
+  onContributorCount: number;
+  outContributorCount: number;
+  leadingState: ReportedPowerState | null;
   observedAt: string | null;
   expiresAt: string | null;
   precision: LocationPrecision;

@@ -3,8 +3,13 @@
 import { useEffect, useState } from "react";
 import { CheckIcon, ShareIcon } from "@/components/icons";
 import { useLanguage } from "@/components/language-provider";
-import { ReportDialog, type ReportArea, type ReportMode } from "@/components/report-dialog";
-import { recordAnalytics, type AreaSnapshot } from "@/lib/client-api";
+import {
+  ReportDialog,
+  type ReportArea,
+  type ReportMode,
+  type ReportSubmissionReceipt,
+} from "@/components/report-dialog";
+import { recordAnalytics, type AreaSnapshot, type LiveState } from "@/lib/client-api";
 
 function formatHour(hour: number, locale: "en" | "bn") {
   const normalized = ((hour % 24) + 24) % 24;
@@ -24,6 +29,24 @@ function interpolate(template: string, values: Record<string, string | number>) 
   );
 }
 
+function optimisticLiveState(current: LiveState, mode: "out" | "on"): LiveState {
+  const onContributorCount = current.onContributorCount + (mode === "on" ? 1 : 0);
+  const outContributorCount = current.outContributorCount + (mode === "out" ? 1 : 0);
+  const leadingState = onContributorCount === outContributorCount
+    ? mode
+    : onContributorCount > outContributorCount
+      ? "on"
+      : "out";
+  return {
+    ...current,
+    recentContributorCount: Math.max(onContributorCount, outContributorCount),
+    onContributorCount,
+    outContributorCount,
+    leadingState,
+    observedAt: new Date().toISOString(),
+  };
+}
+
 export function AreaSignal({
   area,
   snapshot,
@@ -35,18 +58,21 @@ export function AreaSignal({
   snapshot: AreaSnapshot;
   loading?: boolean;
   unavailable?: boolean;
-  onRefresh?: () => void;
+  onRefresh?: () => void | Promise<void>;
 }) {
   const { locale, text } = useLanguage();
   const [reportMode, setReportMode] = useState<ReportMode | null>(null);
+  const [displayedLiveState, setDisplayedLiveState] = useState(snapshot.liveState);
+  const [reportPhase, setReportPhase] = useState<"submitting" | "refreshing" | null>(null);
   const [copied, setCopied] = useState(false);
   const [now, setNow] = useState(0);
   const expired = Boolean(
     now > 0 &&
-      snapshot.liveState.expiresAt &&
-      Date.parse(snapshot.liveState.expiresAt) <= now,
+      displayedLiveState.expiresAt &&
+      Date.parse(displayedLiveState.expiresAt) <= now,
   );
-  const state = expired ? "unknown" : snapshot.liveState.state;
+  const state = expired ? "unknown" : displayedLiveState.state;
+  const recentContributorCount = displayedLiveState.recentContributorCount;
   const areaName = locale === "bn" && area.nameBn ? area.nameBn : area.name;
   const districtName =
     locale === "bn" && area.districtNameBn ? area.districtNameBn : area.districtName;
@@ -56,19 +82,61 @@ export function AreaSignal({
       ? text.status.out
       : state === "appears_on"
         ? text.status.on
-        : text.status.unknown;
+        : recentContributorCount > 0
+          ? text.status.gathering
+          : text.status.unknown;
   const statusDetail =
     state === "appears_out"
       ? text.status.outDetail
       : state === "appears_on"
         ? text.status.onDetail
-        : text.status.unknownDetail;
+        : recentContributorCount > 0 && displayedLiveState.leadingState
+          ? interpolate(
+              displayedLiveState.leadingState === "out"
+                ? text.status.gatheringOutDetail
+                : text.status.gatheringOnDetail,
+              {
+                count:
+                  locale === "bn"
+                    ? recentContributorCount.toLocaleString("bn-BD")
+                    : recentContributorCount,
+              },
+            )
+          : text.status.unknownDetail;
 
   useEffect(() => {
     setNow(Date.now());
     const interval = window.setInterval(() => setNow(Date.now()), 15_000);
     return () => window.clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    if (reportPhase === null) setDisplayedLiveState(snapshot.liveState);
+  }, [reportPhase, snapshot.liveState]);
+
+  const handleSubmitting = (mode: ReportMode) => {
+    setReportPhase("submitting");
+    if (mode === "out" || mode === "on") {
+      setDisplayedLiveState((current) => optimisticLiveState(current, mode));
+    }
+  };
+
+  const handleSubmissionError = () => {
+    setDisplayedLiveState(snapshot.liveState);
+    setReportPhase(null);
+  };
+
+  const handleSubmitted = async (receipt: ReportSubmissionReceipt) => {
+    if (receipt.mode === "out" || receipt.mode === "on") {
+      setDisplayedLiveState(receipt.liveState);
+    }
+    setReportPhase("refreshing");
+    try {
+      await Promise.resolve(onRefresh?.());
+    } finally {
+      setReportPhase(null);
+    }
+  };
 
   const shareArea = async () => {
     const url = `${window.location.origin}/area/${area.slug}`;
@@ -97,7 +165,10 @@ export function AreaSignal({
   };
 
   return (
-    <div className={`area-signal area-signal--${state}${loading ? " is-loading" : ""}`}>
+    <div
+      aria-busy={loading || reportPhase !== null}
+      className={`area-signal area-signal--${state}${state === "unknown" && recentContributorCount > 0 ? ` area-signal--gathering area-signal--pending-${displayedLiveState.leadingState ?? "unknown"}` : ""}${loading ? " is-loading" : ""}`}
+    >
       {unavailable ? (
         <p className="service-notice" role="status">{text.common.unavailable}</p>
       ) : null}
@@ -122,10 +193,17 @@ export function AreaSignal({
           </div>
         </div>
 
-        <p className="live-signal__meta">
-          <b>{expired ? 0 : snapshot.liveState.contributorCount}</b>{" "}
-          {text.status.evidence} · {text.status.freshness}
-        </p>
+        <div className="live-signal__meta-row">
+          <p className="live-signal__meta">
+            <b>{locale === "bn" ? `${recentContributorCount.toLocaleString("bn-BD")}/১০` : `${recentContributorCount}/10`}</b>{" "}
+            {text.status.evidence} · {text.status.freshness}
+          </p>
+          {reportPhase ? (
+            <p className="live-signal__update" role="status" aria-live="polite" aria-atomic="true">
+              {reportPhase === "submitting" ? text.status.submitting : text.status.refreshing}
+            </p>
+          ) : null}
+        </div>
 
         <div className="signal-actions">
           <button className="signal-action signal-action--out" type="button" onClick={() => setReportMode("out")}>
@@ -138,7 +216,8 @@ export function AreaSignal({
           </button>
         </div>
         <button className="history-action" type="button" onClick={() => setReportMode("daily")}>
-          {text.actions.history}
+          <small>{text.submit.todayOrYesterday}</small>
+          <strong>{text.submit.history}</strong>
         </button>
         <p className="signal-disclaimer">{text.status.disclaimer}</p>
       </section>
@@ -150,7 +229,9 @@ export function AreaSignal({
           area={area}
           mode={reportMode}
           onClose={() => setReportMode(null)}
-          onSubmitted={onRefresh}
+          onSubmitting={handleSubmitting}
+          onSubmitted={handleSubmitted}
+          onSubmissionError={handleSubmissionError}
         />
       ) : null}
     </div>
