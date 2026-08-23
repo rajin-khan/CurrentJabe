@@ -9,6 +9,9 @@ does not call a map API at runtime and does not use paid tiles.
 - **Boundary ID:** `BGD-ADM2-16705992` and `BGD-ADM3-5055444`
 - **Pinned source revision:** `wmgeolab/geoBoundaries@9469f09`
 - **Represented year:** 2020
+- **Underlying license-source description:** administrative boundaries “as of
+  2015” (the geoBoundaries metadata links that HDX source even though its
+  represented-year field says 2020)
 - **Primary sources named in the metadata:** Bangladesh Bureau of Statistics
   (BBS), OCHA ROAP
 - **License named in the file metadata:** Creative Commons Attribution 3.0
@@ -41,16 +44,76 @@ Polygon holes are retained; render paths with `fill-rule="evenodd"`.
   Bangla names are best-effort display labels, not legal boundary evidence.
 
 The Bangladesh National Portal's upazila list was used as the primary public
-cross-check and to supplement Shayestaganj, bringing the searchable upazila
-count to the nationally published 495:
+cross-check and to supplement Shayestaganj, bringing the PHC-era hierarchy to
+the nationally published 495:
 
 - <https://bangladesh.gov.bd/views/upazila-list/Upazilla%20List/>
 - <https://bangladesh.gov.bd/site/page/51ae2125-d2f7-430e-8558-53bf94990d0d/>
+
+NICAR approved Fatikchhari North, Bangara, and Gafargaon South on 1 July 2026,
+bringing the current approved total to 498. They are included with sourced
+English and Bangla names, but without invented BBS/DGHS codes or split
+polygons. Each new unit and its reduced parent references the old aggregate
+outline only as approximate orientation:
+
+- <https://www.bssnews.net/bangla/news-flash/319928>
 
 Modern public-facing names replace two obsolete names while retaining search
 aliases: Shantiganj (formerly Dakshin/South Sunamganj) and Indurkani (formerly
 Zianagar). Modern district spellings such as Chattogram, Cumilla, Bogura,
 Jashore, and Barishal are used in the UI.
+
+## Metropolitan thana hierarchy
+
+CurrentJabe uses the Bangladesh Bureau of Statistics (BBS) Population and
+Housing Census 2022 definition of **Metro Thana (in City Corporation)**. This
+is the appropriate territorial counterpart to the 495-upazila census
+hierarchy; it is not a count of every operational police station, investigation
+centre, outpost, or camp.
+
+- The PHC 2022 National Report records 105 metro-thana instances across the 12
+  city corporations. Table P33 and the district/community reports provide the
+  names. The maintained BBS census publication page links the national,
+  district, and community series:
+  <https://bbs.gov.bd/pages/static-pages/6922e073933eb65569e27220>.
+- The DGHS Bangladesh geocode CodeSystem provides stable government codes for
+  the unambiguous units:
+  <https://fhir.dghs.gov.bd/core/0.4.5/CodeSystem-bd-geocodes.json>.
+- District reports resolve same-name city-corporation subsets that must remain
+  distinct from their surrounding upazilas, including Cumilla, Mymensingh,
+  Narayanganj, and Sylhet. Direct BBS publications are linked in
+  `metropolitan-thanas.json`.
+
+The census reports Dhanmondi, Ramna, and Shere Bangla Nagar under both Dhaka
+city-corporation sections. CurrentJabe is district-scoped rather than
+city-corporation-scoped, so each is one selectable reporting area. The result is
+**102 unique metro-thana choices representing all 105 official instances**.
+The complete, count-checked roster lives in `metropolitan-thanas.json` and is
+ingested by the map builder rather than inferred from whichever polygons happen
+to exist in an older boundary snapshot.
+
+The BBS English form is `Bhatara`; Dhaka Metropolitan Police uses `Vatara`.
+Both spellings, plus `ভাটারা`, resolve to the same CurrentJabe thana. DMP's
+current station directory and an official DESCO customer-point list provide the
+cross-check and electricity hint:
+
+- <https://dmp.gov.bd/find-your-local-police/>
+- <https://desco.gov.bd/site/page/583175e8-7bb4-4ce5-824a-a042428594e5/>
+
+Operational police-station totals found on the web are not interchangeable
+with this territorial hierarchy: they change as jurisdictions split, commonly
+overlap same-name upazilas, and do not come with a complete nationwide public
+boundary set. Adding duplicate police-service buckets would fragment the
+community evidence used for forecasts. Rural users therefore select the BBS
+upazila hierarchy, urban users can select the complete BBS metro-thana
+hierarchy, and either can add a more precise community locality when needed.
+For example, a December 2025 Police Headquarters report says 639 stations, but
+its own 527 district-level and 110 metropolitan subtotals add to 637:
+<https://www.bssnews.net/news/338013>. That internal mismatch is retained as a
+source caveat, not silently resolved by guessing two station records.
+The same July 2026 NICAR decision approved Halda Police Station by splitting
+Hathazari's police jurisdiction. It is tracked as an operational update, not
+mislabelled as a BBS metro-thana or layered over the Hathazari forecast scope.
 
 ## Electricity-provider hints
 
@@ -84,10 +147,9 @@ The initial fine-area selector uses factual place names manually transcribed
 from public sources. No municipal or utility artwork is redistributed:
 
 - The BBS Dhaka Community and District reports anchor the formal thana,
-  ward, and mahalla hierarchy:
-  <https://nsds.bbs.gov.bd/storage/files/1/Publications/PHC_2021%20Community%20Report/DHAKA%20DIVISION/Community%20Report%20Dhaka.pdf>
-  and
-  <https://nsds.bbs.gov.bd/storage/files/1/Publications/PHC_2021/Dhaka%20Division/District%20Report%20Dhaka_25062024.pdf>
+  ward, and mahalla hierarchy; both series are linked from the maintained BBS
+  census publication page:
+  <https://bbs.gov.bd/pages/static-pages/6922e073933eb65569e27220>
 - DNCC's public ward-area list supports the bundled Mirpur section names:
   <https://dncc.gov.bd/pages/static-pages/6922ded3933eb65569e1da8e>
 - DSCC's ward roster explicitly names the bundled Dhanmondi road scopes:
@@ -139,10 +201,22 @@ electricity provider or feeder mapping.
 
 ## Known limitations
 
-- The open polygon snapshot represents 2020 and contains 544 ADM3 polygons.
-- It yields polygons for 483 of today's 495 upazilas plus 61 metropolitan
-  thanas. These twelve current upazilas remain searchable but use a district
-  fallback because drawing an invented boundary would be misleading:
+- The open polygon metadata reports 2020 and contains 544 ADM3 polygons, while
+  its linked license source describes the boundaries as of 2015. The older
+  extents are therefore never promoted to a current metro-thana boundary from
+  a name match alone.
+- It yields exact current-scope polygons for 480 of the 498 approved upazilas.
+  The three newly split upazilas and their three reduced parents share their
+  old pre-split outlines only as approximate orientation. The twelve PHC
+  upazilas without usable outlines stay searchable with a district fallback.
+- The snapshot's 61 city-thana outlines predate the PHC 2022 roster. A matching
+  name is not proof of matching extent, so all are treated as approximate until
+  individually verified against current BBS scopes. Sixty-three current choices
+  can use those outlines for orientation and 39 use a district fallback. Badda
+  and Bhatara share the old aggregate Badda outline; Uttara Purba and Uttara
+  Pashchim share the old aggregate Uttara outline. Neither aggregate is claimed
+  as a current exact boundary, and approximate features never receive exact
+  live-state coloring. The twelve no-polygon upazilas are:
   Taltali, Karnafuli, Eidgaon, Lalmai, Shayestaganj, Guimara, Dasar, Tarakanda,
   Naldanga, Rangabali, Madhyanagar, and Osmaninagar.
 - Administrative polygons are useful for selection and visual orientation, not
@@ -153,8 +227,8 @@ electricity provider or feeder mapping.
 - Coastlines and small islands are simplified for a national interactive map;
   this dataset is not suitable for surveying, cadastral work, or legal use.
 - The National Portal has occasionally shown inconsistent aggregate counters.
-  The bundled hierarchy uses the published 495-upazila list rather than treating
-  counts of portal sites as newly gazetted administrative boundaries.
+  CurrentJabe starts from its published 495-unit list and adds only the three
+  specifically named July 2026 NICAR approvals, for 498 upazila choices.
 
 ## Rebuilding
 

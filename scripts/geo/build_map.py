@@ -10,7 +10,8 @@ Example:
     --adm2 /tmp/bgd-adm2.geojson \
     --adm3 /tmp/bgd-adm3.geojson \
     --district-names /tmp/nuhil-districts.json \
-    --upazila-names /tmp/nuhil-upazilas.json
+    --upazila-names /tmp/nuhil-upazilas.json \
+    --metro-thanas data/metropolitan-thanas.json
 """
 
 from __future__ import annotations
@@ -49,6 +50,51 @@ DISTRICT_RENAMES = {
 }
 
 
+DISTRICT_BN_OVERRIDES = {
+    "mymensingh": "ময়মনসিংহ",
+    "narayanganj": "নারায়ণগঞ্জ",
+}
+
+
+# The boundary snapshot predates both current split scopes and the PHC 2022
+# roster. Keep known aggregate outlines only as neutral orientation features so
+# no current unit claims them as an exact boundary.
+LEGACY_AGGREGATE_FEATURE_RENAMES = {
+    "chattogram-fatikchhari": "geo-chattogram-fatikchhari-2020-aggregate",
+    "cumilla-muradnagar": "geo-cumilla-muradnagar-2020-aggregate",
+    "dhaka-badda": "geo-dhaka-badda-2020-aggregate",
+    "dhaka-uttara": "geo-dhaka-uttara-2020-aggregate",
+    "mymensingh-gafargaon": "geo-mymensingh-gafargaon-2020-aggregate",
+}
+
+# `dhaka-uttara` was an aggregate product bucket before the BBS Purba/Pashchim
+# split was reconciled. It must not be silently reused for either current scope,
+# because production evidence is keyed by this stable ID.
+RETIRED_SOURCE_LOCATION_IDS = {"dhaka-uttara"}
+
+ADMIN_APPROXIMATE_FEATURES = {
+    "chattogram-fatikchhari": ["geo-chattogram-fatikchhari-2020-aggregate"],
+    "chattogram-fatikchhari-north": ["geo-chattogram-fatikchhari-2020-aggregate"],
+    "cumilla-muradnagar": ["geo-cumilla-muradnagar-2020-aggregate"],
+    "cumilla-bangara": ["geo-cumilla-muradnagar-2020-aggregate"],
+    "mymensingh-gafargaon": ["geo-mymensingh-gafargaon-2020-aggregate"],
+    "mymensingh-gafargaon-south": ["geo-mymensingh-gafargaon-2020-aggregate"],
+}
+
+METRO_APPROXIMATE_FEATURES = {
+    "dhaka-badda": ["geo-dhaka-badda-2020-aggregate"],
+    "dhaka-bhatara": ["geo-dhaka-badda-2020-aggregate"],
+    "dhaka-uttara-pashchim": ["geo-dhaka-uttara-2020-aggregate"],
+    "dhaka-uttara-purba": ["geo-dhaka-uttara-2020-aggregate"],
+}
+
+# A name match between the 2020 ADM3 snapshot and a PHC 2022 thana is not proof
+# that their extents are identical. Add an ID here only after independently
+# verifying the polygon against the current BBS scope. Until then every legacy
+# metro polygon is an explicitly approximate orientation aid.
+VERIFIED_EXACT_METRO_BOUNDARY_IDS: set[str] = set()
+
+
 # Renames that happened after the 2020 boundary snapshot. The geometry remains
 # the source polygon, while the UI gets the current public-facing name.
 UNIT_RENAMES = {
@@ -65,8 +111,8 @@ UNIT_RENAMES = {
 }
 
 
-# The bilingual reference has two recently created upazilas that post-date the
-# 2020 polygon snapshot. They remain searchable and explicitly have no polygon.
+# These reference upazilas post-date, or are absent from, the 2020 polygon
+# snapshot. They remain searchable and explicitly have no polygon.
 NO_GEOMETRY_REFERENCE_UNITS = {
     ("Barguna", "Taltali"),
     ("Chattogram", "Karnafuli"),
@@ -82,8 +128,9 @@ NO_GEOMETRY_REFERENCE_UNITS = {
 }
 
 
-# A 495th upazila present on the Bangladesh National Portal but absent from the
-# pinned 2023 bilingual reference snapshot.
+# Official units absent from the pinned 2023 bilingual reference snapshot.
+# The last three were approved by NICAR on 2026-07-01 and intentionally have no
+# invented codes or split polygons while BBS/DGHS reference data catches up.
 OFFICIAL_SUPPLEMENTAL_UNITS = [
     {
         "district": "Habiganj",
@@ -91,7 +138,28 @@ OFFICIAL_SUPPLEMENTAL_UNITS = [
         "upazila": "Shayestaganj",
         "upazilaBn": "শায়েস্তাগঞ্জ",
         "aliases": ["Shaistaganj", "Shaistagonj"],
-    }
+    },
+    {
+        "district": "Chattogram",
+        "districtBn": "চট্টগ্রাম",
+        "upazila": "Fatikchhari North",
+        "upazilaBn": "ফটিকছড়ি উত্তর",
+        "aliases": ["North Fatikchhari", "Fatikchhari Uttar"],
+    },
+    {
+        "district": "Cumilla",
+        "districtBn": "কুমিল্লা",
+        "upazila": "Bangara",
+        "upazilaBn": "বাঙ্গরা",
+        "aliases": ["Bangora", "Bangra"],
+    },
+    {
+        "district": "Mymensingh",
+        "districtBn": "ময়মনসিংহ",
+        "upazila": "Gafargaon South",
+        "upazilaBn": "দক্ষিণ গফরগাঁও",
+        "aliases": ["South Gafargaon", "Dakshin Gafargaon"],
+    },
 ]
 
 
@@ -200,6 +268,46 @@ def slugify(value: str) -> str:
 
 def canonical_district(source_name: str) -> str:
     return DISTRICT_RENAMES.get(normalize(source_name), source_name)
+
+
+def load_metro_thanas(path: str) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+    payload = json.loads(Path(path).read_text(encoding="utf-8"))
+    rows: list[dict[str, Any]] = []
+    district_instance_count = 0
+    for district_group in payload.get("districts", []):
+        group_rows = district_group.get("thanas", [])
+        group_instances = sum(row.get("instanceCount", 1) for row in group_rows)
+        expected_group_instances = district_group.get("expectedInstanceCount")
+        if group_instances != expected_group_instances:
+            raise ValueError(
+                f"Metro-thana instance mismatch for {district_group.get('district')}: "
+                f"expected {expected_group_instances}, received {group_instances}"
+            )
+        district_instance_count += group_instances
+        for row in group_rows:
+            rows.append(
+                {
+                    **row,
+                    "district": district_group["district"],
+                    "districtBn": district_group["districtBn"],
+                }
+            )
+
+    ids = [row["id"] for row in rows]
+    if len(ids) != len(set(ids)):
+        duplicates = sorted({row_id for row_id in ids if ids.count(row_id) > 1})
+        raise ValueError(f"Duplicate metro-thana IDs: {duplicates}")
+    if len(rows) != payload.get("expectedLocationCount"):
+        raise ValueError(
+            f"Metro-thana location mismatch: expected {payload.get('expectedLocationCount')}, "
+            f"received {len(rows)}"
+        )
+    if district_instance_count != payload.get("expectedInstanceCount"):
+        raise ValueError(
+            f"Metro-thana instance mismatch: expected {payload.get('expectedInstanceCount')}, "
+            f"received {district_instance_count}"
+        )
+    return payload, rows
 
 
 def phpmyadmin_rows(payload: Any) -> list[dict[str, str]]:
@@ -534,9 +642,14 @@ def match_reference_unit(
     return None
 
 
-def provider_hints(district: str, unit: str, kind: str) -> list[str]:
+def provider_hints(
+    district: str,
+    unit: str,
+    kind: str,
+    aliases: Sequence[str] = (),
+) -> list[str]:
     district_key = normalize(district)
-    unit_key = normalize(unit)
+    unit_keys = {normalize(unit), *(normalize(alias) for alias in aliases)}
     hints: set[str] = set()
 
     nesco_units = {
@@ -557,7 +670,7 @@ def provider_hints(district: str, unit: str, kind: str) -> list[str]:
         "thakurgaon": {"thakurgaonsadar"},
         "panchagarh": {"panchagarhsadar", "tentulia"},
     }
-    if unit_key in nesco_units.get(district_key, set()):
+    if unit_keys & nesco_units.get(district_key, set()):
         hints.add("nesco")
 
     wzpdcl_units = {
@@ -587,17 +700,18 @@ def provider_hints(district: str, unit: str, kind: str) -> list[str]:
         "khulna", "bagerhat", "satkhira", "narail", "jashore", "jhenaidah", "magura", "kushtia", "meherpur", "chuadanga",
         "faridpur", "rajbari", "madaripur", "shariatpur", "gopalganj", "barishal", "jhalokati", "patuakhali", "barguna", "bhola", "pirojpur",
     }
-    if (district_key, unit_key) in wzpdcl_units or (
-        district_key in wzpdcl_districts and unit_key.endswith("sadar")
+    if any((district_key, unit_key) in wzpdcl_units for unit_key in unit_keys) or (
+        district_key in wzpdcl_districts and any(unit_key.endswith("sadar") for unit_key in unit_keys)
     ):
         hints.add("wzpdcl")
 
     desco_dhaka_units = {
-        "mirpur", "pallabi", "kafrul", "cantonment", "gulshan", "badda", "uttara", "uttarkhan", "dakshinkhan",
+        "mirpur", "pallabi", "kafrul", "cantonment", "gulshan", "badda", "bhatara", "vatara",
+        "uttara", "uttaraeast", "uttarapurba", "uttarawest", "uttarapashchim", "uttarkhan", "dakshinkhan",
     }
-    if district_key == "dhaka" and unit_key in desco_dhaka_units:
+    if district_key == "dhaka" and unit_keys & desco_dhaka_units:
         hints.add("desco")
-    if district_key == "narayanganj" and unit_key == "rupganj":
+    if district_key == "narayanganj" and "rupganj" in unit_keys:
         hints.add("desco")
 
     # DPDC's official coverage statement covers Dhaka City Corporation areas and
@@ -605,7 +719,7 @@ def provider_hints(district: str, unit: str, kind: str) -> list[str]:
     # thana/upazila borders do not equal distribution boundaries.
     if district_key == "dhaka" and kind == "thana" and "desco" not in hints:
         hints.add("dpdc")
-    if district_key == "narayanganj" and unit_key == "narayanganjsadar":
+    if district_key == "narayanganj" and "narayanganjsadar" in unit_keys:
         hints.add("dpdc")
 
     return sorted(hints)
@@ -616,10 +730,13 @@ def build(args: argparse.Namespace) -> None:
     adm3 = json.loads(Path(args.adm3).read_text(encoding="utf-8"))
     district_rows = phpmyadmin_rows(json.loads(Path(args.district_names).read_text(encoding="utf-8")))
     unit_rows = phpmyadmin_rows(json.loads(Path(args.upazila_names).read_text(encoding="utf-8")))
+    metro_payload, metro_thanas = load_metro_thanas(args.metro_thanas)
 
     district_by_id = {row["id"]: row for row in district_rows}
     district_bn = {
-        normalize(canonical_district(row["name"])): row["bn_name"]
+        normalize(canonical_district(row["name"])): DISTRICT_BN_OVERRIDES.get(
+            normalize(canonical_district(row["name"])), row["bn_name"].strip()
+        )
         for row in district_rows
     }
     reference_by_district: dict[str, list[dict[str, str]]] = {}
@@ -647,7 +764,7 @@ def build(args: argparse.Namespace) -> None:
         if reference:
             claimed_reference_ids.add(reference["id"])
             unit = reference["name"]
-            unit_bn = reference.get("bn_name") or None
+            unit_bn = (reference.get("bn_name") or "").strip() or None
             kind = "upazila"
         else:
             unit = source_unit
@@ -715,7 +832,7 @@ def build(args: argparse.Namespace) -> None:
             "district": district,
             "districtBn": district_bn.get(normalize(district)),
             "upazila": unit,
-            "upazilaBn": row.get("bn_name") or None,
+            "upazilaBn": (row.get("bn_name") or "").strip() or None,
             "providerHints": provider_hints(district, unit, "upazila"),
             "kind": "upazila",
             "geometryAvailable": False,
@@ -742,7 +859,154 @@ def build(args: argparse.Namespace) -> None:
             }
         )
 
-    locations.extend(SOURCED_LOCALITIES)
+    # The 2020 boundary snapshot happens to contain 61 urban thana outlines, but
+    # that accidental subset is neither a national roster nor proof of current
+    # extent. Give every unverified metro outline a neutral feature ID before
+    # reconciling it against the complete PHC 2022 registry. This also prevents
+    # stale live-state keys from coloring an approximate polygon.
+    all_source_geometry_thana_ids = {
+        location["id"]
+        for location in locations
+        if location["kind"] == "thana" and location["geometryAvailable"]
+    }
+    metro_feature_ids = {
+        location_id: (
+            location_id
+            if location_id in VERIFIED_EXACT_METRO_BOUNDARY_IDS
+            else LEGACY_AGGREGATE_FEATURE_RENAMES.get(
+                location_id, f"geo-{location_id}-legacy-approximate"
+            )
+        )
+        for location_id in all_source_geometry_thana_ids
+    }
+    for feature in map_features:
+        replacement_id = LEGACY_AGGREGATE_FEATURE_RENAMES.get(
+            feature["id"], metro_feature_ids.get(feature["id"])
+        )
+        if replacement_id:
+            feature["id"] = replacement_id
+            feature["slug"] = replacement_id
+
+    locations = [
+        location
+        for location in locations
+        if location["id"] not in RETIRED_SOURCE_LOCATION_IDS
+    ]
+
+    # Add remaining roster records as either explicitly approximate orientation
+    # references or district fallbacks. Never invent a polygon or overwrite an
+    # upazila that happens to share a name.
+    location_indexes = {location["id"]: index for index, location in enumerate(locations)}
+    for location_id, approximate_feature_ids in ADMIN_APPROXIMATE_FEATURES.items():
+        location_index = location_indexes.get(location_id)
+        if location_index is None:
+            raise ValueError(f"Approximate admin override has no location: {location_id}")
+        location = locations[location_index]
+        if location["kind"] != "upazila":
+            raise ValueError(f"Approximate admin override is not an upazila: {location_id}")
+        location["geometryAvailable"] = False
+        location["approximateMapFeatureIds"] = approximate_feature_ids
+
+    roster_ids = {row["id"] for row in metro_thanas}
+    unknown_approximate_ids = sorted(set(METRO_APPROXIMATE_FEATURES) - roster_ids)
+    if unknown_approximate_ids:
+        raise ValueError(
+            f"Approximate metro-thana overrides missing from the BBS registry: "
+            f"{unknown_approximate_ids}"
+        )
+    map_feature_ids = {feature["id"] for feature in map_features}
+    missing_approximate_features = sorted(
+        {
+            feature_id
+            for feature_ids in (
+                *ADMIN_APPROXIMATE_FEATURES.values(),
+                *METRO_APPROXIMATE_FEATURES.values(),
+            )
+            for feature_id in feature_ids
+        }
+        - map_feature_ids
+    )
+    if missing_approximate_features:
+        raise ValueError(
+            f"Approximate metro-thana features are unavailable: "
+            f"{missing_approximate_features}"
+        )
+    source_geometry_thana_ids = {
+        location["id"]
+        for location in locations
+        if location["kind"] == "thana" and location["geometryAvailable"]
+    }
+    unregistered_geometry = sorted(source_geometry_thana_ids - roster_ids)
+    if unregistered_geometry:
+        raise ValueError(f"Geometry thanas missing from the BBS registry: {unregistered_geometry}")
+    unknown_exact_ids = sorted(VERIFIED_EXACT_METRO_BOUNDARY_IDS - roster_ids)
+    if unknown_exact_ids:
+        raise ValueError(f"Verified exact metro IDs missing from the BBS registry: {unknown_exact_ids}")
+    exact_ids_without_geometry = sorted(
+        VERIFIED_EXACT_METRO_BOUNDARY_IDS - source_geometry_thana_ids
+    )
+    if exact_ids_without_geometry:
+        raise ValueError(
+            f"Verified exact metro IDs have no source geometry: {exact_ids_without_geometry}"
+        )
+
+    for row in metro_thanas:
+        existing_index = location_indexes.get(row["id"])
+        existing = locations[existing_index] if existing_index is not None else None
+        if existing and existing["kind"] != "thana":
+            raise ValueError(
+                f"Metro-thana ID collides with a {existing['kind']}: {row['id']}"
+            )
+        if existing and existing["district"] != row["district"]:
+            raise ValueError(f"Metro-thana district changed for stable ID {row['id']}")
+
+        aliases = set(row.get("aliases", []))
+        if existing:
+            aliases.update(existing.get("aliases", []))
+            if existing["upazila"] != row["name"]:
+                aliases.add(existing["upazila"])
+        aliases.discard(row["name"])
+        approximate_feature_ids = METRO_APPROXIMATE_FEATURES.get(row["id"], [])
+        has_source_geometry = bool(existing and existing["geometryAvailable"])
+        is_verified_exact = row["id"] in VERIFIED_EXACT_METRO_BOUNDARY_IDS
+        if has_source_geometry and not is_verified_exact and not approximate_feature_ids:
+            approximate_feature_ids = [metro_feature_ids[row["id"]]]
+        location = {
+            "id": row["id"],
+            "slug": row["id"],
+            "district": row["district"],
+            "districtBn": row["districtBn"],
+            "upazila": row["name"],
+            "upazilaBn": row["nameBn"],
+            "providerHints": provider_hints(
+                row["district"], row["name"], "thana", sorted(aliases)
+            ),
+            "kind": "thana",
+            "geometryAvailable": has_source_geometry and is_verified_exact,
+        }
+        if approximate_feature_ids:
+            location["approximateMapFeatureIds"] = approximate_feature_ids
+        if aliases:
+            location["aliases"] = sorted(aliases)
+        if row.get("providerMappings"):
+            location["providerMappings"] = row["providerMappings"]
+
+        if existing_index is None:
+            location_indexes[row["id"]] = len(locations)
+            locations.append(location)
+        else:
+            locations[existing_index] = location
+
+    for sourced_locality in SOURCED_LOCALITIES:
+        locations.append(
+            {
+                **sourced_locality,
+                "approximateMapFeatureIds": [
+                    metro_feature_ids.get(feature_id, feature_id)
+                    for feature_id in sourced_locality["approximateMapFeatureIds"]
+                ],
+            }
+        )
 
     slugs = [location["slug"] for location in locations]
     if len(slugs) != len(set(slugs)):
@@ -774,6 +1038,24 @@ def build(args: argparse.Namespace) -> None:
         "upazilaCount": sum(location["kind"] == "upazila" for location in locations),
         "thanaCount": sum(location["kind"] == "thana" for location in locations),
         "localityCount": sum(location["kind"] == "locality" for location in locations),
+        "metroThanaRegistry": {
+            "asOf": metro_payload["asOf"],
+            "instanceCount": metro_payload["expectedInstanceCount"],
+            "locationCount": metro_payload["expectedLocationCount"],
+            "sourceGeometryCount": len(all_source_geometry_thana_ids),
+            "exactGeometryCount": len(VERIFIED_EXACT_METRO_BOUNDARY_IDS),
+            "approximateLocationCount": sum(
+                location["kind"] == "thana"
+                and bool(location.get("approximateMapFeatureIds"))
+                for location in locations
+            ),
+            "districtFallbackCount": sum(
+                location["kind"] == "thana"
+                and not location["geometryAvailable"]
+                and not location.get("approximateMapFeatureIds")
+                for location in locations
+            ),
+        },
         "withoutGeometry": [
             location["slug"]
             for location in locations
@@ -802,6 +1084,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--adm3", required=True)
     parser.add_argument("--district-names", required=True)
     parser.add_argument("--upazila-names", required=True)
+    parser.add_argument(
+        "--metro-thanas",
+        default=str(Path(__file__).resolve().parents[2] / "data" / "metropolitan-thanas.json"),
+    )
     parser.add_argument(
         "--output-dir",
         default=str(Path(__file__).resolve().parents[2] / "data"),

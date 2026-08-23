@@ -24,7 +24,7 @@ It is built around a practical question: **when should I charge, plan, study, wo
 
 ## What you can do
 
-- Search all 64 districts, 495 upazilas, supported metropolitan thanas, and selected smaller localities such as Mirpur DOHS.
+- Search all 64 districts, all 498 currently approved upazilas (the 495-unit BBS census hierarchy plus three NICAR-approved 2026 units), all 102 unique BBS 2022 metro-thana choices (105 city-corporation instances), and selected smaller localities such as Mirpur DOHS.
 - Explore a responsive, interactive map of Bangladesh.
 - Check whether an area has a recent community signal: **on**, **out**, or **unknown**.
 - Report the current status in seconds without creating an account.

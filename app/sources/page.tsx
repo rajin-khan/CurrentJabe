@@ -34,6 +34,67 @@ export default function SourcesPage() {
         </a>
         .
       </p>
+      <p>
+        The searchable hierarchy combines the 495-upazila BBS census hierarchy, the three new
+        upazilas in the{" "}
+        <a
+          href="https://www.bssnews.net/bangla/news-flash/319928"
+          rel="noreferrer"
+          target="_blank"
+        >
+          July 2026 NICAR decision
+        </a>
+        , and the complete Population and Housing Census 2022 metro-thana roster. The new split
+        units and their reduced parents use old aggregate outlines only as approximate orientation.
+        BBS reports 105 city-corporation thana instances; CurrentJabe exposes 102 district-level
+        choices because Dhanmondi, Ramna and Shere Bangla Nagar each appear in both Dhaka
+        city-corporation sections. Review the{" "}
+        <a
+          href="https://bbs.gov.bd/pages/static-pages/6922e073933eb65569e27220"
+          rel="noreferrer"
+          target="_blank"
+        >
+          official BBS census and district reports
+        </a>{" "}
+        and the{" "}
+        <a
+          href="https://fhir.dghs.gov.bd/core/0.4.5/CodeSystem-bd-geocodes.json"
+          rel="noreferrer"
+          target="_blank"
+        >
+          government geocode registry
+        </a>
+        . Police-station totals are a different operational classification and are not used to
+        create duplicate forecast buckets over same-name upazilas. A{" "}
+        <a href="https://www.bssnews.net/news/338013" rel="noreferrer" target="_blank">
+          December 2025 Police Headquarters report
+        </a>{" "}
+        said 639 stations while its district and metropolitan subtotals in the same report add to
+        637, illustrating why an unsupported search-result total is not a safe geographic roster.
+        That also includes Halda Police Station from the later NICAR decision: Hathazari remains
+        its territorial forecast scope until a compatible statistical boundary is published.
+      </p>
+      <p>
+        City-thana outlines in the older geoBoundaries snapshot are shown only as approximate
+        orientation until each current BBS extent is independently verified. Approximate and
+        district-fallback shapes never receive exact area coloring from live reports.
+      </p>
+      <p>
+        BBS spells ভাটারা as Bhatara, while the{" "}
+        <a href="https://dmp.gov.bd/find-your-local-police/" rel="noreferrer" target="_blank">
+          Dhaka Metropolitan Police directory
+        </a>{" "}
+        uses Vatara. Both English spellings and the Bangla name find the same thana in
+        CurrentJabe. Its DESCO hint is linked to an{" "}
+        <a
+          href="https://desco.gov.bd/site/page/583175e8-7bb4-4ce5-824a-a042428594e5/"
+          rel="noreferrer"
+          target="_blank"
+        >
+          official DESCO source
+        </a>{" "}
+        and remains a candidate rather than a claimed thana-wide electricity boundary.
+      </p>
 
       <h2>Locality and feeder precision</h2>
       <p>
@@ -45,11 +106,11 @@ export default function SourcesPage() {
       <p>
         Review the{" "}
         <a
-          href="https://nsds.bbs.gov.bd/storage/files/1/Publications/PHC_2021%20Community%20Report/DHAKA%20DIVISION/Community%20Report%20Dhaka.pdf"
+          href="https://bbs.gov.bd/pages/static-pages/6922e073933eb65569e27220"
           rel="noreferrer"
           target="_blank"
         >
-          BBS Dhaka Community Report
+          BBS census and district reports
         </a>
         , the{" "}
         <a

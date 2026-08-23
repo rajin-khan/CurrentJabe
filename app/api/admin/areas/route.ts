@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
     const limit = Math.min(1_000, Math.max(1, Number(request.nextUrl.searchParams.get("limit") ?? 1_000) || 1_000));
     const offset = Math.max(0, Number(request.nextUrl.searchParams.get("offset") ?? 0) || 0);
     const [catalog, mappings] = await Promise.all([
-      getLocationCatalog({}),
+      getLocationCatalog({ includeDisabled: true }),
       restSelect<unknown[]>("area_provider_mappings", { select: "*", active: "eq.true", order: "upazila_id.asc" }),
     ]);
     const areas = catalog.upazilas.slice(offset, offset + limit);

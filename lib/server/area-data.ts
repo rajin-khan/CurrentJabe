@@ -1,5 +1,10 @@
 import { computeCommunityForecast, type ForecastEvidenceRow } from "@/lib/domain/forecast";
-import { allCatalogLocations, districtIdFor } from "@/lib/domain/catalog";
+import {
+  allCatalogLocations,
+  catalogLocationById,
+  districtIdFor,
+  type CatalogLocation,
+} from "@/lib/domain/catalog";
 import { isLocationId, locationKey, locationPrecision } from "@/lib/domain/location";
 import type {
   LocationKind,
@@ -64,11 +69,44 @@ function cleanSearch(value: string | null): string {
   return (value ?? "").normalize("NFKC").trim().toLocaleLowerCase().slice(0, 60);
 }
 
+function catalogLocationRow(
+  location: CatalogLocation,
+  stored?: Pick<UpazilaRow, "disabled" | "disable_reason">,
+): UpazilaRow {
+  const mapCoverage = location.mapCoverage ?? (location.geometryAvailable
+    ? "exact"
+    : location.approximateMapFeatureIds?.length
+      ? "approximate"
+      : "district_fallback");
+
+  return {
+    id: location.id,
+    district_id: districtIdFor(location),
+    parent_location_id: location.parentId ?? null,
+    slug: location.slug,
+    name_en: location.upazila,
+    name_bn: location.upazilaBn || location.upazila,
+    location_kind: location.kind,
+    boundary_ref: mapCoverage === "exact" && location.geometryAvailable
+      ? location.slug
+      : null,
+    map_coverage: mapCoverage,
+    map_feature_refs: mapCoverage === "exact" && location.geometryAvailable
+      ? [location.slug]
+      : mapCoverage === "approximate"
+        ? [...(location.approximateMapFeatureIds ?? [])]
+        : [],
+    disabled: stored?.disabled ?? false,
+    disable_reason: stored?.disable_reason ?? null,
+  };
+}
+
 export async function getLocationCatalog(filters: {
   query?: string | null;
   districtId?: string | null;
   upazilaId?: string | null;
   parentId?: string | null;
+  includeDisabled?: boolean;
 }): Promise<{
   districts: DistrictRow[];
   upazilas: UpazilaRow[];
@@ -127,38 +165,25 @@ export async function getLocationCatalog(filters: {
   const districts = [...districtMap.values()].sort((a, b) => a.name_en.localeCompare(b.name_en));
   const mergedById = new Map(storedById);
   for (const location of catalog) {
-    if (mergedById.has(location.id)) continue;
-    mergedById.set(location.id, {
-        id: location.id,
-        district_id: districtIdFor(location),
-        parent_location_id: location.parentId ?? null,
-        slug: location.slug,
-        name_en: location.upazila,
-        name_bn: location.upazilaBn || location.upazila,
-        location_kind: location.kind,
-        boundary_ref: location.geometryAvailable ? location.slug : null,
-        map_coverage: location.geometryAvailable
-          ? "exact"
-          : location.approximateMapFeatureIds?.length
-            ? "approximate"
-            : "district_fallback",
-        map_feature_refs: location.geometryAvailable
-          ? [location.slug]
-          : [...(location.approximateMapFeatureIds ?? [])],
-        disabled: false,
-        disable_reason: null,
-      } satisfies UpazilaRow);
+    mergedById.set(location.id, catalogLocationRow(location, storedById.get(location.id)));
   }
   const allUpazilas: UpazilaRow[] = [...mergedById.values()]
+    .filter((location) =>
+      filters.includeDisabled || Boolean(catalogLocationById(location.id)) || !location.disabled,
+    )
     .filter((location) => !filters.districtId || location.district_id === filters.districtId)
     .filter((location) => !filters.parentId || location.parent_location_id === filters.parentId)
     .sort((a, b) => a.name_en.localeCompare(b.name_en));
 
   const query = cleanSearch(filters.query ?? null);
   const upazilas = query
-    ? allUpazilas.filter((area) =>
-        `${area.name_en} ${area.name_bn} ${area.slug}`.normalize("NFKC").toLocaleLowerCase().includes(query),
-      )
+    ? allUpazilas.filter((area) => {
+        const aliases = catalogLocationById(area.id)?.aliases ?? [];
+        return `${area.name_en} ${area.name_bn} ${area.slug} ${aliases.join(" ")}`
+          .normalize("NFKC")
+          .toLocaleLowerCase()
+          .includes(query);
+      })
     : allUpazilas;
   return { districts, upazilas, providers, feeders, mappings };
 }
@@ -192,11 +217,14 @@ export async function getAreaSnapshot(args: {
 
   const areas = await restSelect<UpazilaRow[]>("upazilas", {
     select: "id,district_id,parent_location_id,slug,name_en,name_bn,location_kind,boundary_ref,map_coverage,map_feature_refs,disabled,disable_reason",
-    slug: `eq.${args.slug}`,
+    id: `eq.${catalogArea.id}`,
     limit: 1,
   });
-  const area = areas[0];
-  if (!area) throw new HttpError(404, "area_not_found", "Area not found.");
+  const storedArea = areas[0];
+  if (!storedArea) throw new HttpError(404, "area_not_found", "Area not found.");
+  const bundledArea = catalogLocationById(storedArea.id);
+  const area = bundledArea ? catalogLocationRow(bundledArea, storedArea) : storedArea;
+  const canonicalCatalogArea = bundledArea ?? catalogArea;
 
   const selection: LocationSelection = {
     upazilaId: area.id,
@@ -274,8 +302,8 @@ export async function getAreaSnapshot(args: {
       name: area.name_en,
       nameEn: area.name_en,
       nameBn: area.name_bn,
-      districtName: catalogArea.district,
-      districtNameBn: catalogArea.districtBn,
+      districtName: canonicalCatalogArea.district,
+      districtNameBn: canonicalCatalogArea.districtBn,
       kind: area.location_kind,
       parentLocationId: area.parent_location_id,
       boundaryRef: area.boundary_ref,

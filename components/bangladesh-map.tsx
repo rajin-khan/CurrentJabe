@@ -27,7 +27,8 @@ export function BangladeshMap({
 }) {
   const { locale, text } = useLanguage();
   const [hoveredSlug, setHoveredSlug] = useState<string | null>(null);
-  const highlighted = hoveredSlug ? getLocationBySlug(hoveredSlug) : selected ?? null;
+  const hovered = hoveredSlug ? getLocationBySlug(hoveredSlug) : null;
+  const highlighted = hovered ?? selected ?? null;
   const activeCount = useMemo(
     () => Object.values(statuses ?? {}).filter((state) => state !== "unknown").length,
     [statuses],
@@ -80,6 +81,8 @@ export function BangladeshMap({
           </g>
           <g className="map-areas">
             {mapFeatures.map((feature) => {
+              const featureLocation = getLocationBySlug(feature.slug);
+              const hoverSlug = featureLocation?.slug ?? null;
               const state = statuses?.[feature.slug] ?? "unknown";
               const isSelected = selected?.geometryAvailable && selectedMapFeatureIds.has(feature.id);
               const isApproximateCoverage = Boolean(
@@ -107,8 +110,8 @@ export function BangladeshMap({
                   data-slug={feature.slug}
                   fillRule="evenodd"
                   key={feature.id}
-                  onClick={() => setHoveredSlug(feature.slug)}
-                  onMouseEnter={() => setHoveredSlug(feature.slug)}
+                  onClick={() => setHoveredSlug(hoverSlug)}
+                  onMouseEnter={() => setHoveredSlug(hoverSlug)}
                 />
               );
             })}

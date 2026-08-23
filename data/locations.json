@@ -315,6 +315,23 @@
     ]
   },
   {
+    "id": "barishal-barishal-sadar-thana",
+    "slug": "barishal-barishal-sadar-thana",
+    "district": "Barishal",
+    "districtBn": "বরিশাল",
+    "upazila": "Barishal Sadar (Kotwali)",
+    "upazilaBn": "বরিশাল সদর (কোতোয়ালি)",
+    "providerHints": [
+      "wzpdcl"
+    ],
+    "kind": "thana",
+    "geometryAvailable": false,
+    "aliases": [
+      "Barishal Sadar",
+      "Kotwali"
+    ]
+  },
+  {
     "id": "barishal-gournadi",
     "slug": "barishal-gournadi",
     "district": "Barishal",
@@ -825,7 +842,7 @@
     "kind": "upazila",
     "geometryAvailable": true,
     "districtBn": "চাঁদপুর",
-    "upazilaBn": "শাহরাস্তি\t"
+    "upazilaBn": "শাহরাস্তি"
   },
   {
     "id": "chapainawabganj-bholahat",
@@ -896,6 +913,20 @@
     "upazilaBn": "শিবগঞ্জ"
   },
   {
+    "id": "chattogram-akbarshah",
+    "slug": "chattogram-akbarshah",
+    "district": "Chattogram",
+    "districtBn": "চট্টগ্রাম",
+    "upazila": "Akbarshah",
+    "upazilaBn": "আকবর শাহ",
+    "providerHints": [],
+    "kind": "thana",
+    "geometryAvailable": false,
+    "aliases": [
+      "Akbar Shah"
+    ]
+  },
+  {
     "id": "chattogram-anwara",
     "slug": "chattogram-anwara",
     "district": "Chattogram",
@@ -913,11 +944,18 @@
     "id": "chattogram-bakalia",
     "slug": "chattogram-bakalia",
     "district": "Chattogram",
+    "districtBn": "চট্টগ্রাম",
     "upazila": "Bakalia",
+    "upazilaBn": "বাকলিয়া",
     "providerHints": [],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "চট্টগ্রাম"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-chattogram-bakalia-legacy-approximate"
+    ],
+    "aliases": [
+      "Bakolia"
+    ]
   },
   {
     "id": "chattogram-banshkhali",
@@ -934,11 +972,19 @@
     "id": "chattogram-bayejid-bostami",
     "slug": "chattogram-bayejid-bostami",
     "district": "Chattogram",
+    "districtBn": "চট্টগ্রাম",
     "upazila": "Bayejid Bostami",
+    "upazilaBn": "বায়েজিদ বোস্তামী",
     "providerHints": [],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "চট্টগ্রাম"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-chattogram-bayejid-bostami-legacy-approximate"
+    ],
+    "aliases": [
+      "Bayezid Bostami",
+      "Bayzid Bostami"
+    ]
   },
   {
     "id": "chattogram-boalkhali",
@@ -950,6 +996,22 @@
     "geometryAvailable": true,
     "districtBn": "চট্টগ্রাম",
     "upazilaBn": "বোয়ালখালী"
+  },
+  {
+    "id": "chattogram-chalk-bazar",
+    "slug": "chattogram-chalk-bazar",
+    "district": "Chattogram",
+    "districtBn": "চট্টগ্রাম",
+    "upazila": "Chalk Bazar",
+    "upazilaBn": "চকবাজার",
+    "providerHints": [],
+    "kind": "thana",
+    "geometryAvailable": false,
+    "aliases": [
+      "Chawk Bazar",
+      "Chawkbazar",
+      "Chokbazar"
+    ]
   },
   {
     "id": "chattogram-chandanaish",
@@ -966,34 +1028,62 @@
     "id": "chattogram-chandgaon",
     "slug": "chattogram-chandgaon",
     "district": "Chattogram",
+    "districtBn": "চট্টগ্রাম",
     "upazila": "Chandgaon",
+    "upazilaBn": "চান্দগাঁও",
     "providerHints": [],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "চট্টগ্রাম"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-chattogram-chandgaon-legacy-approximate"
+    ]
   },
   {
     "id": "chattogram-chattogram-port",
     "slug": "chattogram-chattogram-port",
     "district": "Chattogram",
+    "districtBn": "চট্টগ্রাম",
     "upazila": "Chattogram Port",
+    "upazilaBn": "বন্দর",
     "providerHints": [],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "চট্টগ্রাম",
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-chattogram-chattogram-port-legacy-approximate"
+    ],
     "aliases": [
-      "Chittagong Port"
+      "Bandar",
+      "Chittagong Port",
+      "Port"
     ]
   },
   {
     "id": "chattogram-double-mooring",
     "slug": "chattogram-double-mooring",
     "district": "Chattogram",
+    "districtBn": "চট্টগ্রাম",
     "upazila": "Double Mooring",
+    "upazilaBn": "ডবলমুরিং",
     "providerHints": [],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "চট্টগ্রাম"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-chattogram-double-mooring-legacy-approximate"
+    ],
+    "aliases": [
+      "Doublemooring"
+    ]
+  },
+  {
+    "id": "chattogram-epz",
+    "slug": "chattogram-epz",
+    "district": "Chattogram",
+    "districtBn": "চট্টগ্রাম",
+    "upazila": "EPZ",
+    "upazilaBn": "ইপিজেড",
+    "providerHints": [],
+    "kind": "thana",
+    "geometryAvailable": false
   },
   {
     "id": "chattogram-fatikchhari",
@@ -1002,19 +1092,47 @@
     "upazila": "Fatikchhari",
     "providerHints": [],
     "kind": "upazila",
-    "geometryAvailable": true,
+    "geometryAvailable": false,
     "districtBn": "চট্টগ্রাম",
-    "upazilaBn": "ফটিকছড়ি"
+    "upazilaBn": "ফটিকছড়ি",
+    "approximateMapFeatureIds": [
+      "geo-chattogram-fatikchhari-2020-aggregate"
+    ]
+  },
+  {
+    "id": "chattogram-fatikchhari-north",
+    "slug": "chattogram-fatikchhari-north",
+    "district": "Chattogram",
+    "districtBn": "চট্টগ্রাম",
+    "upazila": "Fatikchhari North",
+    "upazilaBn": "ফটিকছড়ি উত্তর",
+    "providerHints": [],
+    "kind": "upazila",
+    "geometryAvailable": false,
+    "aliases": [
+      "North Fatikchhari",
+      "Fatikchhari Uttar"
+    ],
+    "approximateMapFeatureIds": [
+      "geo-chattogram-fatikchhari-2020-aggregate"
+    ]
   },
   {
     "id": "chattogram-halishahar",
     "slug": "chattogram-halishahar",
     "district": "Chattogram",
+    "districtBn": "চট্টগ্রাম",
     "upazila": "Halishahar",
+    "upazilaBn": "হালিশহর",
     "providerHints": [],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "চট্টগ্রাম"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-chattogram-halishahar-legacy-approximate"
+    ],
+    "aliases": [
+      "Hali Shohor"
+    ]
   },
   {
     "id": "chattogram-hathazari",
@@ -1042,21 +1160,35 @@
     "id": "chattogram-khulshi",
     "slug": "chattogram-khulshi",
     "district": "Chattogram",
+    "districtBn": "চট্টগ্রাম",
     "upazila": "Khulshi",
+    "upazilaBn": "খুলশী",
     "providerHints": [],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "চট্টগ্রাম"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-chattogram-khulshi-legacy-approximate"
+    ],
+    "aliases": [
+      "Kulshi"
+    ]
   },
   {
     "id": "chattogram-kotwali",
     "slug": "chattogram-kotwali",
     "district": "Chattogram",
+    "districtBn": "চট্টগ্রাম",
     "upazila": "Kotwali",
+    "upazilaBn": "কোতোয়ালি",
     "providerHints": [],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "চট্টগ্রাম"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-chattogram-kotwali-legacy-approximate"
+    ],
+    "aliases": [
+      "Kotowali"
+    ]
   },
   {
     "id": "chattogram-lohagara",
@@ -1084,31 +1216,46 @@
     "id": "chattogram-pahartali",
     "slug": "chattogram-pahartali",
     "district": "Chattogram",
+    "districtBn": "চট্টগ্রাম",
     "upazila": "Pahartali",
+    "upazilaBn": "পাহাড়তলী",
     "providerHints": [],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "চট্টগ্রাম"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-chattogram-pahartali-legacy-approximate"
+    ]
   },
   {
     "id": "chattogram-panchlaish",
     "slug": "chattogram-panchlaish",
     "district": "Chattogram",
+    "districtBn": "চট্টগ্রাম",
     "upazila": "Panchlaish",
+    "upazilaBn": "পাঁচলাইশ",
     "providerHints": [],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "চট্টগ্রাম"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-chattogram-panchlaish-legacy-approximate"
+    ]
   },
   {
     "id": "chattogram-patenga",
     "slug": "chattogram-patenga",
     "district": "Chattogram",
+    "districtBn": "চট্টগ্রাম",
     "upazila": "Patenga",
+    "upazilaBn": "পতেঙ্গা",
     "providerHints": [],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "চট্টগ্রাম"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-chattogram-patenga-legacy-approximate"
+    ],
+    "aliases": [
+      "Potenga"
+    ]
   },
   {
     "id": "chattogram-patiya",
@@ -1142,6 +1289,17 @@
     "geometryAvailable": true,
     "districtBn": "চট্টগ্রাম",
     "upazilaBn": "রাউজান"
+  },
+  {
+    "id": "chattogram-sadarghat",
+    "slug": "chattogram-sadarghat",
+    "district": "Chattogram",
+    "districtBn": "চট্টগ্রাম",
+    "upazila": "Sadarghat",
+    "upazilaBn": "সদরঘাট",
+    "providerHints": [],
+    "kind": "thana",
+    "geometryAvailable": false
   },
   {
     "id": "chattogram-sandwip",
@@ -1336,6 +1494,38 @@
     ]
   },
   {
+    "id": "cumilla-adarsha-sadar-thana",
+    "slug": "cumilla-adarsha-sadar-thana",
+    "district": "Cumilla",
+    "districtBn": "কুমিল্লা",
+    "upazila": "Adarsha Sadar",
+    "upazilaBn": "আদর্শ সদর",
+    "providerHints": [],
+    "kind": "thana",
+    "geometryAvailable": false,
+    "aliases": [
+      "Cumilla Adarsha Sadar"
+    ]
+  },
+  {
+    "id": "cumilla-bangara",
+    "slug": "cumilla-bangara",
+    "district": "Cumilla",
+    "districtBn": "কুমিল্লা",
+    "upazila": "Bangara",
+    "upazilaBn": "বাঙ্গরা",
+    "providerHints": [],
+    "kind": "upazila",
+    "geometryAvailable": false,
+    "aliases": [
+      "Bangora",
+      "Bangra"
+    ],
+    "approximateMapFeatureIds": [
+      "geo-cumilla-muradnagar-2020-aggregate"
+    ]
+  },
+  {
     "id": "cumilla-barura",
     "slug": "cumilla-barura",
     "district": "Cumilla",
@@ -1510,9 +1700,12 @@
     "upazila": "Muradnagar",
     "providerHints": [],
     "kind": "upazila",
-    "geometryAvailable": true,
+    "geometryAvailable": false,
     "districtBn": "কুমিল্লা",
-    "upazilaBn": "মুরাদনগর"
+    "upazilaBn": "মুরাদনগর",
+    "approximateMapFeatureIds": [
+      "geo-cumilla-muradnagar-2020-aggregate"
+    ]
   },
   {
     "id": "cumilla-nangalkot",
@@ -1524,6 +1717,22 @@
     "geometryAvailable": true,
     "districtBn": "কুমিল্লা",
     "upazilaBn": "নাঙ্গলকোট"
+  },
+  {
+    "id": "cumilla-sadar-dakkhin-thana",
+    "slug": "cumilla-sadar-dakkhin-thana",
+    "district": "Cumilla",
+    "districtBn": "কুমিল্লা",
+    "upazila": "Sadar Dakkhin",
+    "upazilaBn": "সদর দক্ষিণ",
+    "providerHints": [],
+    "kind": "thana",
+    "geometryAvailable": false,
+    "aliases": [
+      "Cumilla Sadar Dakshin",
+      "Sadar Dakkin",
+      "Sadar Dakshin"
+    ]
   },
   {
     "id": "cumilla-titas",
@@ -1540,109 +1749,221 @@
     "id": "dhaka-adabor",
     "slug": "dhaka-adabor",
     "district": "Dhaka",
+    "districtBn": "ঢাকা",
     "upazila": "Adabor",
+    "upazilaBn": "আদাবর",
     "providerHints": [
       "dpdc"
     ],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "ঢাকা"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-dhaka-adabor-legacy-approximate"
+    ]
   },
   {
     "id": "dhaka-badda",
     "slug": "dhaka-badda",
     "district": "Dhaka",
+    "districtBn": "ঢাকা",
     "upazila": "Badda",
+    "upazilaBn": "বাড্ডা",
     "providerHints": [
       "desco"
     ],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "ঢাকা"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-dhaka-badda-2020-aggregate"
+    ]
+  },
+  {
+    "id": "dhaka-banani",
+    "slug": "dhaka-banani",
+    "district": "Dhaka",
+    "districtBn": "ঢাকা",
+    "upazila": "Banani",
+    "upazilaBn": "বনানী",
+    "providerHints": [
+      "dpdc"
+    ],
+    "kind": "thana",
+    "geometryAvailable": false
   },
   {
     "id": "dhaka-bangshal",
     "slug": "dhaka-bangshal",
     "district": "Dhaka",
+    "districtBn": "ঢাকা",
     "upazila": "Bangshal",
+    "upazilaBn": "বংশাল",
     "providerHints": [
       "dpdc"
     ],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "ঢাকা"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-dhaka-bangshal-legacy-approximate"
+    ]
+  },
+  {
+    "id": "dhaka-bhasantek",
+    "slug": "dhaka-bhasantek",
+    "district": "Dhaka",
+    "districtBn": "ঢাকা",
+    "upazila": "Bhasantek",
+    "upazilaBn": "ভাসানটেক",
+    "providerHints": [
+      "dpdc"
+    ],
+    "kind": "thana",
+    "geometryAvailable": false,
+    "aliases": [
+      "Bhasan Tek",
+      "Bhashantek",
+      "Vashantek"
+    ]
+  },
+  {
+    "id": "dhaka-bhatara",
+    "slug": "dhaka-bhatara",
+    "district": "Dhaka",
+    "districtBn": "ঢাকা",
+    "upazila": "Bhatara",
+    "upazilaBn": "ভাটারা",
+    "providerHints": [
+      "desco"
+    ],
+    "kind": "thana",
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-dhaka-badda-2020-aggregate"
+    ],
+    "aliases": [
+      "Vatara",
+      "Vattara"
+    ],
+    "providerMappings": [
+      {
+        "providerId": "desco",
+        "sourceUrl": "https://desco.gov.bd/site/page/583175e8-7bb4-4ce5-824a-a042428594e5/",
+        "sourceLabel": "Official DESCO customer-point list naming Bhatara and Vatara service locations",
+        "confidence": "probable"
+      }
+    ]
   },
   {
     "id": "dhaka-biman-bandar",
     "slug": "dhaka-biman-bandar",
     "district": "Dhaka",
+    "districtBn": "ঢাকা",
     "upazila": "Biman Bandar",
+    "upazilaBn": "বিমানবন্দর",
     "providerHints": [
       "dpdc"
     ],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "ঢাকা"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-dhaka-biman-bandar-legacy-approximate"
+    ],
+    "aliases": [
+      "Airport",
+      "Bimanbandar",
+      "Bimanbondor"
+    ]
   },
   {
     "id": "dhaka-cantonment",
     "slug": "dhaka-cantonment",
     "district": "Dhaka",
+    "districtBn": "ঢাকা",
     "upazila": "Cantonment",
+    "upazilaBn": "ক্যান্টনমেন্ট",
     "providerHints": [
       "desco"
     ],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "ঢাকা"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-dhaka-cantonment-legacy-approximate"
+    ]
   },
   {
     "id": "dhaka-chak-bazar",
     "slug": "dhaka-chak-bazar",
     "district": "Dhaka",
+    "districtBn": "ঢাকা",
     "upazila": "Chak Bazar",
+    "upazilaBn": "চকবাজার",
     "providerHints": [
       "dpdc"
     ],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "ঢাকা"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-dhaka-chak-bazar-legacy-approximate"
+    ],
+    "aliases": [
+      "Chalkbazar",
+      "Chawk Bazar",
+      "Chawkbazar"
+    ]
   },
   {
     "id": "dhaka-dakshinkhan",
     "slug": "dhaka-dakshinkhan",
     "district": "Dhaka",
+    "districtBn": "ঢাকা",
     "upazila": "Dakshinkhan",
+    "upazilaBn": "দক্ষিণখান",
     "providerHints": [
       "desco"
     ],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "ঢাকা"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-dhaka-dakshinkhan-legacy-approximate"
+    ],
+    "aliases": [
+      "Dakkhinkhan",
+      "Dakshin Khan"
+    ]
   },
   {
     "id": "dhaka-darus-salam",
     "slug": "dhaka-darus-salam",
     "district": "Dhaka",
+    "districtBn": "ঢাকা",
     "upazila": "Darus Salam",
+    "upazilaBn": "দারুস সালাম",
     "providerHints": [
       "dpdc"
     ],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "ঢাকা"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-dhaka-darus-salam-legacy-approximate"
+    ],
+    "aliases": [
+      "Darussalam"
+    ]
   },
   {
     "id": "dhaka-demra",
     "slug": "dhaka-demra",
     "district": "Dhaka",
+    "districtBn": "ঢাকা",
     "upazila": "Demra",
+    "upazilaBn": "ডেমরা",
     "providerHints": [
       "dpdc"
     ],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "ঢাকা"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-dhaka-demra-legacy-approximate"
+    ]
   },
   {
     "id": "dhaka-dhamrai",
@@ -1659,13 +1980,17 @@
     "id": "dhaka-dhanmondi",
     "slug": "dhaka-dhanmondi",
     "district": "Dhaka",
+    "districtBn": "ঢাকা",
     "upazila": "Dhanmondi",
+    "upazilaBn": "ধানমন্ডি",
     "providerHints": [
       "dpdc"
     ],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "ঢাকা"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-dhaka-dhanmondi-legacy-approximate"
+    ]
   },
   {
     "id": "dhaka-dohar",
@@ -1682,97 +2007,155 @@
     "id": "dhaka-gendaria",
     "slug": "dhaka-gendaria",
     "district": "Dhaka",
+    "districtBn": "ঢাকা",
     "upazila": "Gendaria",
+    "upazilaBn": "গেন্ডারিয়া",
     "providerHints": [
       "dpdc"
     ],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "ঢাকা"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-dhaka-gendaria-legacy-approximate"
+    ],
+    "aliases": [
+      "Gandaria"
+    ]
   },
   {
     "id": "dhaka-gulshan",
     "slug": "dhaka-gulshan",
     "district": "Dhaka",
+    "districtBn": "ঢাকা",
     "upazila": "Gulshan",
+    "upazilaBn": "গুলশান",
     "providerHints": [
       "desco"
     ],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "ঢাকা"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-dhaka-gulshan-legacy-approximate"
+    ]
+  },
+  {
+    "id": "dhaka-hatirjheel",
+    "slug": "dhaka-hatirjheel",
+    "district": "Dhaka",
+    "districtBn": "ঢাকা",
+    "upazila": "Hatirjheel",
+    "upazilaBn": "হাতিরঝিল",
+    "providerHints": [
+      "dpdc"
+    ],
+    "kind": "thana",
+    "geometryAvailable": false
   },
   {
     "id": "dhaka-hazaribagh",
     "slug": "dhaka-hazaribagh",
     "district": "Dhaka",
+    "districtBn": "ঢাকা",
     "upazila": "Hazaribagh",
+    "upazilaBn": "হাজারীবাগ",
     "providerHints": [
       "dpdc"
     ],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "ঢাকা"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-dhaka-hazaribagh-legacy-approximate"
+    ],
+    "aliases": [
+      "Hazaribag"
+    ]
   },
   {
     "id": "dhaka-jatrabari",
     "slug": "dhaka-jatrabari",
     "district": "Dhaka",
+    "districtBn": "ঢাকা",
     "upazila": "Jatrabari",
+    "upazilaBn": "যাত্রাবাড়ী",
     "providerHints": [
       "dpdc"
     ],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "ঢাকা"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-dhaka-jatrabari-legacy-approximate"
+    ]
   },
   {
     "id": "dhaka-kadamtali",
     "slug": "dhaka-kadamtali",
     "district": "Dhaka",
+    "districtBn": "ঢাকা",
     "upazila": "Kadamtali",
+    "upazilaBn": "কদমতলী",
     "providerHints": [
       "dpdc"
     ],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "ঢাকা"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-dhaka-kadamtali-legacy-approximate"
+    ],
+    "aliases": [
+      "Kadamtoli"
+    ]
   },
   {
     "id": "dhaka-kafrul",
     "slug": "dhaka-kafrul",
     "district": "Dhaka",
+    "districtBn": "ঢাকা",
     "upazila": "Kafrul",
+    "upazilaBn": "কাফরুল",
     "providerHints": [
       "desco"
     ],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "ঢাকা"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-dhaka-kafrul-legacy-approximate"
+    ]
   },
   {
     "id": "dhaka-kalabagan",
     "slug": "dhaka-kalabagan",
     "district": "Dhaka",
+    "districtBn": "ঢাকা",
     "upazila": "Kalabagan",
+    "upazilaBn": "কলাবাগান",
     "providerHints": [
       "dpdc"
     ],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "ঢাকা"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-dhaka-kalabagan-legacy-approximate"
+    ]
   },
   {
     "id": "dhaka-kamrangir-char",
     "slug": "dhaka-kamrangir-char",
     "district": "Dhaka",
+    "districtBn": "ঢাকা",
     "upazila": "Kamrangir Char",
+    "upazilaBn": "কামরাঙ্গীরচর",
     "providerHints": [
       "dpdc"
     ],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "ঢাকা"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-dhaka-kamrangir-char-legacy-approximate"
+    ],
+    "aliases": [
+      "Kamrangichar",
+      "Kamrangirchar"
+    ]
   },
   {
     "id": "dhaka-keraniganj",
@@ -1789,66 +2172,96 @@
     "id": "dhaka-khilgaon",
     "slug": "dhaka-khilgaon",
     "district": "Dhaka",
+    "districtBn": "ঢাকা",
     "upazila": "Khilgaon",
+    "upazilaBn": "খিলগাঁও",
     "providerHints": [
       "dpdc"
     ],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "ঢাকা"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-dhaka-khilgaon-legacy-approximate"
+    ]
   },
   {
     "id": "dhaka-khilkhet",
     "slug": "dhaka-khilkhet",
     "district": "Dhaka",
+    "districtBn": "ঢাকা",
     "upazila": "Khilkhet",
+    "upazilaBn": "খিলক্ষেত",
     "providerHints": [
       "dpdc"
     ],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "ঢাকা"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-dhaka-khilkhet-legacy-approximate"
+    ]
   },
   {
     "id": "dhaka-kotwali",
     "slug": "dhaka-kotwali",
     "district": "Dhaka",
+    "districtBn": "ঢাকা",
     "upazila": "Kotwali",
+    "upazilaBn": "কোতোয়ালি",
     "providerHints": [
       "dpdc"
     ],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "ঢাকা"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-dhaka-kotwali-legacy-approximate"
+    ],
+    "aliases": [
+      "Kotowali"
+    ]
   },
   {
     "id": "dhaka-lalbagh",
     "slug": "dhaka-lalbagh",
     "district": "Dhaka",
+    "districtBn": "ঢাকা",
     "upazila": "Lalbagh",
+    "upazilaBn": "লালবাগ",
     "providerHints": [
       "dpdc"
     ],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "ঢাকা"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-dhaka-lalbagh-legacy-approximate"
+    ],
+    "aliases": [
+      "Lalbag"
+    ]
   },
   {
     "id": "dhaka-mirpur",
     "slug": "dhaka-mirpur",
     "district": "Dhaka",
+    "districtBn": "ঢাকা",
     "upazila": "Mirpur",
+    "upazilaBn": "মিরপুর",
     "providerHints": [
       "desco"
     ],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "ঢাকা"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-dhaka-mirpur-legacy-approximate"
+    ],
+    "aliases": [
+      "Mirpur Model"
+    ]
   },
   {
     "id": "dhaka-mirpur-dohs",
     "slug": "dhaka-mirpur-dohs",
     "district": "Dhaka",
+    "districtBn": "ঢাকা",
     "upazila": "Mirpur DOHS",
     "upazilaBn": "মিরপুর ডিওএইচএস",
     "providerHints": [
@@ -1858,8 +2271,8 @@
     "parentId": "dhaka-pallabi",
     "geometryAvailable": false,
     "approximateMapFeatureIds": [
-      "dhaka-pallabi",
-      "dhaka-turag"
+      "geo-dhaka-pallabi-legacy-approximate",
+      "geo-dhaka-turag-legacy-approximate"
     ],
     "providerMappings": [
       {
@@ -1873,32 +2286,55 @@
       "DOHS Mirpur",
       "Mirpur Defence Officers Housing Scheme",
       "মিরপুর ডিওএইচএস"
-    ],
-    "districtBn": "ঢাকা"
+    ]
   },
   {
     "id": "dhaka-mohammadpur",
     "slug": "dhaka-mohammadpur",
     "district": "Dhaka",
+    "districtBn": "ঢাকা",
     "upazila": "Mohammadpur",
+    "upazilaBn": "মোহাম্মদপুর",
     "providerHints": [
       "dpdc"
     ],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "ঢাকা"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-dhaka-mohammadpur-legacy-approximate"
+    ]
   },
   {
     "id": "dhaka-motijheel",
     "slug": "dhaka-motijheel",
     "district": "Dhaka",
+    "districtBn": "ঢাকা",
     "upazila": "Motijheel",
+    "upazilaBn": "মতিঝিল",
     "providerHints": [
       "dpdc"
     ],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "ঢাকা"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-dhaka-motijheel-legacy-approximate"
+    ]
+  },
+  {
+    "id": "dhaka-mugda",
+    "slug": "dhaka-mugda",
+    "district": "Dhaka",
+    "districtBn": "ঢাকা",
+    "upazila": "Mugda",
+    "upazilaBn": "মুগদা",
+    "providerHints": [
+      "dpdc"
+    ],
+    "kind": "thana",
+    "geometryAvailable": false,
+    "aliases": [
+      "Mugda Para"
+    ]
   },
   {
     "id": "dhaka-nawabganj",
@@ -1915,73 +2351,122 @@
     "id": "dhaka-new-market",
     "slug": "dhaka-new-market",
     "district": "Dhaka",
+    "districtBn": "ঢাকা",
     "upazila": "New Market",
+    "upazilaBn": "নিউ মার্কেট",
     "providerHints": [
       "dpdc"
     ],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "ঢাকা"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-dhaka-new-market-legacy-approximate"
+    ],
+    "aliases": [
+      "Newmarket"
+    ]
   },
   {
     "id": "dhaka-pallabi",
     "slug": "dhaka-pallabi",
     "district": "Dhaka",
+    "districtBn": "ঢাকা",
     "upazila": "Pallabi",
+    "upazilaBn": "পল্লবী",
     "providerHints": [
       "desco"
     ],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "ঢাকা"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-dhaka-pallabi-legacy-approximate"
+    ]
   },
   {
     "id": "dhaka-paltan",
     "slug": "dhaka-paltan",
     "district": "Dhaka",
+    "districtBn": "ঢাকা",
     "upazila": "Paltan",
+    "upazilaBn": "পল্টন",
     "providerHints": [
       "dpdc"
     ],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "ঢাকা"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-dhaka-paltan-legacy-approximate"
+    ],
+    "aliases": [
+      "Paltan Model"
+    ]
   },
   {
     "id": "dhaka-ramna",
     "slug": "dhaka-ramna",
     "district": "Dhaka",
+    "districtBn": "ঢাকা",
     "upazila": "Ramna",
+    "upazilaBn": "রমনা",
     "providerHints": [
       "dpdc"
     ],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "ঢাকা"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-dhaka-ramna-legacy-approximate"
+    ],
+    "aliases": [
+      "Ramna Model"
+    ]
   },
   {
     "id": "dhaka-rampura",
     "slug": "dhaka-rampura",
     "district": "Dhaka",
+    "districtBn": "ঢাকা",
     "upazila": "Rampura",
+    "upazilaBn": "রামপুরা",
     "providerHints": [
       "dpdc"
     ],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "ঢাকা"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-dhaka-rampura-legacy-approximate"
+    ]
+  },
+  {
+    "id": "dhaka-rupnagar",
+    "slug": "dhaka-rupnagar",
+    "district": "Dhaka",
+    "districtBn": "ঢাকা",
+    "upazila": "Rupnagar",
+    "upazilaBn": "রূপনগর",
+    "providerHints": [
+      "dpdc"
+    ],
+    "kind": "thana",
+    "geometryAvailable": false
   },
   {
     "id": "dhaka-sabujbagh",
     "slug": "dhaka-sabujbagh",
     "district": "Dhaka",
+    "districtBn": "ঢাকা",
     "upazila": "Sabujbagh",
+    "upazilaBn": "সবুজবাগ",
     "providerHints": [
       "dpdc"
     ],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "ঢাকা"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-dhaka-sabujbagh-legacy-approximate"
+    ],
+    "aliases": [
+      "Sabujbag"
+    ]
   },
   {
     "id": "dhaka-savar",
@@ -1998,121 +2483,227 @@
     "id": "dhaka-shah-ali",
     "slug": "dhaka-shah-ali",
     "district": "Dhaka",
+    "districtBn": "ঢাকা",
     "upazila": "Shah Ali",
+    "upazilaBn": "শাহ আলী",
     "providerHints": [
       "dpdc"
     ],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "ঢাকা"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-dhaka-shah-ali-legacy-approximate"
+    ]
   },
   {
     "id": "dhaka-shahbagh",
     "slug": "dhaka-shahbagh",
     "district": "Dhaka",
+    "districtBn": "ঢাকা",
     "upazila": "Shahbagh",
+    "upazilaBn": "শাহবাগ",
     "providerHints": [
       "dpdc"
     ],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "ঢাকা"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-dhaka-shahbagh-legacy-approximate"
+    ],
+    "aliases": [
+      "Shahbag"
+    ]
+  },
+  {
+    "id": "dhaka-shahjahanpur",
+    "slug": "dhaka-shahjahanpur",
+    "district": "Dhaka",
+    "districtBn": "ঢাকা",
+    "upazila": "Shahjahanpur",
+    "upazilaBn": "শাহজাহানপুর",
+    "providerHints": [
+      "dpdc"
+    ],
+    "kind": "thana",
+    "geometryAvailable": false
   },
   {
     "id": "dhaka-sher-e-bangla-nagar",
     "slug": "dhaka-sher-e-bangla-nagar",
     "district": "Dhaka",
-    "upazila": "Sher-e-bangla Nagar",
+    "districtBn": "ঢাকা",
+    "upazila": "Shere Bangla Nagar",
+    "upazilaBn": "শেরেবাংলা নগর",
     "providerHints": [
       "dpdc"
     ],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "ঢাকা"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-dhaka-sher-e-bangla-nagar-legacy-approximate"
+    ],
+    "aliases": [
+      "Sher-e-Bangla Nagar",
+      "Sher-e-bangla Nagar",
+      "Sherebangla Nagar"
+    ]
   },
   {
     "id": "dhaka-shyampur",
     "slug": "dhaka-shyampur",
     "district": "Dhaka",
+    "districtBn": "ঢাকা",
     "upazila": "Shyampur",
+    "upazilaBn": "শ্যামপুর",
     "providerHints": [
       "dpdc"
     ],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "ঢাকা"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-dhaka-shyampur-legacy-approximate"
+    ]
   },
   {
     "id": "dhaka-sutrapur",
     "slug": "dhaka-sutrapur",
     "district": "Dhaka",
+    "districtBn": "ঢাকা",
     "upazila": "Sutrapur",
+    "upazilaBn": "সূত্রাপুর",
     "providerHints": [
       "dpdc"
     ],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "ঢাকা"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-dhaka-sutrapur-legacy-approximate"
+    ]
   },
   {
     "id": "dhaka-tejgaon",
     "slug": "dhaka-tejgaon",
     "district": "Dhaka",
+    "districtBn": "ঢাকা",
     "upazila": "Tejgaon",
+    "upazilaBn": "তেজগাঁও",
     "providerHints": [
       "dpdc"
     ],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "ঢাকা"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-dhaka-tejgaon-legacy-approximate"
+    ]
   },
   {
     "id": "dhaka-tejgaon-ind-area",
     "slug": "dhaka-tejgaon-ind-area",
     "district": "Dhaka",
-    "upazila": "Tejgaon Ind. Area",
+    "districtBn": "ঢাকা",
+    "upazila": "Tejgaon Industrial",
+    "upazilaBn": "তেজগাঁও শিল্পাঞ্চল",
     "providerHints": [
       "dpdc"
     ],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "ঢাকা"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-dhaka-tejgaon-ind-area-legacy-approximate"
+    ],
+    "aliases": [
+      "Tejgaon I/A",
+      "Tejgaon Ind. Area",
+      "Tejgaon Industrial Area"
+    ]
   },
   {
     "id": "dhaka-turag",
     "slug": "dhaka-turag",
     "district": "Dhaka",
+    "districtBn": "ঢাকা",
     "upazila": "Turag",
+    "upazilaBn": "তুরাগ",
     "providerHints": [
       "dpdc"
     ],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "ঢাকা"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-dhaka-turag-legacy-approximate"
+    ]
   },
   {
     "id": "dhaka-uttar-khan",
     "slug": "dhaka-uttar-khan",
     "district": "Dhaka",
+    "districtBn": "ঢাকা",
     "upazila": "Uttar Khan",
+    "upazilaBn": "উত্তরখান",
     "providerHints": [
       "desco"
     ],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "ঢাকা"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-dhaka-uttar-khan-legacy-approximate"
+    ],
+    "aliases": [
+      "Uttarkhan"
+    ]
   },
   {
-    "id": "dhaka-uttara",
-    "slug": "dhaka-uttara",
+    "id": "dhaka-uttara-pashchim",
+    "slug": "dhaka-uttara-pashchim",
     "district": "Dhaka",
-    "upazila": "Uttara",
+    "districtBn": "ঢাকা",
+    "upazila": "Uttara Pashchim",
+    "upazilaBn": "উত্তরা পশ্চিম",
     "providerHints": [
       "desco"
     ],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "ঢাকা"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-dhaka-uttara-2020-aggregate"
+    ],
+    "aliases": [
+      "Uttara Paschim",
+      "Uttara West"
+    ]
+  },
+  {
+    "id": "dhaka-uttara-purba",
+    "slug": "dhaka-uttara-purba",
+    "district": "Dhaka",
+    "districtBn": "ঢাকা",
+    "upazila": "Uttara Purba",
+    "upazilaBn": "উত্তরা পূর্ব",
+    "providerHints": [
+      "desco"
+    ],
+    "kind": "thana",
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-dhaka-uttara-2020-aggregate"
+    ],
+    "aliases": [
+      "Uttara East",
+      "Uttara Model"
+    ]
+  },
+  {
+    "id": "dhaka-wari",
+    "slug": "dhaka-wari",
+    "district": "Dhaka",
+    "districtBn": "ঢাকা",
+    "upazila": "Wari",
+    "upazilaBn": "ওয়ারী",
+    "providerHints": [
+      "dpdc"
+    ],
+    "kind": "thana",
+    "geometryAvailable": false
   },
   {
     "id": "dinajpur-birampur",
@@ -2537,6 +3128,34 @@
     "upazilaBn": "সুন্দরগঞ্জ"
   },
   {
+    "id": "gazipur-basan",
+    "slug": "gazipur-basan",
+    "district": "Gazipur",
+    "districtBn": "গাজীপুর",
+    "upazila": "Basan",
+    "upazilaBn": "বাসন",
+    "providerHints": [],
+    "kind": "thana",
+    "geometryAvailable": false,
+    "aliases": [
+      "Bason"
+    ]
+  },
+  {
+    "id": "gazipur-gachha",
+    "slug": "gazipur-gachha",
+    "district": "Gazipur",
+    "districtBn": "গাজীপুর",
+    "upazila": "Gachha",
+    "upazilaBn": "গাছা",
+    "providerHints": [],
+    "kind": "thana",
+    "geometryAvailable": false,
+    "aliases": [
+      "Gacha"
+    ]
+  },
+  {
     "id": "gazipur-gazipur-sadar",
     "slug": "gazipur-gazipur-sadar",
     "district": "Gazipur",
@@ -2546,6 +3165,17 @@
     "geometryAvailable": true,
     "districtBn": "গাজীপুর",
     "upazilaBn": "গাজীপুর সদর"
+  },
+  {
+    "id": "gazipur-joydebpur",
+    "slug": "gazipur-joydebpur",
+    "district": "Gazipur",
+    "districtBn": "গাজীপুর",
+    "upazila": "Joydebpur",
+    "upazilaBn": "জয়দেবপুর",
+    "providerHints": [],
+    "kind": "thana",
+    "geometryAvailable": false
   },
   {
     "id": "gazipur-kaliakair",
@@ -2581,6 +3211,39 @@
     "upazilaBn": "কাপাসিয়া"
   },
   {
+    "id": "gazipur-kashimpur",
+    "slug": "gazipur-kashimpur",
+    "district": "Gazipur",
+    "districtBn": "গাজীপুর",
+    "upazila": "Kashimpur",
+    "upazilaBn": "কাশিমপুর",
+    "providerHints": [],
+    "kind": "thana",
+    "geometryAvailable": false
+  },
+  {
+    "id": "gazipur-konabari",
+    "slug": "gazipur-konabari",
+    "district": "Gazipur",
+    "districtBn": "গাজীপুর",
+    "upazila": "Konabari",
+    "upazilaBn": "কোনাবাড়ী",
+    "providerHints": [],
+    "kind": "thana",
+    "geometryAvailable": false
+  },
+  {
+    "id": "gazipur-pubail",
+    "slug": "gazipur-pubail",
+    "district": "Gazipur",
+    "districtBn": "গাজীপুর",
+    "upazila": "Pubail",
+    "upazilaBn": "পূবাইল",
+    "providerHints": [],
+    "kind": "thana",
+    "geometryAvailable": false
+  },
+  {
     "id": "gazipur-sreepur",
     "slug": "gazipur-sreepur",
     "district": "Gazipur",
@@ -2590,6 +3253,34 @@
     "geometryAvailable": true,
     "districtBn": "গাজীপুর",
     "upazilaBn": "শ্রীপুর"
+  },
+  {
+    "id": "gazipur-tongi-pashchim",
+    "slug": "gazipur-tongi-pashchim",
+    "district": "Gazipur",
+    "districtBn": "গাজীপুর",
+    "upazila": "Tongi Pashchim",
+    "upazilaBn": "টঙ্গী পশ্চিম",
+    "providerHints": [],
+    "kind": "thana",
+    "geometryAvailable": false,
+    "aliases": [
+      "Tongi West"
+    ]
+  },
+  {
+    "id": "gazipur-tongi-purba",
+    "slug": "gazipur-tongi-purba",
+    "district": "Gazipur",
+    "districtBn": "গাজীপুর",
+    "upazila": "Tongi Purba",
+    "upazilaBn": "টঙ্গী পূর্ব",
+    "providerHints": [],
+    "kind": "thana",
+    "geometryAvailable": false,
+    "aliases": [
+      "Tongi East"
+    ]
   },
   {
     "id": "gopalganj-gopalganj-sadar",
@@ -3276,11 +3967,15 @@
     "id": "khulna-daulatpur",
     "slug": "khulna-daulatpur",
     "district": "Khulna",
+    "districtBn": "খুলনা",
     "upazila": "Daulatpur",
+    "upazilaBn": "দৌলতপুর",
     "providerHints": [],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "খুলনা"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-khulna-daulatpur-legacy-approximate"
+    ]
   },
   {
     "id": "khulna-digholia",
@@ -3311,33 +4006,48 @@
     "id": "khulna-khalishpur",
     "slug": "khulna-khalishpur",
     "district": "Khulna",
+    "districtBn": "খুলনা",
     "upazila": "Khalishpur",
+    "upazilaBn": "খালিশপুর",
     "providerHints": [],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "খুলনা"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-khulna-khalishpur-legacy-approximate"
+    ]
   },
   {
     "id": "khulna-khan-jahan-ali",
     "slug": "khulna-khan-jahan-ali",
     "district": "Khulna",
+    "districtBn": "খুলনা",
     "upazila": "Khan Jahan Ali",
+    "upazilaBn": "খানজাহান আলী",
     "providerHints": [],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "খুলনা"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-khulna-khan-jahan-ali-legacy-approximate"
+    ],
+    "aliases": [
+      "Khanjahan Ali"
+    ]
   },
   {
     "id": "khulna-khulna-sadar",
     "slug": "khulna-khulna-sadar",
     "district": "Khulna",
+    "districtBn": "খুলনা",
     "upazila": "Khulna Sadar",
+    "upazilaBn": "খুলনা সদর",
     "providerHints": [
       "wzpdcl"
     ],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "খুলনা"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-khulna-khulna-sadar-legacy-approximate"
+    ]
   },
   {
     "id": "khulna-koyra",
@@ -3398,11 +4108,18 @@
     "id": "khulna-sonadanga",
     "slug": "khulna-sonadanga",
     "district": "Khulna",
+    "districtBn": "খুলনা",
     "upazila": "Sonadanga",
+    "upazilaBn": "সোনাডাঙ্গা",
     "providerHints": [],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "খুলনা"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-khulna-sonadanga-legacy-approximate"
+    ],
+    "aliases": [
+      "Sonadangha"
+    ]
   },
   {
     "id": "khulna-terokhada",
@@ -4266,7 +4983,7 @@
     "providerHints": [],
     "kind": "upazila",
     "geometryAvailable": true,
-    "districtBn": "ময়মনসিংহ",
+    "districtBn": "ময়মনসিংহ",
     "upazilaBn": "ভালুকা"
   },
   {
@@ -4277,7 +4994,7 @@
     "providerHints": [],
     "kind": "upazila",
     "geometryAvailable": true,
-    "districtBn": "ময়মনসিংহ",
+    "districtBn": "ময়মনসিংহ",
     "upazilaBn": "ধোবাউড়া"
   },
   {
@@ -4288,7 +5005,7 @@
     "providerHints": [],
     "kind": "upazila",
     "geometryAvailable": true,
-    "districtBn": "ময়মনসিংহ",
+    "districtBn": "ময়মনসিংহ",
     "upazilaBn": "ফুলবাড়ীয়া"
   },
   {
@@ -4298,11 +5015,32 @@
     "upazila": "Gafargaon",
     "providerHints": [],
     "kind": "upazila",
-    "geometryAvailable": true,
-    "districtBn": "ময়মনসিংহ",
+    "geometryAvailable": false,
+    "districtBn": "ময়মনসিংহ",
     "upazilaBn": "গফরগাঁও",
     "aliases": [
       "Gaffargaon"
+    ],
+    "approximateMapFeatureIds": [
+      "geo-mymensingh-gafargaon-2020-aggregate"
+    ]
+  },
+  {
+    "id": "mymensingh-gafargaon-south",
+    "slug": "mymensingh-gafargaon-south",
+    "district": "Mymensingh",
+    "districtBn": "ময়মনসিংহ",
+    "upazila": "Gafargaon South",
+    "upazilaBn": "দক্ষিণ গফরগাঁও",
+    "providerHints": [],
+    "kind": "upazila",
+    "geometryAvailable": false,
+    "aliases": [
+      "South Gafargaon",
+      "Dakshin Gafargaon"
+    ],
+    "approximateMapFeatureIds": [
+      "geo-mymensingh-gafargaon-2020-aggregate"
     ]
   },
   {
@@ -4313,7 +5051,7 @@
     "providerHints": [],
     "kind": "upazila",
     "geometryAvailable": true,
-    "districtBn": "ময়মনসিংহ",
+    "districtBn": "ময়মনসিংহ",
     "upazilaBn": "গৌরীপুর",
     "aliases": [
       "Gauripur"
@@ -4327,7 +5065,7 @@
     "providerHints": [],
     "kind": "upazila",
     "geometryAvailable": true,
-    "districtBn": "ময়মনসিংহ",
+    "districtBn": "ময়মনসিংহ",
     "upazilaBn": "হালুয়াঘাট"
   },
   {
@@ -4338,7 +5076,7 @@
     "providerHints": [],
     "kind": "upazila",
     "geometryAvailable": true,
-    "districtBn": "ময়মনসিংহ",
+    "districtBn": "ময়মনসিংহ",
     "upazilaBn": "ঈশ্বরগঞ্জ",
     "aliases": [
       "Ishwarganj"
@@ -4352,7 +5090,7 @@
     "providerHints": [],
     "kind": "upazila",
     "geometryAvailable": true,
-    "districtBn": "ময়মনসিংহ",
+    "districtBn": "ময়মনসিংহ",
     "upazilaBn": "মুক্তাগাছা",
     "aliases": [
       "Muktagachha"
@@ -4366,8 +5104,19 @@
     "providerHints": [],
     "kind": "upazila",
     "geometryAvailable": true,
-    "districtBn": "ময়মনসিংহ",
+    "districtBn": "ময়মনসিংহ",
     "upazilaBn": "ময়মনসিংহ সদর"
+  },
+  {
+    "id": "mymensingh-mymensingh-sadar-thana",
+    "slug": "mymensingh-mymensingh-sadar-thana",
+    "district": "Mymensingh",
+    "districtBn": "ময়মনসিংহ",
+    "upazila": "Mymensingh Sadar",
+    "upazilaBn": "ময়মনসিংহ সদর",
+    "providerHints": [],
+    "kind": "thana",
+    "geometryAvailable": false
   },
   {
     "id": "mymensingh-nandail",
@@ -4377,7 +5126,7 @@
     "providerHints": [],
     "kind": "upazila",
     "geometryAvailable": true,
-    "districtBn": "ময়মনসিংহ",
+    "districtBn": "ময়মনসিংহ",
     "upazilaBn": "নান্দাইল"
   },
   {
@@ -4388,14 +5137,14 @@
     "providerHints": [],
     "kind": "upazila",
     "geometryAvailable": true,
-    "districtBn": "ময়মনসিংহ",
+    "districtBn": "ময়মনসিংহ",
     "upazilaBn": "ফুলপুর"
   },
   {
     "id": "mymensingh-tarakanda",
     "slug": "mymensingh-tarakanda",
     "district": "Mymensingh",
-    "districtBn": "ময়মনসিংহ",
+    "districtBn": "ময়মনসিংহ",
     "upazila": "Tarakanda",
     "upazilaBn": "তারাকান্দা",
     "providerHints": [],
@@ -4410,7 +5159,7 @@
     "providerHints": [],
     "kind": "upazila",
     "geometryAvailable": true,
-    "districtBn": "ময়মনসিংহ",
+    "districtBn": "ময়মনসিংহ",
     "upazilaBn": "ত্রিশাল"
   },
   {
@@ -4585,7 +5334,7 @@
     "providerHints": [],
     "kind": "upazila",
     "geometryAvailable": true,
-    "districtBn": "নারায়ণগঞ্জ",
+    "districtBn": "নারায়ণগঞ্জ",
     "upazilaBn": "আড়াইহাজার"
   },
   {
@@ -4596,8 +5345,19 @@
     "providerHints": [],
     "kind": "upazila",
     "geometryAvailable": true,
-    "districtBn": "নারায়ণগঞ্জ",
+    "districtBn": "নারায়ণগঞ্জ",
     "upazilaBn": "বন্দর"
+  },
+  {
+    "id": "narayanganj-bandar-thana",
+    "slug": "narayanganj-bandar-thana",
+    "district": "Narayanganj",
+    "districtBn": "নারায়ণগঞ্জ",
+    "upazila": "Bandar",
+    "upazilaBn": "বন্দর",
+    "providerHints": [],
+    "kind": "thana",
+    "geometryAvailable": false
   },
   {
     "id": "narayanganj-narayanganj-sadar",
@@ -4609,8 +5369,21 @@
     ],
     "kind": "upazila",
     "geometryAvailable": true,
-    "districtBn": "নারায়ণগঞ্জ",
+    "districtBn": "নারায়ণগঞ্জ",
     "upazilaBn": "নারায়নগঞ্জ সদর"
+  },
+  {
+    "id": "narayanganj-narayanganj-sadar-thana",
+    "slug": "narayanganj-narayanganj-sadar-thana",
+    "district": "Narayanganj",
+    "districtBn": "নারায়ণগঞ্জ",
+    "upazila": "Narayanganj Sadar",
+    "upazilaBn": "নারায়ণগঞ্জ সদর",
+    "providerHints": [
+      "dpdc"
+    ],
+    "kind": "thana",
+    "geometryAvailable": false
   },
   {
     "id": "narayanganj-rupganj",
@@ -4622,7 +5395,7 @@
     ],
     "kind": "upazila",
     "geometryAvailable": true,
-    "districtBn": "নারায়ণগঞ্জ",
+    "districtBn": "নারায়ণগঞ্জ",
     "upazilaBn": "রূপগঞ্জ"
   },
   {
@@ -4633,7 +5406,7 @@
     "providerHints": [],
     "kind": "upazila",
     "geometryAvailable": true,
-    "districtBn": "নারায়ণগঞ্জ",
+    "districtBn": "নারায়ণগঞ্জ",
     "upazilaBn": "সোনারগাঁ"
   },
   {
@@ -5536,13 +6309,28 @@
     "id": "rajshahi-boalia",
     "slug": "rajshahi-boalia",
     "district": "Rajshahi",
+    "districtBn": "রাজশাহী",
     "upazila": "Boalia",
+    "upazilaBn": "বোয়ালিয়া",
     "providerHints": [
       "nesco"
     ],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "রাজশাহী"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-rajshahi-boalia-legacy-approximate"
+    ]
+  },
+  {
+    "id": "rajshahi-chandrima",
+    "slug": "rajshahi-chandrima",
+    "district": "Rajshahi",
+    "districtBn": "রাজশাহী",
+    "upazila": "Chandrima",
+    "upazilaBn": "চন্দ্রিমা",
+    "providerHints": [],
+    "kind": "thana",
+    "geometryAvailable": false
   },
   {
     "id": "rajshahi-charghat",
@@ -5580,16 +6368,34 @@
     "upazilaBn": "গোদাগাড়ী"
   },
   {
+    "id": "rajshahi-kashiadanga",
+    "slug": "rajshahi-kashiadanga",
+    "district": "Rajshahi",
+    "districtBn": "রাজশাহী",
+    "upazila": "Kashiadanga",
+    "upazilaBn": "কাশিয়াডাঙ্গা",
+    "providerHints": [],
+    "kind": "thana",
+    "geometryAvailable": false
+  },
+  {
     "id": "rajshahi-matihar",
     "slug": "rajshahi-matihar",
     "district": "Rajshahi",
+    "districtBn": "রাজশাহী",
     "upazila": "Matihar",
+    "upazilaBn": "মতিহার",
     "providerHints": [
       "nesco"
     ],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "রাজশাহী"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-rajshahi-matihar-legacy-approximate"
+    ],
+    "aliases": [
+      "Motihar"
+    ]
   },
   {
     "id": "rajshahi-mohonpur",
@@ -5633,25 +6439,36 @@
     "id": "rajshahi-rajpara",
     "slug": "rajshahi-rajpara",
     "district": "Rajshahi",
+    "districtBn": "রাজশাহী",
     "upazila": "Rajpara",
+    "upazilaBn": "রাজপাড়া",
     "providerHints": [
       "nesco"
     ],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "রাজশাহী"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-rajshahi-rajpara-legacy-approximate"
+    ]
   },
   {
     "id": "rajshahi-shah-makhdum",
     "slug": "rajshahi-shah-makhdum",
     "district": "Rajshahi",
+    "districtBn": "রাজশাহী",
     "upazila": "Shah Makhdum",
+    "upazilaBn": "শাহ মখদুম",
     "providerHints": [
       "nesco"
     ],
     "kind": "thana",
-    "geometryAvailable": true,
-    "districtBn": "রাজশাহী"
+    "geometryAvailable": false,
+    "approximateMapFeatureIds": [
+      "geo-rajshahi-shah-makhdum-legacy-approximate"
+    ],
+    "aliases": [
+      "Shahmokhdum"
+    ]
   },
   {
     "id": "rajshahi-tanore",
@@ -5814,6 +6631,34 @@
     "upazilaBn": "গংগাচড়া"
   },
   {
+    "id": "rangpur-hajirhat",
+    "slug": "rangpur-hajirhat",
+    "district": "Rangpur",
+    "districtBn": "রংপুর",
+    "upazila": "Hajirhat",
+    "upazilaBn": "হাজিরহাট",
+    "providerHints": [],
+    "kind": "thana",
+    "geometryAvailable": false,
+    "aliases": [
+      "Hazirhat"
+    ]
+  },
+  {
+    "id": "rangpur-haragachh",
+    "slug": "rangpur-haragachh",
+    "district": "Rangpur",
+    "districtBn": "রংপুর",
+    "upazila": "Haragachh",
+    "upazilaBn": "হারাগাছ",
+    "providerHints": [],
+    "kind": "thana",
+    "geometryAvailable": false,
+    "aliases": [
+      "Haragach"
+    ]
+  },
+  {
     "id": "rangpur-kaunia",
     "slug": "rangpur-kaunia",
     "district": "Rangpur",
@@ -5823,6 +6668,31 @@
     "geometryAvailable": true,
     "districtBn": "রংপুর",
     "upazilaBn": "কাউনিয়া"
+  },
+  {
+    "id": "rangpur-kotwali",
+    "slug": "rangpur-kotwali",
+    "district": "Rangpur",
+    "districtBn": "রংপুর",
+    "upazila": "Kotwali",
+    "upazilaBn": "কোতোয়ালি",
+    "providerHints": [],
+    "kind": "thana",
+    "geometryAvailable": false,
+    "aliases": [
+      "Kotowali"
+    ]
+  },
+  {
+    "id": "rangpur-mahiganj",
+    "slug": "rangpur-mahiganj",
+    "district": "Rangpur",
+    "districtBn": "রংপুর",
+    "upazila": "Mahiganj",
+    "upazilaBn": "মাহিগঞ্জ",
+    "providerHints": [],
+    "kind": "thana",
+    "geometryAvailable": false
   },
   {
     "id": "rangpur-mithapukur",
@@ -5836,6 +6706,20 @@
     "upazilaBn": "মিঠাপুকুর",
     "aliases": [
       "Mitha Pukur"
+    ]
+  },
+  {
+    "id": "rangpur-parshuram",
+    "slug": "rangpur-parshuram",
+    "district": "Rangpur",
+    "districtBn": "রংপুর",
+    "upazila": "Parshuram",
+    "upazilaBn": "পরশুরাম",
+    "providerHints": [],
+    "kind": "thana",
+    "geometryAvailable": false,
+    "aliases": [
+      "Porshuram"
     ]
   },
   {
@@ -5878,6 +6762,17 @@
     "geometryAvailable": true,
     "districtBn": "রংপুর",
     "upazilaBn": "রংপুর সদর"
+  },
+  {
+    "id": "rangpur-tajhat",
+    "slug": "rangpur-tajhat",
+    "district": "Rangpur",
+    "districtBn": "রংপুর",
+    "upazila": "Tajhat",
+    "upazilaBn": "তাজহাট",
+    "providerHints": [],
+    "kind": "thana",
+    "geometryAvailable": false
   },
   {
     "id": "rangpur-taragonj",
@@ -6360,6 +7255,17 @@
     "upazilaBn": "তাহিরপুর"
   },
   {
+    "id": "sylhet-airport",
+    "slug": "sylhet-airport",
+    "district": "Sylhet",
+    "districtBn": "সিলেট",
+    "upazila": "Airport",
+    "upazilaBn": "এয়ারপোর্ট",
+    "providerHints": [],
+    "kind": "thana",
+    "geometryAvailable": false
+  },
+  {
     "id": "sylhet-balaganj",
     "slug": "sylhet-balaganj",
     "district": "Sylhet",
@@ -6405,6 +7311,21 @@
     "geometryAvailable": true,
     "districtBn": "সিলেট",
     "upazilaBn": "কোম্পানীগঞ্জ"
+  },
+  {
+    "id": "sylhet-dakkhin-surma-thana",
+    "slug": "sylhet-dakkhin-surma-thana",
+    "district": "Sylhet",
+    "districtBn": "সিলেট",
+    "upazila": "Dakkhin Surma",
+    "upazilaBn": "দক্ষিণ সুরমা",
+    "providerHints": [],
+    "kind": "thana",
+    "geometryAvailable": false,
+    "aliases": [
+      "Dakshin Surma",
+      "South Surma"
+    ]
   },
   {
     "id": "sylhet-dakshinsurma",
@@ -6468,6 +7389,17 @@
     "upazilaBn": "জৈন্তাপুর"
   },
   {
+    "id": "sylhet-jalalabad",
+    "slug": "sylhet-jalalabad",
+    "district": "Sylhet",
+    "districtBn": "সিলেট",
+    "upazila": "Jalalabad",
+    "upazilaBn": "জালালাবাদ",
+    "providerHints": [],
+    "kind": "thana",
+    "geometryAvailable": false
+  },
+  {
     "id": "sylhet-kanaighat",
     "slug": "sylhet-kanaighat",
     "district": "Sylhet",
@@ -6479,6 +7411,34 @@
     "upazilaBn": "কানাইঘাট"
   },
   {
+    "id": "sylhet-kotwali",
+    "slug": "sylhet-kotwali",
+    "district": "Sylhet",
+    "districtBn": "সিলেট",
+    "upazila": "Kotwali",
+    "upazilaBn": "কোতোয়ালী",
+    "providerHints": [],
+    "kind": "thana",
+    "geometryAvailable": false,
+    "aliases": [
+      "Kotowali"
+    ]
+  },
+  {
+    "id": "sylhet-moglabazar",
+    "slug": "sylhet-moglabazar",
+    "district": "Sylhet",
+    "districtBn": "সিলেট",
+    "upazila": "Moglabazar",
+    "upazilaBn": "মোগলাবাজার",
+    "providerHints": [],
+    "kind": "thana",
+    "geometryAvailable": false,
+    "aliases": [
+      "Mogla Bazar"
+    ]
+  },
+  {
     "id": "sylhet-osmaninagar",
     "slug": "sylhet-osmaninagar",
     "district": "Sylhet",
@@ -6488,6 +7448,22 @@
     "providerHints": [],
     "kind": "upazila",
     "geometryAvailable": false
+  },
+  {
+    "id": "sylhet-shahparan",
+    "slug": "sylhet-shahparan",
+    "district": "Sylhet",
+    "districtBn": "সিলেট",
+    "upazila": "Shahparan",
+    "upazilaBn": "শাহপরাণ",
+    "providerHints": [],
+    "kind": "thana",
+    "geometryAvailable": false,
+    "aliases": [
+      "Hazrat Shah Paran",
+      "Shah Paran",
+      "Shahporan"
+    ]
   },
   {
     "id": "sylhet-sylhet-sadar",

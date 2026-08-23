@@ -1,0 +1,200 @@
+{
+  "asOf": "2026-08-23",
+  "scope": "Unique BBS Population and Housing Census 2022 Metro Thana (in City Corporation) choices. Three Dhaka thanas reported under both city-corporation sections are represented once for CurrentJabe's district-scoped selector.",
+  "expectedInstanceCount": 105,
+  "expectedLocationCount": 102,
+  "sourceUrls": [
+    "https://bbs.gov.bd/pages/static-pages/6922e073933eb65569e27220",
+    "https://fhir.dghs.gov.bd/core/0.4.5/CodeSystem-bd-geocodes.json"
+  ],
+  "districts": [
+    {
+      "district": "Barishal",
+      "districtBn": "বরিশাল",
+      "expectedInstanceCount": 1,
+      "thanas": [
+        { "id": "barishal-barishal-sadar-thana", "geocode": "10065051", "name": "Barishal Sadar (Kotwali)", "nameBn": "বরিশাল সদর (কোতোয়ালি)", "aliases": ["Barishal Sadar", "Kotwali"] }
+      ]
+    },
+    {
+      "district": "Chattogram",
+      "districtBn": "চট্টগ্রাম",
+      "expectedInstanceCount": 15,
+      "thanas": [
+        { "id": "chattogram-akbarshah", "geocode": "20151602", "name": "Akbarshah", "nameBn": "আকবর শাহ", "aliases": ["Akbar Shah"] },
+        { "id": "chattogram-bakalia", "name": "Bakalia", "nameBn": "বাকলিয়া", "aliases": ["Bakolia"] },
+        { "id": "chattogram-bayejid-bostami", "name": "Bayejid Bostami", "nameBn": "বায়েজিদ বোস্তামী", "aliases": ["Bayezid Bostami", "Bayzid Bostami"] },
+        { "id": "chattogram-chandgaon", "name": "Chandgaon", "nameBn": "চান্দগাঁও" },
+        { "id": "chattogram-chalk-bazar", "geocode": "20151616", "name": "Chalk Bazar", "nameBn": "চকবাজার", "aliases": ["Chawkbazar", "Chawk Bazar", "Chokbazar"] },
+        { "id": "chattogram-chattogram-port", "name": "Chattogram Port", "nameBn": "বন্দর", "aliases": ["Bandar", "Chittagong Port", "Port"] },
+        { "id": "chattogram-double-mooring", "name": "Double Mooring", "nameBn": "ডবলমুরিং", "aliases": ["Doublemooring"] },
+        { "id": "chattogram-epz", "geocode": "20151631", "name": "EPZ", "nameBn": "ইপিজেড" },
+        { "id": "chattogram-halishahar", "name": "Halishahar", "nameBn": "হালিশহর", "aliases": ["Hali Shohor"] },
+        { "id": "chattogram-khulshi", "name": "Khulshi", "nameBn": "খুলশী", "aliases": ["Kulshi"] },
+        { "id": "chattogram-kotwali", "name": "Kotwali", "nameBn": "কোতোয়ালি", "aliases": ["Kotowali"] },
+        { "id": "chattogram-pahartali", "name": "Pahartali", "nameBn": "পাহাড়তলী" },
+        { "id": "chattogram-panchlaish", "name": "Panchlaish", "nameBn": "পাঁচলাইশ" },
+        { "id": "chattogram-patenga", "name": "Patenga", "nameBn": "পতেঙ্গা", "aliases": ["Potenga"] },
+        { "id": "chattogram-sadarghat", "geocode": "20151677", "name": "Sadarghat", "nameBn": "সদরঘাট" }
+      ]
+    },
+    {
+      "district": "Cumilla",
+      "districtBn": "কুমিল্লা",
+      "expectedInstanceCount": 2,
+      "thanas": [
+        { "id": "cumilla-adarsha-sadar-thana", "geocode": "20195067", "name": "Adarsha Sadar", "nameBn": "আদর্শ সদর", "aliases": ["Cumilla Adarsha Sadar"] },
+        { "id": "cumilla-sadar-dakkhin-thana", "geocode": "20195033", "name": "Sadar Dakkhin", "nameBn": "সদর দক্ষিণ", "aliases": ["Sadar Dakkin", "Sadar Dakshin", "Cumilla Sadar Dakshin"] }
+      ]
+    },
+    {
+      "district": "Dhaka",
+      "districtBn": "ঢাকা",
+      "expectedInstanceCount": 53,
+      "thanas": [
+        { "id": "dhaka-adabor", "name": "Adabor", "nameBn": "আদাবর" },
+        { "id": "dhaka-badda", "name": "Badda", "nameBn": "বাড্ডা" },
+        { "id": "dhaka-banani", "geocode": "30262507", "name": "Banani", "nameBn": "বনানী" },
+        { "id": "dhaka-bangshal", "name": "Bangshal", "nameBn": "বংশাল" },
+        { "id": "dhaka-bhasantek", "geocode": "30262521", "name": "Bhasantek", "nameBn": "ভাসানটেক", "aliases": ["Bhasan Tek", "Bhashantek", "Vashantek"] },
+        {
+          "id": "dhaka-bhatara",
+          "geocode": "30262522",
+          "name": "Bhatara",
+          "nameBn": "ভাটারা",
+          "aliases": ["Vatara", "Vattara"],
+          "providerMappings": [
+            { "providerId": "desco", "sourceUrl": "https://desco.gov.bd/site/page/583175e8-7bb4-4ce5-824a-a042428594e5/", "sourceLabel": "Official DESCO customer-point list naming Bhatara and Vatara service locations", "confidence": "probable" }
+          ]
+        },
+        { "id": "dhaka-biman-bandar", "name": "Biman Bandar", "nameBn": "বিমানবন্দর", "aliases": ["Airport", "Bimanbandar", "Bimanbondor"] },
+        { "id": "dhaka-cantonment", "name": "Cantonment", "nameBn": "ক্যান্টনমেন্ট" },
+        { "id": "dhaka-chak-bazar", "name": "Chak Bazar", "nameBn": "চকবাজার", "aliases": ["Chawkbazar", "Chalkbazar", "Chawk Bazar"] },
+        { "id": "dhaka-dakshinkhan", "name": "Dakshinkhan", "nameBn": "দক্ষিণখান", "aliases": ["Dakkhinkhan", "Dakshin Khan"] },
+        { "id": "dhaka-darus-salam", "name": "Darus Salam", "nameBn": "দারুস সালাম", "aliases": ["Darussalam"] },
+        { "id": "dhaka-demra", "name": "Demra", "nameBn": "ডেমরা" },
+        { "id": "dhaka-dhanmondi", "name": "Dhanmondi", "nameBn": "ধানমন্ডি", "instanceCount": 2 },
+        { "id": "dhaka-gendaria", "name": "Gendaria", "nameBn": "গেন্ডারিয়া", "aliases": ["Gandaria"] },
+        { "id": "dhaka-gulshan", "name": "Gulshan", "nameBn": "গুলশান" },
+        { "id": "dhaka-hatirjheel", "geocode": "30262527", "name": "Hatirjheel", "nameBn": "হাতিরঝিল" },
+        { "id": "dhaka-hazaribagh", "name": "Hazaribagh", "nameBn": "হাজারীবাগ", "aliases": ["Hazaribag"] },
+        { "id": "dhaka-jatrabari", "name": "Jatrabari", "nameBn": "যাত্রাবাড়ী" },
+        { "id": "dhaka-kadamtali", "name": "Kadamtali", "nameBn": "কদমতলী", "aliases": ["Kadamtoli"] },
+        { "id": "dhaka-kafrul", "name": "Kafrul", "nameBn": "কাফরুল" },
+        { "id": "dhaka-kalabagan", "name": "Kalabagan", "nameBn": "কলাবাগান" },
+        { "id": "dhaka-kamrangir-char", "name": "Kamrangir Char", "nameBn": "কামরাঙ্গীরচর", "aliases": ["Kamrangichar", "Kamrangirchar"] },
+        { "id": "dhaka-khilgaon", "name": "Khilgaon", "nameBn": "খিলগাঁও" },
+        { "id": "dhaka-khilkhet", "name": "Khilkhet", "nameBn": "খিলক্ষেত" },
+        { "id": "dhaka-kotwali", "name": "Kotwali", "nameBn": "কোতোয়ালি", "aliases": ["Kotowali"] },
+        { "id": "dhaka-lalbagh", "name": "Lalbagh", "nameBn": "লালবাগ", "aliases": ["Lalbag"] },
+        { "id": "dhaka-mirpur", "name": "Mirpur", "nameBn": "মিরপুর", "aliases": ["Mirpur Model"] },
+        { "id": "dhaka-mohammadpur", "name": "Mohammadpur", "nameBn": "মোহাম্মদপুর" },
+        { "id": "dhaka-motijheel", "name": "Motijheel", "nameBn": "মতিঝিল" },
+        { "id": "dhaka-mugda", "geocode": "30262057", "name": "Mugda", "nameBn": "মুগদা", "aliases": ["Mugda Para"] },
+        { "id": "dhaka-new-market", "name": "New Market", "nameBn": "নিউ মার্কেট", "aliases": ["Newmarket"] },
+        { "id": "dhaka-pallabi", "name": "Pallabi", "nameBn": "পল্লবী" },
+        { "id": "dhaka-paltan", "name": "Paltan", "nameBn": "পল্টন", "aliases": ["Paltan Model"] },
+        { "id": "dhaka-ramna", "name": "Ramna", "nameBn": "রমনা", "aliases": ["Ramna Model"], "instanceCount": 2 },
+        { "id": "dhaka-rampura", "name": "Rampura", "nameBn": "রামপুরা" },
+        { "id": "dhaka-rupnagar", "geocode": "30262570", "name": "Rupnagar", "nameBn": "রূপনগর" },
+        { "id": "dhaka-sabujbagh", "name": "Sabujbagh", "nameBn": "সবুজবাগ", "aliases": ["Sabujbag"] },
+        { "id": "dhaka-shah-ali", "name": "Shah Ali", "nameBn": "শাহ আলী" },
+        { "id": "dhaka-shahbagh", "name": "Shahbagh", "nameBn": "শাহবাগ", "aliases": ["Shahbag"] },
+        { "id": "dhaka-shahjahanpur", "geocode": "30262073", "name": "Shahjahanpur", "nameBn": "শাহজাহানপুর" },
+        { "id": "dhaka-sher-e-bangla-nagar", "name": "Shere Bangla Nagar", "nameBn": "শেরেবাংলা নগর", "aliases": ["Sher-e-Bangla Nagar", "Sher-e-bangla Nagar", "Sherebangla Nagar"], "instanceCount": 2 },
+        { "id": "dhaka-shyampur", "name": "Shyampur", "nameBn": "শ্যামপুর" },
+        { "id": "dhaka-sutrapur", "name": "Sutrapur", "nameBn": "সূত্রাপুর" },
+        { "id": "dhaka-tejgaon", "name": "Tejgaon", "nameBn": "তেজগাঁও" },
+        { "id": "dhaka-tejgaon-ind-area", "name": "Tejgaon Industrial", "nameBn": "তেজগাঁও শিল্পাঞ্চল", "aliases": ["Tejgaon Ind. Area", "Tejgaon Industrial Area", "Tejgaon I/A"] },
+        { "id": "dhaka-turag", "name": "Turag", "nameBn": "তুরাগ" },
+        { "id": "dhaka-uttar-khan", "name": "Uttar Khan", "nameBn": "উত্তরখান", "aliases": ["Uttarkhan"] },
+        { "id": "dhaka-uttara-purba", "geocode": "30262595", "name": "Uttara Purba", "nameBn": "উত্তরা পূর্ব", "aliases": ["Uttara East", "Uttara Model"] },
+        { "id": "dhaka-uttara-pashchim", "geocode": "30262594", "name": "Uttara Pashchim", "nameBn": "উত্তরা পশ্চিম", "aliases": ["Uttara Paschim", "Uttara West"] },
+        { "id": "dhaka-wari", "geocode": "30262098", "name": "Wari", "nameBn": "ওয়ারী" }
+      ]
+    },
+    {
+      "district": "Gazipur",
+      "districtBn": "গাজীপুর",
+      "expectedInstanceCount": 8,
+      "thanas": [
+        { "id": "gazipur-basan", "geocode": "30333315", "name": "Basan", "nameBn": "বাসন", "aliases": ["Bason"] },
+        { "id": "gazipur-gachha", "geocode": "30333318", "name": "Gachha", "nameBn": "গাছা", "aliases": ["Gacha"] },
+        { "id": "gazipur-joydebpur", "geocode": "30333399", "name": "Joydebpur", "nameBn": "জয়দেবপুর" },
+        { "id": "gazipur-kashimpur", "geocode": "30333340", "name": "Kashimpur", "nameBn": "কাশিমপুর" },
+        { "id": "gazipur-konabari", "geocode": "30333345", "name": "Konabari", "nameBn": "কোনাবাড়ী" },
+        { "id": "gazipur-pubail", "geocode": "30333350", "name": "Pubail", "nameBn": "পূবাইল" },
+        { "id": "gazipur-tongi-pashchim", "geocode": "30333390", "name": "Tongi Pashchim", "nameBn": "টঙ্গী পশ্চিম", "aliases": ["Tongi West"] },
+        { "id": "gazipur-tongi-purba", "geocode": "30333393", "name": "Tongi Purba", "nameBn": "টঙ্গী পূর্ব", "aliases": ["Tongi East"] }
+      ]
+    },
+    {
+      "district": "Khulna",
+      "districtBn": "খুলনা",
+      "expectedInstanceCount": 5,
+      "thanas": [
+        { "id": "khulna-daulatpur", "name": "Daulatpur", "nameBn": "দৌলতপুর" },
+        { "id": "khulna-khalishpur", "name": "Khalishpur", "nameBn": "খালিশপুর" },
+        { "id": "khulna-khan-jahan-ali", "name": "Khan Jahan Ali", "nameBn": "খানজাহান আলী", "aliases": ["Khanjahan Ali"] },
+        { "id": "khulna-khulna-sadar", "name": "Khulna Sadar", "nameBn": "খুলনা সদর" },
+        { "id": "khulna-sonadanga", "name": "Sonadanga", "nameBn": "সোনাডাঙ্গা", "aliases": ["Sonadangha"] }
+      ]
+    },
+    {
+      "district": "Mymensingh",
+      "districtBn": "ময়মনসিংহ",
+      "expectedInstanceCount": 1,
+      "thanas": [
+        { "id": "mymensingh-mymensingh-sadar-thana", "geocode": "45614052", "name": "Mymensingh Sadar", "nameBn": "ময়মনসিংহ সদর" }
+      ]
+    },
+    {
+      "district": "Narayanganj",
+      "districtBn": "নারায়ণগঞ্জ",
+      "expectedInstanceCount": 2,
+      "thanas": [
+        { "id": "narayanganj-bandar-thana", "geocode": "30674406", "name": "Bandar", "nameBn": "বন্দর" },
+        { "id": "narayanganj-narayanganj-sadar-thana", "geocode": "30674458", "name": "Narayanganj Sadar", "nameBn": "নারায়ণগঞ্জ সদর" }
+      ]
+    },
+    {
+      "district": "Rajshahi",
+      "districtBn": "রাজশাহী",
+      "expectedInstanceCount": 6,
+      "thanas": [
+        { "id": "rajshahi-boalia", "name": "Boalia", "nameBn": "বোয়ালিয়া" },
+        { "id": "rajshahi-chandrima", "geocode": "50816624", "name": "Chandrima", "nameBn": "চন্দ্রিমা" },
+        { "id": "rajshahi-kashiadanga", "geocode": "50816638", "name": "Kashiadanga", "nameBn": "কাশিয়াডাঙ্গা" },
+        { "id": "rajshahi-matihar", "name": "Matihar", "nameBn": "মতিহার", "aliases": ["Motihar"] },
+        { "id": "rajshahi-rajpara", "name": "Rajpara", "nameBn": "রাজপাড়া" },
+        { "id": "rajshahi-shah-makhdum", "name": "Shah Makhdum", "nameBn": "শাহ মখদুম", "aliases": ["Shahmokhdum"] }
+      ]
+    },
+    {
+      "district": "Rangpur",
+      "districtBn": "রংপুর",
+      "expectedInstanceCount": 6,
+      "thanas": [
+        { "id": "rangpur-hajirhat", "geocode": "55857531", "name": "Hajirhat", "nameBn": "হাজিরহাট", "aliases": ["Hazirhat"] },
+        { "id": "rangpur-haragachh", "geocode": "55857533", "name": "Haragachh", "nameBn": "হারাগাছ", "aliases": ["Haragach"] },
+        { "id": "rangpur-kotwali", "geocode": "55857544", "name": "Kotwali", "nameBn": "কোতোয়ালি", "aliases": ["Kotowali"] },
+        { "id": "rangpur-mahiganj", "geocode": "55857555", "name": "Mahiganj", "nameBn": "মাহিগঞ্জ" },
+        { "id": "rangpur-parshuram", "geocode": "55857569", "name": "Parshuram", "nameBn": "পরশুরাম", "aliases": ["Porshuram"] },
+        { "id": "rangpur-tajhat", "geocode": "55857589", "name": "Tajhat", "nameBn": "তাজহাট" }
+      ]
+    },
+    {
+      "district": "Sylhet",
+      "districtBn": "সিলেট",
+      "expectedInstanceCount": 6,
+      "thanas": [
+        { "id": "sylhet-airport", "geocode": "60915005", "name": "Airport", "nameBn": "এয়ারপোর্ট" },
+        { "id": "sylhet-dakkhin-surma-thana", "name": "Dakkhin Surma", "nameBn": "দক্ষিণ সুরমা", "aliases": ["Dakshin Surma", "South Surma"] },
+        { "id": "sylhet-jalalabad", "geocode": "60915048", "name": "Jalalabad", "nameBn": "জালালাবাদ" },
+        { "id": "sylhet-kotwali", "geocode": "60915055", "name": "Kotwali", "nameBn": "কোতোয়ালী", "aliases": ["Kotowali"] },
+        { "id": "sylhet-moglabazar", "geocode": "60915057", "name": "Moglabazar", "nameBn": "মোগলাবাজার", "aliases": ["Mogla Bazar"] },
+        { "id": "sylhet-shahparan", "geocode": "60915068", "name": "Shahparan", "nameBn": "শাহপরাণ", "aliases": ["Shah Paran", "Hazrat Shah Paran", "Shahporan"] }
+      ]
+    }
+  ]
+}
