@@ -1,5 +1,6 @@
 import "server-only";
 
+import { createHash } from "node:crypto";
 import {
   allCatalogLocations,
   browseAliasLocationIdsFor,
@@ -19,7 +20,7 @@ import type { LocationKind, MapCoverageKind } from "@/lib/domain/types";
 import type { LocationRecord, ProviderId } from "@/lib/locations";
 import { HttpError } from "./http";
 import { ensureLocationSelection } from "./catalog-seed";
-import { restRpc, restSelect, SupabaseRestError } from "./supabase-rest";
+import { restInsert, restRpc, restSelect, SupabaseRestError } from "./supabase-rest";
 
 type LocalityRow = {
   id: string;
@@ -97,6 +98,79 @@ async function selectLocalityRows(
       select: LEGACY_LOCALITY_SELECT,
     });
   }
+}
+
+function isMissingCommunityLocalityRpc(error: unknown): error is SupabaseRestError {
+  return error instanceof SupabaseRestError &&
+    error.code === "PGRST202" &&
+    error.message.includes("api_create_community_locality");
+}
+
+function isMissingLocalityMetadataColumn(error: unknown): error is SupabaseRestError {
+  return error instanceof SupabaseRestError &&
+    (error.code === "42703" || error.code === "PGRST204") &&
+    ["origin", "normalized_name", "input_locale"].some((column) =>
+      error.message.includes(column),
+    );
+}
+
+async function createCommunityLocalityWithoutRpc(args: {
+  parent: LocalityRow;
+  displayName: string;
+  normalizedName: string;
+  slugPart: string;
+  inputLocale: "en" | "bn" | "und";
+}): Promise<{ created: boolean; locality: LocalityRow }> {
+  const hash = createHash("sha256")
+    .update(`${args.parent.id}\x1f${args.normalizedName}`)
+    .digest("hex");
+  const id = `community:${hash.slice(0, 32)}`;
+  const slug = `${`${args.parent.slug}-${args.slugPart}`.slice(0, 90)}-${hash.slice(0, 8)}`;
+  const parentFeatureRefs = args.parent.map_feature_refs ?? [];
+  const baseRow = {
+    id,
+    district_id: args.parent.district_id,
+    parent_location_id: args.parent.id,
+    slug,
+    name_en: args.displayName,
+    name_bn: args.displayName,
+    location_kind: "locality" as const,
+    boundary_ref: null,
+    map_coverage: parentFeatureRefs.length > 0 ? "approximate" as const : "district_fallback" as const,
+    map_feature_refs: parentFeatureRefs,
+    disabled: false,
+  };
+
+  const insert = async (includeMetadata: boolean) => {
+    const payload = includeMetadata
+      ? {
+          ...baseRow,
+          origin: "community",
+          normalized_name: args.normalizedName,
+          input_locale: args.inputLocale,
+        }
+      : baseRow;
+    return restInsert<LocalityRow[]>("upazilas", payload);
+  };
+
+  try {
+    try {
+      const rows = await insert(true);
+      if (rows[0]) return { created: true, locality: rows[0] };
+    } catch (error) {
+      if (!isMissingLocalityMetadataColumn(error)) throw error;
+      const rows = await insert(false);
+      if (rows[0]) return { created: true, locality: rows[0] };
+    }
+  } catch (error) {
+    if (!(error instanceof SupabaseRestError) || error.code !== "23505") throw error;
+  }
+
+  const existing = await selectLocalityRows({ id: `eq.${id}`, limit: 1 });
+  if (!existing[0]) {
+    throw new HttpError(502, "locality_creation_failed", "The area could not be added.");
+  }
+  return { created: false, locality: existing[0] };
 }
 
 function rowToLocation(row: LocalityRow, district: DistrictRow): LocationRecord {
@@ -253,7 +327,8 @@ export async function createCommunityLocality(args: {
     };
   }
 
-  const existingLocality = (await getLocalities(parent.id)).find((location) =>
+  const currentLocalities = await getLocalities(parent.id);
+  const existingLocality = currentLocalities.find((location) =>
     parentRelativeNormalizedLocationName(
       location.upazila,
       parent.name_en,
@@ -276,15 +351,36 @@ export async function createCommunityLocality(args: {
   );
   if (existingLocality) return { location: existingLocality, created: false };
 
-  const result = await restRpc<CreateLocalityResult>("api_create_community_locality", {
-    p_parent_location_id: parent.id,
-    p_display_name: args.name.displayName,
-    p_normalized_name: relativeNormalizedName,
-    p_slug_part: localitySlugPart(args.name.displayName, parent.name_en),
-    p_input_locale: args.inputLocale,
-    p_visitor_hash: args.visitorHash,
-    p_ip_hash: args.ipHash,
-  });
+  if (currentLocalities.length >= 250) {
+    throw new HttpError(
+      409,
+      "locality_capacity_reached",
+      "This broad area cannot accept more community-added names yet.",
+    );
+  }
+
+  const slugPart = localitySlugPart(args.name.displayName, parent.name_en);
+  let result: CreateLocalityResult;
+  try {
+    result = await restRpc<CreateLocalityResult>("api_create_community_locality", {
+      p_parent_location_id: parent.id,
+      p_display_name: args.name.displayName,
+      p_normalized_name: relativeNormalizedName,
+      p_slug_part: slugPart,
+      p_input_locale: args.inputLocale,
+      p_visitor_hash: args.visitorHash,
+      p_ip_hash: args.ipHash,
+    });
+  } catch (error) {
+    if (!isMissingCommunityLocalityRpc(error)) throw error;
+    result = await createCommunityLocalityWithoutRpc({
+      parent,
+      displayName: args.name.displayName,
+      normalizedName: relativeNormalizedName,
+      slugPart,
+      inputLocale: args.inputLocale,
+    });
+  }
   if (!result?.locality) {
     throw new HttpError(502, "locality_creation_failed", "The area could not be added.");
   }
