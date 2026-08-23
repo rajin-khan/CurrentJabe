@@ -581,7 +581,7 @@ export function ReportDialog({
                           {history.events.slice(0, 8).map((event) => (
                             <span key={event.id}>
                               {formatSavedTime(event.startedAt, locale)}
-                              {" — "}
+                              {" - "}
                               {event.endedAt
                                 ? formatSavedTime(event.endedAt, locale)
                                 : locale === "bn" ? "এখনও চলছে" : "ongoing"}

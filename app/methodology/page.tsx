@@ -26,7 +26,7 @@ export default function MethodologyPage() {
         unless newer qualifying reports refresh it. Ten recent positive confirmations can clear
         it earlier. To make cookie-reset spam less useful, no more than three contributors from
         the same daily rotating, one-way network token count toward either threshold. Raw IP
-        addresses are never stored. Without qualifying evidence, the status is unknown—not “on.”
+        addresses are never stored. Without qualifying evidence, the status is unknown, not “on.”
       </p>
 
       <h2>Geographic precision</h2>

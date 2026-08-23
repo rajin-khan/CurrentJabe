@@ -3,7 +3,7 @@ import type { MetadataRoute } from "next";
 export default function manifest(): MetadataRoute.Manifest {
   return {
     id: "/",
-    name: "CurrentJabe — Bangladesh Outage Map",
+    name: "CurrentJabe - Bangladesh Outage Map",
     short_name: "CurrentJabe",
     description:
       "Community electricity status reports and likely load-shedding windows across Bangladesh.",

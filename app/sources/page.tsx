@@ -16,7 +16,7 @@ export default function SourcesPage() {
       <h2>Administrative geography</h2>
       <p>
         The interactive map uses public Bangladesh administrative-boundary information processed
-        into simplified, code-native SVG geometry. Boundary data is orientation—not a claim that
+        into simplified, code-native SVG geometry. Boundary data is orientation, not a claim that
         an administrative border is an electricity feeder boundary.
       </p>
       <p>
@@ -73,7 +73,7 @@ export default function SourcesPage() {
         Mirpur DOHS is available as a finer community reporting area because a DESCO project
         study published by the Asian Development Bank names its DOHS-1 and DOHS-2 distribution
         routes. Its map selection highlights the Pallabi and Turag administrative features only as
-        an approximation—not as a locality boundary, service territory or feeder polygon.
+        an approximation, not as a locality boundary, service territory or feeder polygon.
       </p>
       <p>
         Review the{" "}

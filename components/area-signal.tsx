@@ -357,7 +357,7 @@ function ForecastCard({
               <span>{String(index + 1).padStart(2, "0")}</span>
               <strong>
                 {formatHour(window.localStartHour, locale)}
-                <i>—</i>
+                <i>-</i>
                 {formatHour(window.localStartHour + 1, locale)}
               </strong>
               <small>{Math.round(window.score * 100)} {text.forecast.score}</small>
@@ -393,7 +393,7 @@ function ForecastCard({
               </li>
             ))}
             <li>
-              <strong>{evidence.hasRecentEvidence ? text.forecast.live : "—"}</strong>
+              <strong>{evidence.hasRecentEvidence ? text.forecast.live : "-"}</strong>
               <span>{text.forecast.recent}</span>
             </li>
           </ul>

@@ -283,9 +283,9 @@ function AdminReports({ reports, onRefresh }: { reports: AdminReport[]; onRefres
         {filtered.map((report) => (
           <div className="admin-table__row" key={`${report.entityType}-${report.id}`}>
             <span data-label="Type">{report.entityType.replaceAll("_", " ")}</span>
-            <span data-label="Area">{String(report.upazila_id ?? "—")}</span>
+            <span data-label="Area">{String(report.upazila_id ?? "-")}</span>
             <span data-label="Created">{new Date(report.created_at).toLocaleString()}</span>
-            <span data-label="Visitor">{report.visitorFingerprint ?? "—"}</span>
+            <span data-label="Visitor">{report.visitorFingerprint ?? "-"}</span>
             <span data-label="Status" className={report.suppressed_at ? "admin-badge admin-badge--off" : "admin-badge"}>{report.suppressed_at ? "Suppressed" : "Visible"}</span>
             <button type="button" onClick={() => {
               setError(null);

@@ -19,7 +19,7 @@ import type { LocationKind, MapCoverageKind } from "@/lib/domain/types";
 import type { LocationRecord, ProviderId } from "@/lib/locations";
 import { HttpError } from "./http";
 import { ensureLocationSelection } from "./catalog-seed";
-import { restRpc, restSelect } from "./supabase-rest";
+import { restRpc, restSelect, SupabaseRestError } from "./supabase-rest";
 
 type LocalityRow = {
   id: string;
@@ -64,6 +64,41 @@ const LOCALITY_SELECT = [
   "normalized_name",
 ].join(",");
 
+const LEGACY_LOCALITY_SELECT = [
+  "id",
+  "district_id",
+  "parent_location_id",
+  "slug",
+  "name_en",
+  "name_bn",
+  "location_kind",
+  "boundary_ref",
+  "map_coverage",
+  "map_feature_refs",
+  "disabled",
+].join(",");
+
+async function selectLocalityRows(
+  query: Record<string, string | number | boolean | null | undefined>,
+): Promise<LocalityRow[]> {
+  try {
+    return await restSelect<LocalityRow[]>("upazilas", {
+      ...query,
+      select: LOCALITY_SELECT,
+    });
+  } catch (error) {
+    const missingNewLocalityColumn =
+      error instanceof SupabaseRestError &&
+      error.code === "42703" &&
+      (error.message.includes("origin") || error.message.includes("normalized_name"));
+    if (!missingNewLocalityColumn) throw error;
+    return restSelect<LocalityRow[]>("upazilas", {
+      ...query,
+      select: LEGACY_LOCALITY_SELECT,
+    });
+  }
+}
+
 function rowToLocation(row: LocalityRow, district: DistrictRow): LocationRecord {
   return {
     id: row.id,
@@ -80,8 +115,8 @@ function rowToLocation(row: LocalityRow, district: DistrictRow): LocationRecord 
       ? { approximateMapFeatureIds: row.map_feature_refs }
       : {}),
     mapCoverage: row.map_coverage,
-    origin: row.origin ?? "community",
-    communityAdded: row.origin === "community" || row.origin === undefined,
+    origin: row.origin ?? (row.id.startsWith("community:") ? "community" : "catalog"),
+    communityAdded: row.origin === "community" || row.id.startsWith("community:"),
   };
 }
 
@@ -119,8 +154,7 @@ export async function resolvePublicLocation(slug: string): Promise<LocationRecor
   const bundled = catalogLocationBySlug(slug);
   if (bundled) return catalogToLocation(bundled);
 
-  const rows = await restSelect<LocalityRow[]>("upazilas", {
-    select: LOCALITY_SELECT,
+  const rows = await selectLocalityRows({
     slug: `eq.${slug}`,
     limit: 1,
   });
@@ -141,8 +175,7 @@ async function getParentAndDistrict(parentId: string): Promise<{
   parent: LocalityRow;
   district: DistrictRow;
 }> {
-  const parents = await restSelect<LocalityRow[]>("upazilas", {
-    select: LOCALITY_SELECT,
+  const parents = await selectLocalityRows({
     id: `eq.${parentId}`,
     limit: 1,
   });
@@ -165,8 +198,7 @@ export async function getLocalities(parentId: string): Promise<LocationRecord[]>
   }
   await ensureLocationSelection({ upazilaId: parentId });
   const { district } = await getParentAndDistrict(parentId);
-  const stored = await restSelect<LocalityRow[]>("upazilas", {
-    select: LOCALITY_SELECT,
+  const stored = await selectLocalityRows({
     parent_location_id: `eq.${parentId}`,
     location_kind: "eq.locality",
     disabled: "eq.false",
@@ -175,8 +207,7 @@ export async function getLocalities(parentId: string): Promise<LocationRecord[]>
   });
   const aliasIds = browseAliasLocationIdsFor(parentId);
   const storedAliases = aliasIds.length > 0
-    ? await restSelect<LocalityRow[]>("upazilas", {
-        select: LOCALITY_SELECT,
+    ? await selectLocalityRows({
         id: `in.(${aliasIds.join(",")})`,
         location_kind: "eq.locality",
         disabled: "eq.false",

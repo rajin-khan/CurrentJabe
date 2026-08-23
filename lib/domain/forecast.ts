@@ -197,7 +197,7 @@ export function computeCommunityForecast(
   const events = capNetworkContributors(validEvents(rows, now));
   const evidence = buildEvidence(events, now);
   const eligible = evidence.missing.length === 0;
-  const disclaimer = "Community estimate — not an official electricity schedule.";
+  const disclaimer = "Community estimate. This is not an official electricity schedule.";
 
   if (!eligible) {
     return {

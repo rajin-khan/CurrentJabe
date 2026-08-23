@@ -130,7 +130,7 @@ export function emptyAreaSnapshot(area: AreaSnapshot["area"]): AreaSnapshot {
       },
       strength: null,
       windows: [],
-      disclaimer: "Community estimate—not an official utility schedule.",
+      disclaimer: "Community estimate. This is not an official utility schedule.",
     },
     accuracy: null,
     officialSources: [],

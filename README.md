@@ -35,9 +35,9 @@ It is built around a practical question: **when should I charge, plan, study, wo
 
 ## How it works
 
-1. **Report** — someone says the current is on or out, or records a recent outage window.
-2. **Corroborate** — independent reports from the same area strengthen or contradict the signal.
-3. **Predict** — recurring time patterns become visible only after the area crosses the evidence threshold.
+1. **Report:** someone says the current is on or out, or records a recent outage window.
+2. **Corroborate:** independent reports from the same area strengthen or contradict the signal.
+3. **Predict:** recurring time patterns become visible only after the area crosses the evidence threshold.
 
 | Result | Minimum evidence | Behaviour |
 | --- | --- | --- |

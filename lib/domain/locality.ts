@@ -82,14 +82,14 @@ export function canonicalizeLocalityName(value: string): CanonicalLocalityName {
     /\b(?:house|flat|apartment|apt|holding|plot)\b/i.test(value) ||
     /(?:^|[\s,/-])(?:বাসা|বাড়ি|বাড়ি|ফ্ল্যাট|অ্যাপার্টমেন্ট|হোল্ডিং|প্লট)(?=$|[\s,/-])/u.test(value);
   if ((hasPrivateAddressUnit && !/^\s*house building\s*$/i.test(value)) || phoneDigits.length >= 7) {
-    throw new Error("Use a neighborhood or road name—never a house, flat, phone number or personal detail.");
+    throw new Error("Use a neighborhood or road name. Never use a house, flat, phone number or personal detail.");
   }
 
   const cleaned = value
     .normalize("NFKC")
     .replace(/[\u0000-\u001f\u007f-\u009f]/g, " ")
     .replace(/[’‘`´]/g, "'")
-    .replace(/[‐‑‒–—―]/g, "-")
+    .replace(/[‐‑‒–\u2014―]/g, "-")
     .replace(/[／⁄]/g, "/")
     .replace(/[^\p{L}\p{M}\p{N}\s.,/'&()_-]+/gu, " ")
     .replace(/\s*([/-])\s*/g, "$1")
