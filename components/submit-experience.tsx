@@ -1,16 +1,32 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { LazyBangladeshMap } from "@/components/lazy-bangladesh-map";
 import { LocationSearch } from "@/components/location-search";
 import { ReportDialog, type ReportMode } from "@/components/report-dialog";
 import { useLanguage } from "@/components/language-provider";
+import { getDhakaDate } from "@/lib/dhaka-date";
 import type { LocationRecord } from "@/lib/locations";
+import {
+  readRememberedReportArea,
+  rememberReportArea,
+} from "@/lib/report-memory";
 
 export function SubmitExperience() {
   const { text } = useLanguage();
   const [selected, setSelected] = useState<LocationRecord | null>(null);
   const [mode, setMode] = useState<ReportMode | null>(null);
+
+  const selectLocation = useCallback((location: LocationRecord) => {
+    setSelected(location);
+    rememberReportArea(getDhakaDate(), location);
+  }, []);
+  const closeReportDialog = useCallback(() => setMode(null), []);
+
+  useEffect(() => {
+    const remembered = readRememberedReportArea(getDhakaDate());
+    if (remembered) setSelected(remembered);
+  }, []);
 
   return (
     <section className="submit-page">
@@ -18,7 +34,7 @@ export function SubmitExperience() {
         <p className="eyebrow">{text.submit.eyebrow}</p>
         <h1>{text.submit.title}</h1>
         <p>{text.submit.body}</p>
-        <LocationSearch compact selected={selected} onSelect={setSelected} />
+        <LocationSearch compact selected={selected} onSelect={selectLocation} />
         {selected ? (
           <div className="submit-mode-picker">
             <button type="button" onClick={() => setMode("out")}>
@@ -37,7 +53,7 @@ export function SubmitExperience() {
         ) : null}
       </div>
       <div className="submit-page__map">
-        <LazyBangladeshMap compact selected={selected} onSelect={setSelected} />
+        <LazyBangladeshMap compact selected={selected} onSelect={selectLocation} />
       </div>
       {selected && mode ? (
         <ReportDialog
@@ -50,7 +66,7 @@ export function SubmitExperience() {
             districtNameBn: selected.districtBn,
           }}
           mode={mode}
-          onClose={() => setMode(null)}
+          onClose={closeReportDialog}
         />
       ) : null}
     </section>

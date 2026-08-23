@@ -13,7 +13,12 @@ import {
   type AreaSnapshot,
   type LiveStateName,
 } from "@/lib/client-api";
+import { getDhakaDate } from "@/lib/dhaka-date";
 import type { LocationRecord } from "@/lib/locations";
+import {
+  readRememberedReportArea,
+  rememberReportArea,
+} from "@/lib/report-memory";
 
 function toReportArea(location: LocationRecord) {
   return {
@@ -82,8 +87,9 @@ export function HomeExperience() {
   }, []);
 
   const selectLocation = useCallback(
-    (location: LocationRecord, revealDetails = false) => {
+    (location: LocationRecord, revealDetails = false, restoring = false) => {
       setSelected(location);
+      rememberReportArea(getDhakaDate(), location);
       setSnapshot(
         emptyAreaSnapshot({
           id: location.id,
@@ -96,8 +102,8 @@ export function HomeExperience() {
       );
       setAreaUnavailable(false);
       void refreshArea(location);
-      void recordAnalytics("area_search", location.id);
-      if (revealDetails || window.matchMedia("(max-width: 860px)").matches) {
+      if (!restoring) void recordAnalytics("area_search", location.id);
+      if (!restoring && (revealDetails || window.matchMedia("(max-width: 860px)").matches)) {
         scrollToAreaResult();
       }
     },
@@ -114,6 +120,11 @@ export function HomeExperience() {
     },
     [scrollToAreaResult, selectLocation, selected?.id],
   );
+
+  useEffect(() => {
+    const remembered = readRememberedReportArea(getDhakaDate());
+    if (remembered) selectLocation(remembered, false, true);
+  }, [selectLocation]);
 
   useEffect(() => {
     void refreshStatuses();
@@ -142,6 +153,22 @@ export function HomeExperience() {
             {text.hero.titleAccent ? <em>{text.hero.titleAccent}</em> : null}
           </h1>
           <p className="hero__description">{text.hero.description}</p>
+          <ul className="hero__value-list" aria-label={text.hero.valueLabel}>
+            <li>
+              <span aria-hidden="true">{text.hero.liveValueNumber}</span>
+              <div>
+                <strong>{text.hero.liveValueTitle}</strong>
+                <small>{text.hero.liveValueBody}</small>
+              </div>
+            </li>
+            <li>
+              <span aria-hidden="true">{text.hero.forecastValueNumber}</span>
+              <div>
+                <strong>{text.hero.forecastValueTitle}</strong>
+                <small>{text.hero.forecastValueBody}</small>
+              </div>
+            </li>
+          </ul>
           <LocationSearch selected={selected} onSelect={selectLocation} />
         </div>
         <div className="hero__map">

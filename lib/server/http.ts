@@ -54,7 +54,7 @@ export function failure(
 function databaseErrorStatus(error: SupabaseRestError): { status: number; code: string; message: string } {
   const normalized = error.message.toLowerCase();
   if (normalized.includes("rate_limit_exceeded")) {
-    return { status: 429, code: "rate_limit_exceeded", message: "Too many requests. Please wait and try again." };
+    return { status: 429, code: "rate_limit_exceeded", message: "Your earlier reports are safe. Please wait a moment before adding another update." };
   }
   if (normalized.includes("supabase_request_timeout")) {
     return { status: 504, code: "database_timeout", message: "The community data service took too long to respond." };
@@ -72,13 +72,13 @@ function databaseErrorStatus(error: SupabaseRestError): { status: number; code: 
     return { status: 423, code: "area_disabled", message: "Community reporting is temporarily unavailable for this area." };
   }
   if (normalized.includes("duplicate_daily_submission")) {
-    return { status: 409, code: "duplicate_daily_submission", message: "A daily report already exists for this browser and area." };
+    return { status: 409, code: "duplicate_daily_submission", message: "This update is already part of today’s report." };
   }
   if (normalized.includes("not_found")) {
     return { status: 404, code: "not_found", message: "The requested record was not found." };
   }
   if (normalized.includes("invalid_")) {
-    return { status: 400, code: "invalid_request", message: "The submitted data did not pass server validation." };
+    return { status: 400, code: "invalid_request", message: "Check the outage times and try again. The end must be after the start and cannot be in the future." };
   }
   return { status: 502, code: "database_error", message: "The community data service could not complete this request." };
 }

@@ -211,10 +211,10 @@ export function validateDailyReport(value: unknown, now = new Date()): Normalize
     throw new ValidationError("Outage times cannot end in the future.");
   }
   if (input.countKnown && outageCount !== null && windows.length > outageCount) {
-    throw new ValidationError("There cannot be more remembered windows than the reported daily outage count.");
-  }
-  if (!input.countKnown && windows.length === 0) {
-    throw new ValidationError("Add at least one remembered window when the daily count is unknown.");
+    // A remembered window is stronger evidence than a possibly miscounted
+    // total. Preserve the valid windows and gently correct the total instead
+    // of rejecting the whole report.
+    outageCount = windows.length;
   }
 
   return {

@@ -167,6 +167,7 @@ export async function createLocality(
   name: string,
   inputLocale: "en" | "bn" | "und" = "und",
 ): Promise<{ location: LocationRecord; created: boolean }> {
+  await ensureVisitor();
   return apiRequest<{ location: LocationRecord; created: boolean }>("/api/localities", {
     method: "POST",
     body: JSON.stringify({ parentId, name, inputLocale }),
@@ -177,6 +178,7 @@ export async function submitLiveReport(
   state: "out" | "on",
   upazilaId: string,
 ) {
+  await ensureVisitor();
   return apiRequest<{
     duplicate: boolean;
     eventId: string | null;
@@ -193,6 +195,53 @@ export type DailyWindowInput = {
   precision: "exact" | "approximate";
 };
 
+export type MyReportEvent = {
+  id: string;
+  startedAt: string;
+  endedAt: string | null;
+  source: "live" | "daily";
+  isOpen: boolean;
+  timePrecision: "exact" | "approximate";
+};
+
+export type MyReports = {
+  date: string;
+  events: MyReportEvent[];
+  dailySubmission: {
+    id: string;
+    countKnown: boolean;
+    outageCount: number | null;
+    rememberedWindowCount: number;
+  } | null;
+};
+
+let visitorReadyPromise: Promise<void> | null = null;
+
+export function ensureVisitor(): Promise<void> {
+  if (!visitorReadyPromise) {
+    visitorReadyPromise = apiRequest<{ visitorReady: boolean }>("/api/visitor", {
+      cache: "no-store",
+    })
+      .then(() => undefined)
+      .catch((error: unknown) => {
+        visitorReadyPromise = null;
+        throw error;
+      });
+  }
+  return visitorReadyPromise;
+}
+
+export async function getMyReports(
+  upazilaId: string,
+  date: string,
+): Promise<MyReports> {
+  await ensureVisitor();
+  const search = new URLSearchParams({ upazilaId, date });
+  return apiRequest<MyReports>(`/api/reports/mine?${search.toString()}`, {
+    cache: "no-store",
+  });
+}
+
 export async function submitDailyReport(input: {
   upazilaId: string;
   date: string;
@@ -200,9 +249,11 @@ export async function submitDailyReport(input: {
   outageCount: number | null;
   windows: DailyWindowInput[];
 }) {
+  await ensureVisitor();
   return apiRequest<{
     submissionId: string;
     duplicate: boolean;
+    merged: boolean;
     insertedEventIds: string[];
     skippedDuplicateWindows: number;
     existingEventIds: string[];
@@ -223,6 +274,7 @@ export async function recordAnalytics(
   upazilaId?: string,
 ) {
   try {
+    await ensureVisitor();
     await apiRequest<{ recorded: boolean }>("/api/analytics", {
       method: "POST",
       body: JSON.stringify({ event, upazilaId }),
@@ -234,7 +286,8 @@ export async function recordAnalytics(
 }
 
 export async function deleteMyReports() {
-  return apiRequest<{
+  await ensureVisitor();
+  const result = await apiRequest<{
     reportsDeleted: number;
     dailySubmissionsDeleted: number;
     localityContributionsDeleted: number;
@@ -243,4 +296,6 @@ export async function deleteMyReports() {
     method: "DELETE",
     body: JSON.stringify({ confirm: true }),
   });
+  visitorReadyPromise = null;
+  return result;
 }

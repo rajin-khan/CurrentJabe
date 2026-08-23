@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { HomeExperience } from "@/components/home-experience";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { StorySections } from "@/components/story-sections";
 import { createPageMetadata, SITE_DESCRIPTION, SITE_TITLE } from "@/lib/seo";
 
 export const metadata: Metadata = createPageMetadata({
@@ -17,6 +18,7 @@ export default function HomePage() {
     <main>
       <SiteHeader />
       <HomeExperience />
+      <StorySections />
       <SiteFooter />
     </main>
   );

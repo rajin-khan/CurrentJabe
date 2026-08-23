@@ -273,10 +273,39 @@ export async function closeLiveOutage(args: {
 type DailyRpcResult = {
   submission_id: string;
   duplicate?: boolean;
+  merged?: boolean;
   inserted_event_ids?: string[];
   skipped_duplicate_windows?: number;
   existing_event_ids?: string[];
 };
+
+type PersonalReports = Awaited<ReturnType<typeof getMyReports>>;
+
+function cumulativeDailyReport(
+  report: NormalizedDailyReport,
+  existing: PersonalReports | null,
+): NormalizedDailyReport {
+  if (!existing) return report;
+  const existingFloor = Math.max(
+    existing.events.length,
+    existing.dailySubmission?.outageCount ?? 0,
+  );
+  const countKnown = report.countKnown || Boolean(existing.dailySubmission?.countKnown);
+  if (!countKnown) return report;
+  return {
+    ...report,
+    countKnown: true,
+    outageCount: Math.min(
+      24,
+      Math.max(
+        report.outageCount ?? 0,
+        existingFloor,
+        existingFloor + report.windows.length,
+        report.windows.length,
+      ),
+    ),
+  };
+}
 
 export async function submitDailyReport(args: {
   visitorHash: string;
@@ -286,24 +315,57 @@ export async function submitDailyReport(args: {
 }): Promise<{
   submissionId: string;
   duplicate: boolean;
+  merged: boolean;
   insertedEventIds: string[];
   skippedDuplicateWindows: number;
   existingEventIds: string[];
 }> {
   await ensureLocationSelection(args.report.location);
-  const result = await restRpc<DailyRpcResult>("api_submit_daily_report", {
-    p_visitor_hash: args.visitorHash,
-    p_ip_hash: args.ipHash,
-    p_network_hash: args.networkHash,
-    p_occurred_on: args.report.date,
-    p_count_known: args.report.countKnown,
-    p_outage_count: args.report.outageCount,
-    p_windows: args.report.windows,
-    ...locationArgs(args.report.location),
-  });
+  let existing: PersonalReports | null = null;
+  try {
+    existing = await getMyReports({
+      visitorHash: args.visitorHash,
+      date: args.report.date,
+      location: args.report.location,
+    });
+  } catch {
+    // The mutation still has its own database checks. If this convenience read
+    // fails, do not turn it into a new client-side blocker.
+  }
+  let report = cumulativeDailyReport(args.report, existing);
+  const submit = (nextReport: NormalizedDailyReport) => restRpc<DailyRpcResult>(
+    "api_submit_daily_report",
+    {
+      p_visitor_hash: args.visitorHash,
+      p_ip_hash: args.ipHash,
+      p_network_hash: args.networkHash,
+      p_occurred_on: nextReport.date,
+      p_count_known: nextReport.countKnown,
+      p_outage_count: nextReport.outageCount,
+      p_windows: nextReport.windows,
+      ...locationArgs(nextReport.location),
+    },
+  );
+
+  let result: DailyRpcResult;
+  try {
+    result = await submit(report);
+  } catch (error) {
+    const canRetry = error instanceof SupabaseRestError &&
+      error.message.toLowerCase().includes("invalid_outage_count_below");
+    if (!canRetry) throw error;
+    const refreshed = await getMyReports({
+      visitorHash: args.visitorHash,
+      date: args.report.date,
+      location: args.report.location,
+    });
+    report = cumulativeDailyReport(report, refreshed);
+    result = await submit(report);
+  }
   return {
     submissionId: result.submission_id,
     duplicate: Boolean(result.duplicate),
+    merged: Boolean(result.merged),
     insertedEventIds: result.inserted_event_ids ?? [],
     skippedDuplicateWindows: Number(result.skipped_duplicate_windows ?? 0),
     existingEventIds: result.existing_event_ids ?? [],

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ApiError, deleteMyReports } from "@/lib/client-api";
+import { clearReportMemory } from "@/lib/report-memory";
 
 export function PrivacyDelete() {
   const [state, setState] = useState<"idle" | "confirm" | "working" | "done">("idle");
@@ -12,6 +13,7 @@ export function PrivacyDelete() {
     setMessage(null);
     try {
       const result = await deleteMyReports();
+      clearReportMemory();
       setMessage(
         `Deleted ${result.reportsDeleted} reports and ${result.localityContributionsDeleted} area-name contributions, then reset this browser’s private contributor identity.`,
       );

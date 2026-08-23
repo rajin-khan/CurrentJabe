@@ -23,7 +23,9 @@ export default function PrivacyPage() {
       <p>
         The server places a random, private contributor cookie in this browser. It is not a
         public profile. It lets CurrentJabe count independent contributors, prevent duplicate
-        reports, build a reliability history and delete this browser’s reports on request.
+        reports, build a reliability history and delete this browser’s reports on request. The
+        site also remembers your last selected reporting area in this browser for the rest of
+        the Dhaka calendar day, so returning to add another outage does not make you start over.
       </p>
 
       <h2>What a report contains</h2>

@@ -1033,6 +1033,7 @@ html[data-locale="bn"] .hero__copy h1 {
   font-weight: 600;
   letter-spacing: -0.055em;
   line-height: 1.04;
+  white-space: pre-wrap;
 }
 
 html[data-locale="bn"] .hero__copy h1 em {
@@ -1043,9 +1044,59 @@ html[data-locale="bn"] .hero__copy h1 em {
 
 .hero__description {
   max-width: 33rem;
-  margin: 0 0 clamp(1.6rem, 3vh, 2.4rem);
+  margin: 0 0 clamp(1.25rem, 2.4vh, 1.8rem);
   color: var(--ink-soft);
   font-size: clamp(0.95rem, 1.25vw, 1.14rem);
+  line-height: 1.58;
+  text-wrap: pretty;
+}
+
+.hero__value-list {
+  display: grid;
+  width: min(100%, 34rem);
+  margin: 0 0 clamp(1.35rem, 2.5vh, 1.9rem);
+  padding: 0;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-block: 1px solid var(--line-strong);
+  list-style: none;
+}
+
+.hero__value-list li {
+  display: grid;
+  min-width: 0;
+  padding: 0.9rem 0;
+  grid-template-columns: 1.5rem minmax(0, 1fr);
+  gap: 0.55rem;
+}
+
+.hero__value-list li + li {
+  padding-left: 0.95rem;
+  border-left: 1px solid var(--line);
+}
+
+.hero__value-list li > span {
+  padding-top: 0.14rem;
+  color: var(--red);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.hero__value-list div {
+  display: grid;
+  gap: 0.18rem;
+}
+
+.hero__value-list strong {
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.hero__value-list small {
+  color: var(--ink-soft);
+  font-size: 0.64rem;
+  line-height: 1.35;
 }
 
 .hero__method-link {
@@ -1726,6 +1777,16 @@ html[data-locale="bn"] .hero__copy h1 em {
 
   .hero__description {
     font-size: 0.93rem;
+  }
+
+  .hero__value-list {
+    grid-template-columns: 1fr;
+  }
+
+  .hero__value-list li + li {
+    padding-left: 0;
+    border-top: 1px solid var(--line);
+    border-left: 0;
   }
 
   .hero__method-link {
@@ -3268,6 +3329,17 @@ html[data-locale="bn"] .area-page-hero__copy h1 {
   font-weight: 700;
 }
 
+.personal-report-note {
+  margin: 0 0 1rem;
+  padding: 0.72rem 0.85rem;
+  color: var(--ink-soft);
+  border-radius: 0.7rem;
+  background: var(--paper);
+  font-size: 0.69rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
 .signal-actions {
   display: grid;
   margin-top: 1.1rem;
@@ -3757,6 +3829,87 @@ html[data-locale="bn"] .area-page-hero__copy h1 {
   font-size: 0.7rem;
 }
 
+.report-history-loading {
+  display: flex;
+  min-height: 100%;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.report-history-loading > span {
+  width: 3.1rem;
+  height: 3.1rem;
+  margin-bottom: 1.5rem;
+  border: 0.28rem solid var(--paper-deep);
+  border-top-color: var(--red);
+  border-radius: 50%;
+  animation: report-history-spin 850ms linear infinite;
+}
+
+.report-history-loading h2 {
+  max-width: 12em;
+}
+
+.report-history-loading > div {
+  display: grid;
+  max-width: 26rem;
+  margin-top: 1.2rem;
+  gap: 0.55rem;
+}
+
+.report-history-loading i {
+  display: block;
+  height: 0.65rem;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--paper-deep), var(--paper), var(--paper-deep));
+  background-size: 220% 100%;
+  animation: report-history-shimmer 1.2s ease-in-out infinite;
+}
+
+.report-history-loading i:nth-child(2) {
+  width: 76%;
+}
+
+.report-history-loading i:nth-child(3) {
+  width: 54%;
+}
+
+.saved-report-summary {
+  display: grid;
+  margin-bottom: 1.6rem;
+  padding: 1.1rem;
+  gap: 0.65rem;
+  border-radius: 1rem;
+  background: var(--paper);
+}
+
+.saved-report-summary > strong {
+  max-width: 34rem;
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.saved-report-summary > p:not(.eyebrow),
+.saved-report-summary > small {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.72rem;
+}
+
+.saved-report-times {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.saved-report-times span {
+  padding: 0.42rem 0.62rem;
+  border-radius: 999px;
+  background: var(--paper-bright);
+  font-size: 0.66rem;
+  font-weight: 700;
+}
+
 .count-picker {
   display: grid;
   margin: 1.8rem 0;
@@ -3989,6 +4142,15 @@ html[data-locale="bn"] .area-page-hero__copy h1 {
 @keyframes overlay-in {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+
+@keyframes report-history-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes report-history-shimmer {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
 }
 
 @keyframes dialog-in {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { CheckIcon, ShareIcon } from "@/components/icons";
 import { useLanguage } from "@/components/language-provider";
 import {
@@ -9,7 +9,14 @@ import {
   type ReportMode,
   type ReportSubmissionReceipt,
 } from "@/components/report-dialog";
-import { recordAnalytics, type AreaSnapshot, type LiveState } from "@/lib/client-api";
+import {
+  getMyReports,
+  recordAnalytics,
+  type AreaSnapshot,
+  type LiveState,
+  type MyReports,
+} from "@/lib/client-api";
+import { getDhakaDate } from "@/lib/dhaka-date";
 
 function formatHour(hour: number, locale: "en" | "bn") {
   const normalized = ((hour % 24) + 24) % 24;
@@ -66,6 +73,9 @@ export function AreaSignal({
   const [reportPhase, setReportPhase] = useState<"submitting" | "refreshing" | null>(null);
   const [copied, setCopied] = useState(false);
   const [now, setNow] = useState(0);
+  const [myReports, setMyReports] = useState<MyReports | null>(null);
+  const myReportsRequestRef = useRef(0);
+  const closeReportDialog = useCallback(() => setReportMode(null), []);
   const expired = Boolean(
     now > 0 &&
       displayedLiveState.expiresAt &&
@@ -76,6 +86,11 @@ export function AreaSignal({
   const areaName = locale === "bn" && area.nameBn ? area.nameBn : area.name;
   const districtName =
     locale === "bn" && area.districtNameBn ? area.districtNameBn : area.districtName;
+  const openOutage = myReports?.events.find((event) => event.isOpen) ?? null;
+  const reportedOutageCount = Math.max(
+    myReports?.events.length ?? 0,
+    myReports?.dailySubmission?.outageCount ?? 0,
+  );
 
   const statusLabel =
     state === "appears_out"
@@ -114,6 +129,21 @@ export function AreaSignal({
     if (reportPhase === null) setDisplayedLiveState(snapshot.liveState);
   }, [reportPhase, snapshot.liveState]);
 
+  const refreshMyReports = useCallback(async () => {
+    const requestId = ++myReportsRequestRef.current;
+    try {
+      const response = await getMyReports(area.id, getDhakaDate());
+      if (requestId === myReportsRequestRef.current) setMyReports(response);
+    } catch {
+      // Personal context is a convenience; public reporting stays available.
+    }
+  }, [area.id]);
+
+  useEffect(() => {
+    setMyReports(null);
+    void refreshMyReports();
+  }, [refreshMyReports]);
+
   const handleSubmitting = (mode: ReportMode) => {
     setReportPhase("submitting");
     if (mode === "out" || mode === "on") {
@@ -132,7 +162,10 @@ export function AreaSignal({
     }
     setReportPhase("refreshing");
     try {
-      await Promise.resolve(onRefresh?.());
+      await Promise.all([
+        Promise.resolve(onRefresh?.()),
+        refreshMyReports(),
+      ]);
     } finally {
       setReportPhase(null);
     }
@@ -228,14 +261,42 @@ export function AreaSignal({
           ) : null}
         </div>
 
+        {reportedOutageCount > 0 ? (
+          <p className="personal-report-note" role="status">
+            {openOutage
+              ? locale === "bn"
+                ? "এই ব্রাউজার থেকে একটি চলমান বিভ্রাট রিপোর্ট করা হয়েছে। কারেন্ট এলে নিচে জানান।"
+                : "This browser reported an ongoing outage. When power returns, tell us below."
+              : locale === "bn"
+                ? `আজ এই ব্রাউজার থেকে ${reportedOutageCount.toLocaleString("bn-BD")}টি বিভ্রাট রিপোর্ট করা হয়েছে।`
+                : `This browser has reported ${reportedOutageCount} outage${reportedOutageCount === 1 ? "" : "s"} today.`}
+          </p>
+        ) : null}
+
         <div className="signal-actions">
           <button className="signal-action signal-action--out" type="button" onClick={() => setReportMode("out")}>
-            <small>{locale === "bn" ? "এখন জানান" : "Report now"}</small>
-            <strong>{text.actions.out}</strong>
+            <small>
+              {openOutage
+                ? locale === "bn" ? "অবস্থা একই" : "Still out"
+                : locale === "bn" ? "এখন জানান" : "Report now"}
+            </small>
+            <strong>
+              {!openOutage && reportedOutageCount > 0
+                ? locale === "bn" ? "আবার কারেন্ট গেছে" : "Current is out again"
+                : text.actions.out}
+            </strong>
           </button>
           <button className="signal-action signal-action--on" type="button" onClick={() => setReportMode("on")}>
-            <small>{locale === "bn" ? "এখন নিশ্চিত করুন" : "Confirm now"}</small>
-            <strong>{text.actions.on}</strong>
+            <small>
+              {openOutage
+                ? locale === "bn" ? "পরিবর্তন জানান" : "Report the change"
+                : locale === "bn" ? "এখন নিশ্চিত করুন" : "Confirm now"}
+            </small>
+            <strong>
+              {openOutage
+                ? locale === "bn" ? "কারেন্ট ফিরে এসেছে" : "Current is back"
+                : text.actions.on}
+            </strong>
           </button>
         </div>
         <button className="history-action" type="button" onClick={() => setReportMode("daily")}>
@@ -251,7 +312,7 @@ export function AreaSignal({
         <ReportDialog
           area={area}
           mode={reportMode}
-          onClose={() => setReportMode(null)}
+          onClose={closeReportDialog}
           onSubmitting={handleSubmitting}
           onSubmitted={handleSubmitted}
           onSubmissionError={handleSubmissionError}

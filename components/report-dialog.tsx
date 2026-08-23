@@ -4,11 +4,13 @@ import { useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
   ApiError,
-  recordAnalytics,
+  ensureVisitor,
+  getMyReports,
   submitDailyReport,
   submitLiveReport,
   type DailyWindowInput,
   type LiveState,
+  type MyReports,
 } from "@/lib/client-api";
 import { getDhakaDate } from "@/lib/dhaka-date";
 import { CheckIcon, CloseIcon, PlusIcon, TrashIcon } from "@/components/icons";
@@ -36,6 +38,7 @@ export type ReportSubmissionReceipt =
       duplicate: boolean;
       insertedTimedEvents: number;
       date: string;
+      ignoredIncompleteWindows?: number;
     };
 
 type TimeWindowDraft = {
@@ -45,8 +48,57 @@ type TimeWindowDraft = {
   approximate: boolean;
 };
 
+type DailyFormDraft = {
+  countKnown: boolean;
+  outageCount: number | null;
+  rememberTimes: boolean;
+  windows: TimeWindowDraft[];
+  step: "form" | "times";
+};
+
 function createWindow(id: string): TimeWindowDraft {
   return { id, startTime: "", endTime: "", approximate: false };
+}
+
+function reportErrorMessage(
+  error: unknown,
+  locale: "en" | "bn",
+  fallback: string,
+  messages: {
+    invalid: string;
+    rateLimit: string;
+    temporary: string;
+  },
+): string {
+  if (!(error instanceof ApiError)) return messages.temporary || fallback;
+  if (error.code === "rate_limit_exceeded") return messages.rateLimit;
+  if (error.code === "validation_error" || error.code === "invalid_request") {
+    return messages.invalid;
+  }
+  if (
+    error.code === "database_error" ||
+    error.code === "database_timeout" ||
+    error.code === "database_unreachable" ||
+    error.code === "invalid_response" ||
+    error.code === "request_failed"
+  ) {
+    return messages.temporary;
+  }
+  if (error.code === "submissions_disabled" || error.code === "area_disabled") {
+    return locale === "bn"
+      ? "এই এলাকার কমিউনিটি রিপোর্ট সাময়িকভাবে বন্ধ আছে। একটু পরে আবার চেষ্টা করুন।"
+      : "Community reporting for this area is temporarily paused. Please try again later.";
+  }
+  return fallback;
+}
+
+function formatSavedTime(iso: string, locale: "en" | "bn"): string {
+  return new Intl.DateTimeFormat(locale === "bn" ? "bn-BD" : "en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+    timeZone: "Asia/Dhaka",
+  }).format(new Date(iso));
 }
 
 export function ReportDialog({
@@ -69,15 +121,20 @@ export function ReportDialog({
   const panelRef = useRef<HTMLDivElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
   const submittingRef = useRef(false);
-  const [step, setStep] = useState<"form" | "times" | "success">("form");
+  const dailyDraftsRef = useRef<Record<string, DailyFormDraft>>({});
+  const [step, setStep] = useState<"loading" | "form" | "times" | "success">(
+    mode === "daily" ? "loading" : "form",
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [receipt, setReceipt] = useState<ReportSubmissionReceipt | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [dateOffset, setDateOffset] = useState<0 | -1>(0);
+  const [reportDate, setReportDate] = useState(() => getDhakaDate());
   const [countKnown, setCountKnown] = useState(true);
   const [outageCount, setOutageCount] = useState<number | null>(1);
   const [rememberTimes, setRememberTimes] = useState(true);
   const [windows, setWindows] = useState<TimeWindowDraft[]>([createWindow("window-1")]);
+  const [history, setHistory] = useState<MyReports | null>(null);
 
   const areaName = locale === "bn" && area.nameBn ? area.nameBn : area.name;
   const districtName =
@@ -145,10 +202,80 @@ export function ReportDialog({
     if (bodyRef.current) bodyRef.current.scrollTop = 0;
   }, [step]);
 
+  useEffect(() => {
+    let active = true;
+    if (mode !== "daily") {
+      void ensureVisitor().catch(() => undefined);
+      return () => {
+        active = false;
+      };
+    }
+
+    const date = getDhakaDate(dateOffset);
+    setReportDate(date);
+    setStep("loading");
+    setError(null);
+    setHistory(null);
+    void getMyReports(area.id, date)
+      .then((saved) => {
+        if (!active) return;
+        setHistory(saved);
+        const draft = dailyDraftsRef.current[date];
+        if (draft) {
+          setCountKnown(draft.countKnown);
+          setOutageCount(draft.outageCount);
+          setRememberTimes(draft.rememberTimes);
+          setWindows(draft.windows);
+          setStep(draft.step);
+          return;
+        }
+        const savedCount = Math.max(
+          saved.events.length,
+          saved.dailySubmission?.outageCount ?? 0,
+        );
+        if (saved.events.length > 0 || saved.dailySubmission) {
+          const savedCountKnown = saved.dailySubmission?.countKnown ?? true;
+          setCountKnown(savedCountKnown);
+          setOutageCount(savedCountKnown ? savedCount : null);
+          setRememberTimes(true);
+          setWindows([createWindow(`window-return-${date}`)]);
+          setStep("times");
+        } else {
+          setCountKnown(true);
+          setOutageCount(1);
+          setRememberTimes(true);
+          setWindows([createWindow(`window-first-${date}`)]);
+          setStep("form");
+        }
+      })
+      .catch(() => {
+        if (!active) return;
+        setHistory(null);
+        const draft = dailyDraftsRef.current[date];
+        if (draft) {
+          setCountKnown(draft.countKnown);
+          setOutageCount(draft.outageCount);
+          setRememberTimes(draft.rememberTimes);
+          setWindows(draft.windows);
+          setStep(draft.step);
+        } else {
+          setCountKnown(true);
+          setOutageCount(1);
+          setRememberTimes(true);
+          setWindows([createWindow(`window-fallback-${date}`)]);
+          setStep("form");
+        }
+        void ensureVisitor().catch(() => undefined);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [area.id, dateOffset, mode]);
+
   const finishSuccess = (nextReceipt: ReportSubmissionReceipt) => {
     setReceipt(nextReceipt);
     setStep("success");
-    void recordAnalytics("report_completed", area.id);
     void Promise.resolve(onSubmitted?.(nextReceipt));
   };
 
@@ -159,6 +286,7 @@ export function ReportDialog({
     setError(null);
     onSubmitting?.(mode);
     try {
+      await ensureVisitor();
       const result = await submitLiveReport(mode as "out" | "on", area.id);
       finishSuccess({
         mode: mode as "out" | "on",
@@ -167,9 +295,11 @@ export function ReportDialog({
       });
     } catch (requestError) {
       onSubmissionError?.();
-      setError(
-        requestError instanceof ApiError ? requestError.message : text.report.error,
-      );
+      setError(reportErrorMessage(requestError, locale, text.report.error, {
+        invalid: text.report.friendlyInvalid,
+        rateLimit: text.report.friendlyRateLimit,
+        temporary: text.report.friendlyTemporary,
+      }));
     } finally {
       submittingRef.current = false;
       setIsSubmitting(false);
@@ -178,13 +308,9 @@ export function ReportDialog({
 
   const submitDaily = async () => {
     if (submittingRef.current) return;
-    const hasIncompleteWindow = rememberTimes && windows.some(
-      (window) => Boolean(window.startTime) !== Boolean(window.endTime),
-    );
-    if (hasIncompleteWindow) {
-      setError(text.report.incompleteWindow);
-      return;
-    }
+    const incompleteWindowCount = rememberTimes
+      ? windows.filter((window) => Boolean(window.startTime) !== Boolean(window.endTime)).length
+      : 0;
     const usableWindows: DailyWindowInput[] = rememberTimes
       ? windows.flatMap((window) =>
           window.startTime && window.endTime
@@ -199,22 +325,34 @@ export function ReportDialog({
         )
       : [];
 
-    if (!countKnown && usableWindows.length === 0) {
-      setError(text.report.needOneMemory);
-      return;
-    }
-
     submittingRef.current = true;
     setIsSubmitting(true);
     setError(null);
     onSubmitting?.("daily");
     try {
-      const date = getDhakaDate(dateOffset);
+      await ensureVisitor();
+      const date = reportDate;
+      const savedFloor = Math.max(
+        history?.events.length ?? 0,
+        history?.dailySubmission?.outageCount ?? 0,
+      );
+      const effectiveCountKnown = countKnown || Boolean(history?.dailySubmission?.countKnown);
+      const effectiveOutageCount = effectiveCountKnown
+        ? Math.min(
+            24,
+            Math.max(
+              outageCount ?? 0,
+              savedFloor,
+              savedFloor + usableWindows.length,
+              usableWindows.length,
+            ),
+          )
+        : null;
       const result = await submitDailyReport({
         upazilaId: area.id,
         date,
-        countKnown,
-        outageCount,
+        countKnown: effectiveCountKnown,
+        outageCount: effectiveOutageCount,
         windows: usableWindows,
       });
       finishSuccess({
@@ -222,12 +360,15 @@ export function ReportDialog({
         duplicate: result.duplicate,
         insertedTimedEvents: result.insertedEventIds.length,
         date,
+        ignoredIncompleteWindows: incompleteWindowCount,
       });
     } catch (requestError) {
       onSubmissionError?.();
-      setError(
-        requestError instanceof ApiError ? requestError.message : text.report.error,
-      );
+      setError(reportErrorMessage(requestError, locale, text.report.error, {
+        invalid: text.report.friendlyInvalid,
+        rateLimit: text.report.friendlyRateLimit,
+        temporary: text.report.friendlyTemporary,
+      }));
     } finally {
       submittingRef.current = false;
       setIsSubmitting(false);
@@ -239,7 +380,11 @@ export function ReportDialog({
     setOutageCount(count);
     setRememberTimes(true);
     setWindows((current) => {
-      const desired = count;
+      const savedFloor = Math.max(
+        history?.events.length ?? 0,
+        history?.dailySubmission?.outageCount ?? 0,
+      );
+      const desired = Math.max(1, count - savedFloor);
       if (current.length >= desired) return current.slice(0, desired);
       return [
         ...current,
@@ -257,6 +402,18 @@ export function ReportDialog({
     setWindows((current) => (current.length > 0 ? current : [createWindow(`window-${Date.now()}`)]));
   };
 
+  const changeDate = (nextOffset: 0 | -1) => {
+    if (nextOffset === dateOffset) return;
+    dailyDraftsRef.current[reportDate] = {
+      countKnown,
+      outageCount,
+      rememberTimes,
+      windows,
+      step: step === "times" ? "times" : "form",
+    };
+    setDateOffset(nextOffset);
+  };
+
   const title =
     mode === "out"
       ? text.report.titleOut
@@ -264,8 +421,19 @@ export function ReportDialog({
         ? text.report.titleOn
         : text.report.titleHistory;
 
+  const hadSavedDailyHistory = Boolean(history?.events.length || history?.dailySubmission);
+  const savedOutageCount = Math.max(
+    history?.events.length ?? 0,
+    history?.dailySubmission?.outageCount ?? 0,
+  );
   const successBody = receipt?.mode === "daily"
-    ? text.report.successDaily
+    ? receipt.ignoredIncompleteWindows
+      ? `${hadSavedDailyHistory ? text.report.successDailyUpdate : text.report.successDaily} ${text.report.partialSaved}`
+      : receipt.duplicate
+        ? text.report.successNoChange
+        : hadSavedDailyHistory
+          ? text.report.successDailyUpdate
+          : text.report.successDaily
     : receipt?.duplicate
       ? text.report.successDuplicate
       : receipt
@@ -288,7 +456,7 @@ export function ReportDialog({
       <div
         aria-labelledby={titleId}
         aria-modal="true"
-        aria-busy={isSubmitting}
+        aria-busy={isSubmitting || step === "loading"}
         className="report-dialog"
         onMouseDown={(event) => event.stopPropagation()}
         ref={panelRef}
@@ -313,6 +481,13 @@ export function ReportDialog({
                   {text.actions.done}
                 </button>
               </div>
+            </div>
+          ) : step === "loading" ? (
+            <div className="report-history-loading" role="status" aria-live="polite">
+              <span aria-hidden="true" />
+              <p className="eyebrow">{text.report.privacy}</p>
+              <h2 id={titleId}>{text.report.loadingHistory}</h2>
+              <div aria-hidden="true"><i /><i /><i /></div>
             </div>
           ) : (
             <>
@@ -339,18 +514,20 @@ export function ReportDialog({
                 </div>
               ) : step === "form" ? (
                 <div className="daily-count-form">
-                  <div className="date-switch" aria-label={text.report.dateLabel}>
+                  <div className="date-switch" aria-label={text.report.dateLabel} role="group">
                     <button
+                      aria-pressed={dateOffset === 0}
                       className={dateOffset === 0 ? "is-active" : ""}
                       type="button"
-                      onClick={() => setDateOffset(0)}
+                      onClick={() => changeDate(0)}
                     >
                       {text.report.today}
                     </button>
                     <button
+                      aria-pressed={dateOffset === -1}
                       className={dateOffset === -1 ? "is-active" : ""}
                       type="button"
-                      onClick={() => setDateOffset(-1)}
+                      onClick={() => changeDate(-1)}
                     >
                       {text.report.yesterdayLabel}
                     </button>
@@ -362,6 +539,7 @@ export function ReportDialog({
                   <div className="count-picker" role="group" aria-label={text.report.countQuestion}>
                     {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((count) => (
                       <button
+                        aria-pressed={outageCount === count}
                         className={outageCount === count ? "is-active" : ""}
                         key={count}
                         type="button"
@@ -371,6 +549,7 @@ export function ReportDialog({
                       </button>
                     ))}
                     <button
+                      aria-pressed={!countKnown}
                       className={`count-unknown${countKnown ? "" : " is-active"}`}
                       type="button"
                       onClick={setUnknownCount}
@@ -384,8 +563,39 @@ export function ReportDialog({
                 </div>
               ) : (
                 <div className="daily-times-form">
+                  {hadSavedDailyHistory ? (
+                    <section className="saved-report-summary" aria-label={dateOffset === 0 ? text.report.todaySoFar : text.report.yesterdaySoFar}>
+                      <p className="eyebrow">
+                        {dateOffset === 0 ? text.report.todaySoFar : text.report.yesterdaySoFar}
+                      </p>
+                      <strong>
+                        {text.report.savedOutages.replace(
+                          "{count}",
+                          locale === "bn"
+                            ? savedOutageCount.toLocaleString("bn-BD")
+                            : String(savedOutageCount),
+                        )}
+                      </strong>
+                      {history && history.events.length > 0 ? (
+                        <div className="saved-report-times">
+                          {history.events.slice(0, 8).map((event) => (
+                            <span key={event.id}>
+                              {formatSavedTime(event.startedAt, locale)}
+                              {" — "}
+                              {event.endedAt
+                                ? formatSavedTime(event.endedAt, locale)
+                                : locale === "bn" ? "এখনও চলছে" : "ongoing"}
+                            </span>
+                          ))}
+                        </div>
+                      ) : (
+                        <small>{text.report.noSavedTimes}</small>
+                      )}
+                      <p>{text.report.addAnother}</p>
+                    </section>
+                  ) : null}
                   <div>
-                    <h3>{text.report.rememberQuestion}</h3>
+                    <h3>{hadSavedDailyHistory ? text.report.addWindow : text.report.rememberQuestion}</h3>
                     <p>{text.report.rememberHelp}</p>
                     <p className="daily-evidence-note">{text.report.countOnlyNote}</p>
                   </div>
@@ -483,7 +693,11 @@ export function ReportDialog({
                       {text.actions.back}
                     </button>
                     <button className="button-primary" disabled={isSubmitting} type="button" onClick={submitDaily}>
-                      {isSubmitting ? text.status.submitting : text.actions.submit}
+                      {isSubmitting
+                        ? text.status.submitting
+                        : hadSavedDailyHistory
+                          ? text.report.saveUpdate
+                          : text.actions.submit}
                     </button>
                   </div>
                 </div>
