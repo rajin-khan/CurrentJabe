@@ -20,11 +20,18 @@ export type CatalogLocation = {
   geometryAvailable: boolean;
   approximateMapFeatureIds?: string[];
   mapCoverage?: MapCoverageKind;
+  aliases?: string[];
 };
 
 const locations = rawLocations as CatalogLocation[];
 const byId = new Map(locations.map((location) => [location.id, location]));
 const bySlug = new Map(locations.map((location) => [location.slug, location]));
+
+// Search/browse groupings may follow the name people actually use without
+// rewriting the sourced administrative parent stored in the database.
+const browseParentOverrides: Readonly<Record<string, string>> = {
+  "dhaka-mirpur-dohs": "dhaka-mirpur",
+};
 
 export function slugifyCatalogName(value: string): string {
   return value
@@ -49,6 +56,16 @@ export function catalogLocationBySlug(slug: string): CatalogLocation | null {
 
 export function allCatalogLocations(): readonly CatalogLocation[] {
   return locations;
+}
+
+export function browseParentIdFor(location: Pick<CatalogLocation, "id" | "parentId">): string | undefined {
+  return browseParentOverrides[location.id] ?? location.parentId;
+}
+
+export function browseAliasLocationIdsFor(parentId: string): string[] {
+  return Object.entries(browseParentOverrides)
+    .filter(([, browseParentId]) => browseParentId === parentId)
+    .map(([locationId]) => locationId);
 }
 
 export function assertCatalogSelection(location: LocationSelection): CatalogLocation {

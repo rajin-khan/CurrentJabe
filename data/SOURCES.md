@@ -80,6 +80,24 @@ to choose "I don't know" and correct the candidate.
 
 ## Finer localities and electrical scope
 
+The initial fine-area selector uses factual place names manually transcribed
+from public sources. No municipal or utility artwork is redistributed:
+
+- The BBS Dhaka Community and District reports anchor the formal thana,
+  ward, and mahalla hierarchy:
+  <https://nsds.bbs.gov.bd/storage/files/1/Publications/PHC_2021%20Community%20Report/DHAKA%20DIVISION/Community%20Report%20Dhaka.pdf>
+  and
+  <https://nsds.bbs.gov.bd/storage/files/1/Publications/PHC_2021/Dhaka%20Division/District%20Report%20Dhaka_25062024.pdf>
+- DNCC's public ward-area list supports the bundled Mirpur section names:
+  <https://dncc.gov.bd/pages/static-pages/6922ded3933eb65569e1da8e>
+- DSCC's ward roster explicitly names the bundled Dhanmondi road scopes:
+  <https://dscc.gov.bd/site/page/968ca790-6f0f-4efe-90a0-69b5c650b533/%E0%A6%93%E0%A7%9F%E0%A6%BE%E0%A6%B0%E0%A7%8D%E0%A6%A1%E0%A6%AD%E0%A6%BF%E0%A6%A4%E0%A7%8D%E0%A6%A4%E0%A6%BF%E0%A6%95-%E0%A6%AA%E0%A6%B0%E0%A6%BF%E0%A6%9A%E0%A7%8D%E0%A6%9B%E0%A6%A8%E0%A7%8D%E0%A6%A8%E0%A6%95%E0%A6%B0%E0%A7%8D%E0%A6%AE%E0%A7%80%E0%A6%B0-%E0%A6%A4%E0%A6%BE%E0%A6%B2%E0%A6%BF%E0%A6%95%E0%A6%BE>
+
+The first field is intentionally described as a **thana or broad area**.
+Colloquial Mirpur crosses more than one formal metropolitan thana, so Mirpur
+DOHS may be browsed beneath Mirpur while retaining Pallabi as its sourced
+administrative parent in stored data.
+
 `Mirpur DOHS` is the first explicitly sourced locality below the metropolitan
 thana level. It is a separate community reporting and forecast bucket with
 `dhaka-pallabi` as its administrative catalog parent and DESCO as a confirmed
@@ -112,6 +130,12 @@ These sources do not publish a nationwide consumer-to-feeder boundary dataset.
 CurrentJabe therefore never converts a neighborhood name into an invented
 feeder. A named locality remains a community observation scope unless an exact
 utility mapping is separately sourced.
+
+Community-added area names are Unicode-normalized, safely formatted,
+parent-scoped, rate-limited, and deduplicated against exact normalized matches.
+They become selectable immediately but remain community reporting labels. They
+inherit only an approximate parent-map highlight and never inherit an
+electricity provider or feeder mapping.
 
 ## Known limitations
 

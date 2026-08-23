@@ -95,6 +95,25 @@ svg {
   outline-offset: 3px;
 }
 
+.skip-link {
+  position: fixed;
+  z-index: 1000;
+  top: 0.75rem;
+  left: 0.75rem;
+  padding: 0.75rem 1rem;
+  color: var(--paper-bright);
+  border-radius: 999px;
+  background: var(--black);
+  font-size: 0.75rem;
+  font-weight: 700;
+  transform: translateY(-180%);
+  transition: transform 160ms ease;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -186,9 +205,14 @@ html[data-locale="bn"] .eyebrow {
 
 .wordmark__type {
   color: var(--ink);
+  font-family: var(--font-body);
   font-size: 1.08rem;
   font-weight: 700;
   letter-spacing: -0.045em;
+}
+
+html[data-locale="bn"] .wordmark__type {
+  font-family: var(--font-body);
 }
 
 .wordmark__type span {
@@ -574,6 +598,18 @@ html[data-locale="bn"] .trust-section h2 {
   white-space: nowrap;
 }
 
+.footer-signature a {
+  transition: opacity 200ms ease;
+}
+
+.footer-signature a:hover {
+  opacity: 0.72;
+}
+
+.footer-signature a:focus-visible {
+  opacity: 0.72;
+}
+
 @media (max-width: 880px) {
   .site-footer__inner {
     grid-template-columns: 1fr auto;
@@ -671,6 +707,124 @@ html[data-locale="bn"] .trust-section h2 {
   color: var(--red-deep);
   text-decoration: underline;
   text-underline-offset: 0.2em;
+}
+
+.area-directory {
+  width: min(100%, var(--content-max));
+  min-height: 100dvh;
+  margin-inline: auto;
+  padding: calc(var(--header-offset) + clamp(3.5rem, 7vw, 7rem)) var(--page-pad) clamp(6rem, 10vw, 10rem);
+}
+
+.area-directory__intro {
+  max-width: 54rem;
+}
+
+.area-directory__intro h1 {
+  max-width: 11ch;
+  margin: 0.8rem 0 1.2rem;
+  font-size: clamp(3.2rem, 7.5vw, 7.4rem);
+  font-weight: 500;
+  letter-spacing: -0.07em;
+  line-height: 0.88;
+  text-wrap: balance;
+}
+
+.area-directory__intro > p:last-child {
+  max-width: 56ch;
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: clamp(0.95rem, 1.35vw, 1.16rem);
+}
+
+.area-directory__districts {
+  display: grid;
+  margin-top: clamp(4rem, 8vw, 8rem);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(2.5rem, 5vw, 5rem) clamp(1.5rem, 4vw, 4rem);
+}
+
+.area-directory__district > header {
+  display: flex;
+  padding-bottom: 0.8rem;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.area-directory__district h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+}
+
+.area-directory__district header span {
+  flex: 0 0 auto;
+  color: var(--ink-soft);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.area-directory__district ul {
+  display: grid;
+  margin: 0;
+  padding: 0.8rem 0 0;
+  gap: 0.15rem;
+  list-style: none;
+}
+
+.area-directory__district a {
+  display: flex;
+  min-height: 2.25rem;
+  padding: 0.35rem 0.2rem;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.8rem;
+  border-radius: 0.3rem;
+  font-size: 0.76rem;
+  transition: color 160ms ease, transform 160ms ease;
+}
+
+.area-directory__district a:hover,
+.area-directory__district a:focus-visible {
+  color: var(--red-deep);
+  transform: translateX(0.2rem);
+}
+
+.area-directory__district small {
+  color: var(--ink-soft);
+  font-family: var(--font-bn);
+  font-size: 0.68rem;
+  text-align: right;
+}
+
+@media (max-width: 960px) {
+  .area-directory__districts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 580px) {
+  .area-directory {
+    padding-top: calc(var(--header-offset) + 3rem);
+  }
+
+  .area-directory__intro h1 {
+    font-size: clamp(3rem, 15vw, 4.7rem);
+  }
+
+  .area-directory__districts {
+    grid-template-columns: 1fr;
+  }
+
+  .area-directory__district a {
+    min-height: 2.65rem;
+    font-size: 0.82rem;
+  }
 }
 
 @media (max-width: 980px) {
@@ -960,6 +1114,33 @@ html[data-locale="bn"] .hero__copy h1 em {
   width: min(100%, 34rem);
 }
 
+.location-search--two-level {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.location-search__field {
+  position: relative;
+  min-width: 0;
+}
+
+.location-search__field--parent {
+  z-index: 2;
+}
+
+.location-search__field--locality {
+  z-index: 1;
+  animation: location-field-in 240ms cubic-bezier(0.2, 0.72, 0.25, 1) both;
+}
+
+.location-search__label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--ink);
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
 .location-search > label {
   display: block;
   margin-bottom: 0.55rem;
@@ -988,6 +1169,22 @@ html[data-locale="bn"] .hero__copy h1 em {
   background: var(--paper-bright);
   border-color: var(--red);
   box-shadow: 0 12px 40px rgba(116, 42, 25, 0.12);
+}
+
+.location-search__control.is-loading {
+  overflow: hidden;
+}
+
+.location-search__control.is-loading::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--red), transparent);
+  transform: translateX(-100%);
+  animation: location-load-line 1.15s ease-in-out infinite;
+  content: "";
 }
 
 .location-search__control > svg:first-child {
@@ -1020,15 +1217,28 @@ html[data-locale="bn"] .hero__copy h1 em {
 
 .location-search__hint {
   max-width: 31rem;
-  margin: 0.6rem 0 0;
+  margin: -0.2rem 0 0;
   color: var(--ink-soft);
   font-size: 0.63rem;
+}
+
+.location-search__field-hint,
+.location-search__error {
+  margin: 0.45rem 0 0;
+  color: var(--ink-soft);
+  font-size: 0.61rem;
+  line-height: 1.4;
+}
+
+.location-search__error {
+  color: var(--red-deep);
+  font-weight: 600;
 }
 
 .location-results {
   position: absolute;
   z-index: 30;
-  top: calc(100% - 1.1rem);
+  top: calc(100% + 0.45rem);
   left: 0;
   width: 100%;
   max-height: min(24rem, 45dvh);
@@ -1094,6 +1304,58 @@ html[data-locale="bn"] .hero__copy h1 em {
   background: var(--paper-deep);
 }
 
+.location-results button.location-results__add {
+  color: var(--paper-bright);
+  background: var(--red);
+}
+
+.location-results button.location-results__add:hover,
+.location-results button.location-results__add.is-active {
+  background: var(--red-deep);
+}
+
+.location-results button.location-results__add > svg,
+.location-results button.location-results__add small {
+  color: inherit;
+}
+
+.location-results button.location-results__add small {
+  opacity: 0.72;
+}
+
+.location-results__loading {
+  display: flex;
+  min-height: 4.6rem;
+  padding: 1rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  color: var(--ink-soft);
+  font-size: 0.7rem;
+}
+
+.location-results__loading > span:first-child {
+  width: 0.9rem;
+  height: 0.9rem;
+  border: 2px solid color-mix(in srgb, var(--red) 24%, transparent);
+  border-top-color: var(--red);
+  border-radius: 50%;
+  animation: location-spinner 700ms linear infinite;
+}
+
+@keyframes location-field-in {
+  from { opacity: 0; transform: translateY(-0.35rem); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes location-load-line {
+  60%, 100% { transform: translateX(100%); }
+}
+
+@keyframes location-spinner {
+  to { transform: rotate(1turn); }
+}
+
 .location-search--compact {
   width: 100%;
 }
@@ -1157,21 +1419,6 @@ html[data-locale="bn"] .hero__copy h1 em {
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-}
-
-.bangladesh-map__topline span:last-child {
-  display: flex;
-  align-items: center;
-  gap: 0.55rem;
-}
-
-.live-dot {
-  width: 0.48rem;
-  height: 0.48rem;
-  border-radius: 50%;
-  background: var(--red);
-  box-shadow: 0 0 0 0.27rem rgba(227, 66, 50, 0.14);
-  animation: live-pulse 1.8s ease-in-out infinite;
 }
 
 .bangladesh-map__canvas {
@@ -1283,11 +1530,38 @@ html[data-locale="bn"] .hero__copy h1 em {
   text-transform: uppercase;
 }
 
+.map-readout__location,
 .map-readout strong {
+  width: fit-content;
+  max-width: 100%;
   margin: 0.12rem 0;
+  color: var(--paper-bright);
   font-size: clamp(1.15rem, 2vw, 1.6rem);
   font-weight: 500;
   letter-spacing: -0.04em;
+  line-height: 1.1;
+}
+
+.map-readout__location {
+  display: inline-flex;
+  min-height: 2.75rem;
+  padding: 0;
+  align-items: center;
+  text-align: left;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
+  transition: color 160ms ease, border-color 160ms ease;
+}
+
+.map-readout__location:hover,
+.map-readout__location:focus-visible {
+  color: var(--red-soft);
+  border-bottom-color: currentColor;
+  outline: 2px solid var(--paper-bright);
+  outline-offset: 3px;
 }
 
 .map-legend {
@@ -1365,11 +1639,6 @@ html[data-locale="bn"] .hero__copy h1 em {
 .area-result__heading > span {
   color: var(--ink-soft);
   font-size: 0.68rem;
-}
-
-@keyframes live-pulse {
-  0%, 100% { opacity: 1; box-shadow: 0 0 0 0.22rem rgba(227, 66, 50, 0.12); }
-  50% { opacity: 0.7; box-shadow: 0 0 0 0.42rem rgba(227, 66, 50, 0); }
 }
 
 @keyframes selected-ring {
@@ -1478,15 +1747,7 @@ html[data-locale="bn"] .hero__copy h1 em {
   .bangladesh-map__topline {
     display: grid;
     padding-inline: var(--page-pad);
-    grid-template-columns: minmax(0, 1fr) auto;
-  }
-
-  .bangladesh-map__topline span:last-child {
-    font-size: 0;
-  }
-
-  .bangladesh-map__topline span:last-child .live-dot {
-    display: block;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .map-readout {
@@ -2714,13 +2975,102 @@ html[data-locale="bn"] .area-page-hero__copy h1 {
 
 .area-signal {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1.05fr) minmax(20rem, 0.95fr);
   gap: clamp(0.9rem, 2vw, 1.5rem);
 }
 
-.area-signal.is-loading {
-  opacity: 0.62;
-  pointer-events: none;
+.signal-loading-card {
+  position: relative;
+  min-width: 0;
+  min-height: clamp(23rem, 34vw, 29rem);
+  padding: clamp(1.4rem, 2.8vw, 2.5rem);
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: 1.25rem;
+  background: var(--paper-bright);
+}
+
+.signal-loading-card--forecast {
+  background: #eee6da;
+}
+
+.signal-loading-card::before {
+  position: absolute;
+  z-index: -1;
+  inset: -45%;
+  background: radial-gradient(circle, rgba(227, 66, 50, 0.2), transparent 34%);
+  transform: translateX(-42%);
+  animation: signal-current-drift 1.7s cubic-bezier(0.55, 0.08, 0.32, 0.96) infinite alternate;
+  content: "";
+}
+
+.signal-loading-card::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--red), transparent);
+  transform: translateX(-100%);
+  animation: signal-current-line 1.7s cubic-bezier(0.55, 0.08, 0.32, 0.96) infinite;
+  content: "";
+}
+
+.signal-loading-card > div {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.signal-loading-card span {
+  color: var(--ink-soft);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.signal-loading-card strong {
+  max-width: 12em;
+  font-size: clamp(1.6rem, 3vw, 2.7rem);
+  font-weight: 500;
+  letter-spacing: -0.055em;
+  line-height: 1;
+}
+
+.signal-loading-card > i {
+  position: absolute;
+  right: clamp(1.4rem, 3vw, 3rem);
+  bottom: clamp(1.4rem, 3vw, 3rem);
+  width: min(62%, 18rem);
+  height: min(34%, 7.5rem);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--red) 11%, transparent);
+  filter: blur(1.4rem);
+  transform: skewX(-14deg);
+}
+
+.area-signal:not(.area-signal--loading) > .live-signal,
+.area-signal:not(.area-signal--loading) > .forecast-card {
+  animation: signal-card-resolve 420ms cubic-bezier(0.2, 0.72, 0.25, 1) both;
+}
+
+.area-signal:not(.area-signal--loading) > .forecast-card {
+  animation-delay: 55ms;
+}
+
+@keyframes signal-current-drift {
+  to { transform: translateX(42%); }
+}
+
+@keyframes signal-current-line {
+  55%, 100% { transform: translateX(100%); }
+}
+
+@keyframes signal-card-resolve {
+  from { opacity: 0; transform: translateY(0.65rem); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .service-notice {
@@ -3646,7 +3996,17 @@ html[data-locale="bn"] .area-page-hero__copy h1 {
   to { opacity: 1; transform: translateX(0) scale(1); }
 }
 
+@media (max-width: 960px) {
+  .area-signal {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 620px) {
+  .signal-loading-card {
+    min-height: 17rem;
+  }
+
   .live-signal,
   .forecast-card {
     padding: 1.25rem;
@@ -3893,6 +4253,19 @@ html[data-locale="bn"] .area-page-hero__copy h1 {
   .location-search__control input {
     height: 3.4rem;
     font-size: 0.82rem;
+  }
+
+  .location-search--two-level {
+    gap: 0.7rem;
+  }
+
+  .location-search__label {
+    font-size: 0.62rem;
+  }
+
+  .location-search__field-hint,
+  .location-search__hint {
+    font-size: 0.57rem;
   }
 
   .bangladesh-map__topline {

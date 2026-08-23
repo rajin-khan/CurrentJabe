@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import { LegalShell } from "@/components/legal-shell";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Methodology",
-  description: "How CurrentJabe turns anonymous reports into live status and forecasts.",
-};
+export const metadata: Metadata = createPageMetadata({
+  title: "How CurrentJabe Predicts Load Shedding",
+  description:
+    "See how CurrentJabe turns anonymous electricity reports into live area status and likely outage windows without claiming an official schedule.",
+  path: "/methodology",
+});
 
 export default function MethodologyPage() {
   return (

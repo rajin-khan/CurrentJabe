@@ -102,9 +102,24 @@ pnpm build
 node scripts/geo/validate.mjs
 ```
 
+### Social preview
+
+The default 1200×630 share image is generated from the committed HTML artboard and the same
+Bangladesh boundary dataset used by the live map:
+
+```sh
+pnpm og:render
+```
+
+The renderer uses macOS Quick Look and FFmpeg. Edit `scripts/og-card.html`, then rerun the command
+to update `public/opengraph-image.png` deterministically.
+
 ## Deploy
 
 Import the `currentjabe` directory into Vercel, keep the detected Next.js settings, add the environment variables from `.env.example`, and set `NEXT_PUBLIC_SITE_URL` to the public origin.
+
+If Google Search Console provides an HTML-tag verification token, set the optional
+`NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` variable to that token.
 
 The core application can run within the free allowances of Vercel and Supabase, subject to each provider’s current usage limits.
 

@@ -1,4 +1,8 @@
 import { isLocationId } from "./location";
+import {
+  canonicalizeLocalityName,
+  type CanonicalLocalityName,
+} from "./locality";
 import type {
   DailyReportInput,
   LiveStatusInput,
@@ -62,6 +66,35 @@ export function validateLocation(value: unknown): LocationSelection {
     ...(isLocationId(providerId) ? { providerId } : {}),
     ...(isLocationId(feederId) ? { feederId } : {}),
   };
+}
+
+export type CommunityLocalityInput = CanonicalLocalityName & {
+  parentId: string;
+  inputLocale: "en" | "bn" | "und";
+};
+
+export function validateCommunityLocality(value: unknown): CommunityLocalityInput {
+  const input = asRecord(value, "request body");
+  if (!isLocationId(input.parentId)) {
+    throw new ValidationError("A valid parent area is required.");
+  }
+  if (typeof input.name !== "string") {
+    throw new ValidationError("A specific area name is required.");
+  }
+  const inputLocale = input.inputLocale === "en" || input.inputLocale === "bn"
+    ? input.inputLocale
+    : "und";
+  try {
+    return {
+      parentId: input.parentId,
+      inputLocale,
+      ...canonicalizeLocalityName(input.name),
+    };
+  } catch (error) {
+    throw new ValidationError(
+      error instanceof Error ? error.message : "That specific area name is invalid.",
+    );
+  }
 }
 
 export function validateLiveStatus(value: unknown): LiveStatusInput {

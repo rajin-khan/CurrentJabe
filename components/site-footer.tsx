@@ -36,6 +36,7 @@ export function SiteFooter() {
         </div>
         <div className="footer-center">
           <nav aria-label="Footer navigation">
+            <Link href="/areas">{text.footer.areas}</Link>
             <Link href="/privacy">{text.footer.privacy}</Link>
             <Link href="/methodology">{text.footer.method}</Link>
             <Link href="/sources">{text.footer.source}</Link>

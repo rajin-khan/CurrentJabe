@@ -13,7 +13,7 @@ export function PrivacyDelete() {
     try {
       const result = await deleteMyReports();
       setMessage(
-        `Deleted ${result.reportsDeleted} reports and reset this browser’s private contributor identity.`,
+        `Deleted ${result.reportsDeleted} reports and ${result.localityContributionsDeleted} area-name contributions, then reset this browser’s private contributor identity.`,
       );
       setState("done");
     } catch (error) {

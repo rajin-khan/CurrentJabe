@@ -20,8 +20,7 @@ const en = {
     scroll: "",
     selected: "Your selected area",
     selectedDetail: "Live status and next-24-hour prediction",
-    mapLabel: "Live community map",
-    mapUpdated: "Reports from the last 24 hours",
+    mapLabel: "Community map (live)",
   },
   map: {
     aria: "Interactive map of Bangladesh upazilas, metropolitan thanas and supported local areas",
@@ -29,6 +28,7 @@ const en = {
     country: "Bangladesh",
     freshAreas: "{count} areas have a fresh signal",
     legend: "Map legend",
+    viewDetails: "View details for {area}",
   },
   status: {
     unknown: "No recent status",
@@ -145,6 +145,7 @@ const en = {
   footer: {
     line: "A community utility built by",
     who: "Who we are",
+    areas: "All areas",
     privacy: "Privacy",
     method: "Methodology",
     source: "Map data & sources",
@@ -193,7 +194,7 @@ const bn = {
   },
   hero: {
     eyebrow: "বাংলাদেশ কমিউনিটি বিদ্যুৎ ম্যাপ",
-    title: "কারেন্ট\nকখন যাবে?",
+    title: "কারেন্ট যাবে\nকখন?",
     titleHighlight: "যাবে",
     titleAccent: "",
     description: "আপনার এলাকার লাইভ রিপোর্ট ও সম্ভাব্য বিভ্রাটের সময় দেখুন।",
@@ -204,8 +205,7 @@ const bn = {
     scroll: "",
     selected: "আপনার নির্বাচিত এলাকা",
     selectedDetail: "লাইভ অবস্থা ও পরবর্তী ২৪ ঘণ্টার পূর্বাভাস",
-    mapLabel: "লাইভ কমিউনিটি ম্যাপ",
-    mapUpdated: "শেষ ২৪ ঘণ্টার রিপোর্ট",
+    mapLabel: "কমিউনিটি ম্যাপ (লাইভ)",
   },
   map: {
     aria: "বাংলাদেশের উপজেলা, মহানগর থানা ও সমর্থিত স্থানীয় এলাকার ইন্টার‌্যাক্টিভ ম্যাপ",
@@ -213,6 +213,7 @@ const bn = {
     country: "বাংলাদেশ",
     freshAreas: "{count}টি এলাকায় নতুন সংকেত আছে",
     legend: "ম্যাপের সংকেত",
+    viewDetails: "{area} এলাকার বিস্তারিত দেখুন",
   },
   status: {
     unknown: "সাম্প্রতিক অবস্থা জানা নেই",
@@ -329,6 +330,7 @@ const bn = {
   footer: {
     line: "একটি কমিউনিটি ইউটিলিটি, নির্মাতা",
     who: "আমরা কারা",
+    areas: "সব এলাকা",
     privacy: "গোপনীয়তা",
     method: "পদ্ধতি",
     source: "ম্যাপের তথ্য ও উৎস",

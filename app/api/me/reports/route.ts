@@ -17,6 +17,7 @@ export async function DELETE(request: NextRequest) {
       ...data,
       reportsDeleted: data.outageEvents + data.statusConfirmations,
       dailySubmissionsDeleted: data.dailySubmissions,
+      localityContributionsDeleted: data.localityContributions,
       identityReset: true,
     });
     expireVisitorCookie(response);

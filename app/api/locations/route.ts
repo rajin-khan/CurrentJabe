@@ -9,10 +9,10 @@ export async function GET(request: NextRequest) {
       query: search.get("query"),
       districtId: search.get("districtId"),
       upazilaId: search.get("upazilaId"),
+      parentId: search.get("parentId"),
     });
     return cachedSuccess(data, 3_600);
   } catch (error) {
     return routeError(error);
   }
 }
-

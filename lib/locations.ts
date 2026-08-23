@@ -23,6 +23,8 @@ export interface LocationRecord {
   approximateMapFeatureIds?: readonly string[];
   mapCoverage?: MapCoverageKind;
   aliases?: readonly string[];
+  origin?: "catalog" | "community" | "admin";
+  communityAdded?: boolean;
 }
 
 export interface DistrictRecord {

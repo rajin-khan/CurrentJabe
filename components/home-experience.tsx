@@ -39,6 +39,16 @@ export function HomeExperience() {
   const resultRef = useRef<HTMLElement>(null);
   const areaRequestRef = useRef(0);
 
+  const scrollToAreaResult = useCallback(() => {
+    window.setTimeout(() => {
+      const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      resultRef.current?.scrollIntoView({
+        behavior: prefersReducedMotion ? "auto" : "smooth",
+        block: "start",
+      });
+    }, 120);
+  }, []);
+
   const refreshStatuses = useCallback(async () => {
     try {
       const response = await getMapStatuses();
@@ -72,7 +82,7 @@ export function HomeExperience() {
   }, []);
 
   const selectLocation = useCallback(
-    (location: LocationRecord) => {
+    (location: LocationRecord, revealDetails = false) => {
       setSelected(location);
       setSnapshot(
         emptyAreaSnapshot({
@@ -87,13 +97,22 @@ export function HomeExperience() {
       setAreaUnavailable(false);
       void refreshArea(location);
       void recordAnalytics("area_search", location.id);
-      window.setTimeout(() => {
-        if (window.matchMedia("(max-width: 860px)").matches) {
-          resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-        }
-      }, 120);
+      if (revealDetails || window.matchMedia("(max-width: 860px)").matches) {
+        scrollToAreaResult();
+      }
     },
-    [refreshArea],
+    [refreshArea, scrollToAreaResult],
+  );
+
+  const openLocationDetails = useCallback(
+    (location: LocationRecord) => {
+      if (selected?.id === location.id) {
+        scrollToAreaResult();
+        return;
+      }
+      selectLocation(location, true);
+    },
+    [scrollToAreaResult, selectLocation, selected?.id],
   );
 
   useEffect(() => {
@@ -126,7 +145,12 @@ export function HomeExperience() {
           <LocationSearch selected={selected} onSelect={selectLocation} />
         </div>
         <div className="hero__map">
-          <LazyBangladeshMap selected={selected} statuses={statuses} onSelect={selectLocation} />
+          <LazyBangladeshMap
+            onOpenDetails={openLocationDetails}
+            onSelect={selectLocation}
+            selected={selected}
+            statuses={statuses}
+          />
         </div>
       </section>
 

@@ -164,6 +164,28 @@ export function AreaSignal({
     }
   };
 
+  if (loading) {
+    return (
+      <div className="area-signal area-signal--loading" aria-busy="true">
+        <p className="sr-only" role="status">{text.common.loading}</p>
+        <section className="signal-loading-card" aria-hidden="true">
+          <div>
+            <span>{text.common.loading}</span>
+            <strong>{areaName}</strong>
+          </div>
+          <i />
+        </section>
+        <section className="signal-loading-card signal-loading-card--forecast" aria-hidden="true">
+          <div>
+            <span>{text.forecast.eyebrow}</span>
+            <strong>{text.forecast.title}</strong>
+          </div>
+          <i />
+        </section>
+      </div>
+    );
+  }
+
   return (
     <div
       aria-busy={loading || reportPhase !== null}
@@ -172,8 +194,6 @@ export function AreaSignal({
       {unavailable ? (
         <p className="service-notice" role="status">{text.common.unavailable}</p>
       ) : null}
-
-      <ForecastCard snapshot={snapshot} onReport={() => setReportMode("daily")} />
 
       <section className="live-signal" aria-live="polite">
         <div className="live-signal__header">
@@ -224,6 +244,8 @@ export function AreaSignal({
         </button>
         <p className="signal-disclaimer">{text.status.disclaimer}</p>
       </section>
+
+      <ForecastCard snapshot={snapshot} onReport={() => setReportMode("daily")} />
 
       {reportMode ? (
         <ReportDialog

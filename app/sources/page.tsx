@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 import { LegalShell } from "@/components/legal-shell";
 import { MAP_ATTRIBUTION } from "@/lib/geo-map";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Sources",
-  description: "Geographic and official electricity information sources used by CurrentJabe.",
-};
+export const metadata: Metadata = createPageMetadata({
+  title: "Map Data & Electricity Sources",
+  description:
+    "Review the Bangladesh administrative-boundary, locality and official electricity-provider sources used by CurrentJabe.",
+  path: "/sources",
+});
 
 export default function SourcesPage() {
   return (
@@ -33,6 +36,39 @@ export default function SourcesPage() {
       </p>
 
       <h2>Locality and feeder precision</h2>
+      <p>
+        The starter list of Dhaka-specific reporting areas is hand-transcribed from public place
+        names, not copied map geometry. Bangladesh Bureau of Statistics reports anchor the formal
+        thana hierarchy; DNCC&apos;s ward-area list supports Mirpur section names, and DSCC&apos;s ward
+        roster supports the bundled Dhanmondi road names.
+      </p>
+      <p>
+        Review the{" "}
+        <a
+          href="https://nsds.bbs.gov.bd/storage/files/1/Publications/PHC_2021%20Community%20Report/DHAKA%20DIVISION/Community%20Report%20Dhaka.pdf"
+          rel="noreferrer"
+          target="_blank"
+        >
+          BBS Dhaka Community Report
+        </a>
+        , the{" "}
+        <a
+          href="https://dncc.gov.bd/pages/static-pages/6922ded3933eb65569e1da8e"
+          rel="noreferrer"
+          target="_blank"
+        >
+          DNCC ward-area list
+        </a>{" "}
+        and the{" "}
+        <a
+          href="https://dscc.gov.bd/site/page/968ca790-6f0f-4efe-90a0-69b5c650b533/%E0%A6%93%E0%A7%9F%E0%A6%BE%E0%A6%B0%E0%A7%8D%E0%A6%A1%E0%A6%AD%E0%A6%BF%E0%A6%A4%E0%A7%8D%E0%A6%A4%E0%A6%BF%E0%A6%95-%E0%A6%AA%E0%A6%B0%E0%A6%BF%E0%A6%9A%E0%A7%8D%E0%A6%9B%E0%A6%A8%E0%A7%8D%E0%A6%A8%E0%A6%95%E0%A6%B0%E0%A7%8D%E0%A6%AE%E0%A7%80%E0%A6%B0-%E0%A6%A4%E0%A6%BE%E0%A6%B2%E0%A6%BF%E0%A6%95%E0%A6%BE"
+          rel="noreferrer"
+          target="_blank"
+        >
+          DSCC ward roster
+        </a>
+        .
+      </p>
       <p>
         Mirpur DOHS is available as a finer community reporting area because a DESCO project
         study published by the Asian Development Bank names its DOHS-1 and DOHS-2 distribution
@@ -67,6 +103,12 @@ export default function SourcesPage() {
         </a>
         . No nationwide public consumer-to-feeder boundary dataset is bundled, so CurrentJabe
         does not infer a feeder name from a neighborhood.
+      </p>
+      <p>
+        People can add a missing specific-area name. The server normalizes spelling and formatting,
+        reuses exact matches inside the selected parent, and makes a genuinely new name available
+        immediately. A community-added name is a reporting label only: it is not an officially
+        verified neighborhood, administrative border, provider territory or feeder boundary.
       </p>
 
       <h2>Electricity providers</h2>

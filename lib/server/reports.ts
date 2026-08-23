@@ -380,6 +380,7 @@ export function deleteVisitorData(visitorHash: string, ipHash: string): Promise<
   outageEvents: number;
   statusConfirmations: number;
   analyticsVisitorDays: number;
+  localityContributions: number;
 }> {
-  return restRpc("api_delete_visitor_data", { p_visitor_hash: visitorHash, p_ip_hash: ipHash });
+  return restRpc("api_delete_visitor_data_v2", { p_visitor_hash: visitorHash, p_ip_hash: ipHash });
 }

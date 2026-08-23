@@ -65,6 +65,9 @@ function databaseErrorStatus(error: SupabaseRestError): { status: number; code: 
   if (normalized.includes("submissions_disabled")) {
     return { status: 503, code: "submissions_disabled", message: "Community submissions are temporarily paused." };
   }
+  if (normalized.includes("locality_parent_capacity_reached")) {
+    return { status: 409, code: "locality_capacity_reached", message: "This broad area cannot accept more community-added names yet." };
+  }
   if (normalized.includes("area_disabled")) {
     return { status: 423, code: "area_disabled", message: "Community reporting is temporarily unavailable for this area." };
   }

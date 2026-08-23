@@ -1,4 +1,5 @@
 import type { LocationKind, MapCoverageKind } from "@/lib/domain/types";
+import type { LocationRecord } from "@/lib/locations";
 
 export type LiveStateName = "unknown" | "appears_on" | "appears_out";
 
@@ -154,6 +155,24 @@ export async function getMapStatuses() {
   }>("/api/map/status");
 }
 
+export async function getLocalities(parentId: string): Promise<LocationRecord[]> {
+  return apiRequest<LocationRecord[]>(
+    `/api/localities?parentId=${encodeURIComponent(parentId)}`,
+    { cache: "no-store" },
+  );
+}
+
+export async function createLocality(
+  parentId: string,
+  name: string,
+  inputLocale: "en" | "bn" | "und" = "und",
+): Promise<{ location: LocationRecord; created: boolean }> {
+  return apiRequest<{ location: LocationRecord; created: boolean }>("/api/localities", {
+    method: "POST",
+    body: JSON.stringify({ parentId, name, inputLocale }),
+  });
+}
+
 export async function submitLiveReport(
   state: "out" | "on",
   upazilaId: string,
@@ -218,6 +237,7 @@ export async function deleteMyReports() {
   return apiRequest<{
     reportsDeleted: number;
     dailySubmissionsDeleted: number;
+    localityContributionsDeleted: number;
     identityReset: boolean;
   }>("/api/me/reports", {
     method: "DELETE",

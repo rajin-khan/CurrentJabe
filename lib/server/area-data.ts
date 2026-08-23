@@ -68,6 +68,7 @@ export async function getLocationCatalog(filters: {
   query?: string | null;
   districtId?: string | null;
   upazilaId?: string | null;
+  parentId?: string | null;
 }): Promise<{
   districts: DistrictRow[];
   upazilas: UpazilaRow[];
@@ -77,6 +78,7 @@ export async function getLocationCatalog(filters: {
 }> {
   if (filters.districtId && !isLocationId(filters.districtId)) throw new HttpError(400, "invalid_location", "districtId is invalid.");
   if (filters.upazilaId && !isLocationId(filters.upazilaId)) throw new HttpError(400, "invalid_location", "upazilaId is invalid.");
+  if (filters.parentId && !isLocationId(filters.parentId)) throw new HttpError(400, "invalid_location", "parentId is invalid.");
   if (filters.upazilaId) await ensureLocationSelection({ upazilaId: filters.upazilaId });
 
   const [storedUpazilas, providers, feeders, mappings] = await Promise.all([
@@ -123,9 +125,10 @@ export async function getLocationCatalog(filters: {
     }
   }
   const districts = [...districtMap.values()].sort((a, b) => a.name_en.localeCompare(b.name_en));
-  const allUpazilas: UpazilaRow[] = catalog
-    .filter((location) => !filters.districtId || districtIdFor(location) === filters.districtId)
-    .map((location) => storedById.get(location.id) ?? ({
+  const mergedById = new Map(storedById);
+  for (const location of catalog) {
+    if (mergedById.has(location.id)) continue;
+    mergedById.set(location.id, {
         id: location.id,
         district_id: districtIdFor(location),
         parent_location_id: location.parentId ?? null,
@@ -144,7 +147,11 @@ export async function getLocationCatalog(filters: {
           : [...(location.approximateMapFeatureIds ?? [])],
         disabled: false,
         disable_reason: null,
-      } satisfies UpazilaRow))
+      } satisfies UpazilaRow);
+  }
+  const allUpazilas: UpazilaRow[] = [...mergedById.values()]
+    .filter((location) => !filters.districtId || location.district_id === filters.districtId)
+    .filter((location) => !filters.parentId || location.parent_location_id === filters.parentId)
     .sort((a, b) => a.name_en.localeCompare(b.name_en));
 
   const query = cleanSearch(filters.query ?? null);

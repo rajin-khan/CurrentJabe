@@ -16,11 +16,13 @@ export function BangladeshMap({
   selected,
   statuses,
   onSelect,
+  onOpenDetails,
   compact = false,
 }: {
   selected?: LocationRecord | null;
   statuses?: Record<string, LiveStateName>;
   onSelect?: (location: LocationRecord) => void;
+  onOpenDetails?: (location: LocationRecord) => void;
   compact?: boolean;
 }) {
   const { locale, text } = useLanguage();
@@ -39,21 +41,21 @@ export function BangladeshMap({
     ? locale === "bn" && highlighted.upazilaBn
       ? highlighted.upazilaBn
       : highlighted.upazila
-    : null;
+    : "";
   const district = highlighted
     ? locale === "bn" && highlighted.districtBn
       ? highlighted.districtBn
       : highlighted.district
-    : null;
+    : "";
+  const openDetails = onOpenDetails ?? onSelect;
 
   return (
-    <div className={`bangladesh-map${compact ? " bangladesh-map--compact" : ""}`}>
+    <div
+      className={`bangladesh-map${compact ? " bangladesh-map--compact" : ""}`}
+      onPointerLeave={() => setHoveredSlug(null)}
+    >
       <div className="bangladesh-map__topline">
         <span>{text.hero.mapLabel}</span>
-        <span>
-          <i className="live-dot" />
-          {text.hero.mapUpdated}
-        </span>
       </div>
 
       <div className="bangladesh-map__canvas">
@@ -105,12 +107,8 @@ export function BangladeshMap({
                   data-slug={feature.slug}
                   fillRule="evenodd"
                   key={feature.id}
-                  onClick={() => {
-                    const location = getLocationBySlug(feature.slug);
-                    if (location && onSelect) onSelect(location);
-                  }}
+                  onClick={() => setHoveredSlug(feature.slug)}
                   onMouseEnter={() => setHoveredSlug(feature.slug)}
-                  onMouseLeave={() => setHoveredSlug(null)}
                 />
               );
             })}
@@ -136,7 +134,21 @@ export function BangladeshMap({
         {highlighted ? (
           <>
             <span>{district}</span>
-            <strong>{label}</strong>
+            {openDetails ? (
+              <button
+                aria-label={text.map.viewDetails.replace("{area}", label)}
+                className="map-readout__location"
+                onClick={() => {
+                  setHoveredSlug(null);
+                  openDetails(highlighted);
+                }}
+                type="button"
+              >
+                {label}
+              </button>
+            ) : (
+              <strong>{label}</strong>
+            )}
             <small>{statuses?.[highlighted.slug] === "appears_out" ? text.status.out : statuses?.[highlighted.slug] === "appears_on" ? text.status.on : text.status.unknown}</small>
           </>
         ) : (

@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import { LegalShell } from "@/components/legal-shell";
 import { PrivacyDelete } from "@/components/privacy-delete";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: "Privacy",
   description: "How CurrentJabe minimizes and protects community report data.",
-};
+  path: "/privacy",
+});
 
 export default function PrivacyPage() {
   return (
@@ -34,6 +36,11 @@ export default function PrivacyPage() {
           never stored.
         </li>
       </ul>
+      <p>
+        If you add a missing specific-area name, CurrentJabe stores the public normalized label
+        and a private contributor token for abuse prevention. Deleting this browser&apos;s data
+        removes that private link; the shared non-personal area label may remain available.
+      </p>
 
       <h2>What the public sees</h2>
       <p>

@@ -20,16 +20,19 @@ export function LazyBangladeshMap({
   selected,
   statuses,
   onSelect,
+  onOpenDetails,
   compact = false,
 }: {
   selected?: LocationRecord | null;
   statuses?: Record<string, LiveStateName>;
   onSelect?: (location: LocationRecord) => void;
+  onOpenDetails?: (location: LocationRecord) => void;
   compact?: boolean;
 }) {
   return (
     <BangladeshMap
       compact={compact}
+      onOpenDetails={onOpenDetails}
       onSelect={onSelect}
       selected={selected}
       statuses={statuses}

@@ -7,7 +7,27 @@ import {
 } from "@/lib/domain/catalog";
 import type { LocationSelection } from "@/lib/domain/types";
 import { HttpError } from "./http";
-import { restInsertIgnore } from "./supabase-rest";
+import { restInsertIgnore, restSelect } from "./supabase-rest";
+
+type StoredLocationRow = {
+  id: string;
+  district_id: string;
+  parent_location_id: string | null;
+  slug: string;
+  name_en: string;
+  name_bn: string;
+  location_kind: CatalogLocation["kind"];
+  boundary_ref: string | null;
+  map_coverage: NonNullable<CatalogLocation["mapCoverage"]>;
+  map_feature_refs: string[];
+  disabled: boolean;
+};
+
+type StoredDistrictRow = {
+  id: string;
+  name_en: string;
+  name_bn: string;
+};
 
 const PROVIDER_COVERAGE_SOURCES: Record<string, string> = {
   dpdc: "https://www.dpdc.org.bd/notice/other/ToR%20for%20Consultancy%20services%20to%20tender%20and%20monitor%20the%20implementation-FI-WITH%20AUTO-UPDATE%20ATBLE-21.6.2020.pdf",
@@ -90,18 +110,72 @@ async function seedCatalogLocation(
 }
 
 export async function ensureLocationSelection(selection: LocationSelection): Promise<void> {
-  let location: CatalogLocation;
-  try {
-    location = assertCatalogSelection(selection);
-  } catch {
-    throw new HttpError(400, "invalid_location", "The selected area is not in the CurrentJabe location catalog.");
+  const bundled = catalogLocationById(selection.upazilaId);
+  if (bundled) {
+    let location: CatalogLocation;
+    try {
+      location = assertCatalogSelection(selection);
+    } catch {
+      throw new HttpError(400, "invalid_location", "The selected area is not valid.");
+    }
+    await seedCatalogLocation(location);
+    return;
   }
-  await seedCatalogLocation(location);
+
+  const stored = await restSelect<StoredLocationRow[]>("upazilas", {
+    select: "id,district_id,parent_location_id,slug,name_en,name_bn,location_kind,boundary_ref,map_coverage,map_feature_refs,disabled",
+    id: `eq.${selection.upazilaId}`,
+    limit: 1,
+  });
+  const location = stored[0];
+  if (!location) {
+    throw new HttpError(400, "invalid_location", "The selected area does not exist.");
+  }
+  if (location.disabled) {
+    throw new HttpError(423, "area_disabled", "Community reporting is unavailable for this area.");
+  }
+  if (selection.districtId && selection.districtId !== location.district_id) {
+    throw new HttpError(400, "invalid_location", "The selected area is not in that district.");
+  }
 }
 
 export async function ensureLocationSlug(slug: string): Promise<CatalogLocation> {
-  const location = catalogLocationBySlug(slug);
-  if (!location) throw new HttpError(404, "area_not_found", "Area not found.");
-  await seedCatalogLocation(location);
-  return location;
+  const bundled = catalogLocationBySlug(slug);
+  if (bundled) {
+    await seedCatalogLocation(bundled);
+    return bundled;
+  }
+
+  const stored = await restSelect<StoredLocationRow[]>("upazilas", {
+    select: "id,district_id,parent_location_id,slug,name_en,name_bn,location_kind,boundary_ref,map_coverage,map_feature_refs,disabled",
+    slug: `eq.${slug}`,
+    limit: 1,
+  });
+  const location = stored[0];
+  if (!location || location.disabled) {
+    throw new HttpError(404, "area_not_found", "Area not found.");
+  }
+  const districts = await restSelect<StoredDistrictRow[]>("districts", {
+    select: "id,name_en,name_bn",
+    id: `eq.${location.district_id}`,
+    limit: 1,
+  });
+  const district = districts[0];
+  if (!district) throw new HttpError(404, "area_not_found", "Area district not found.");
+
+  return {
+    id: location.id,
+    slug: location.slug,
+    district: district.name_en,
+    districtBn: district.name_bn,
+    upazila: location.name_en,
+    upazilaBn: location.name_bn,
+    providerHints: [],
+    kind: location.location_kind,
+    ...(location.parent_location_id ? { parentId: location.parent_location_id } : {}),
+    geometryAvailable: Boolean(location.boundary_ref && location.map_coverage === "exact"),
+    approximateMapFeatureIds:
+      location.map_coverage === "approximate" ? location.map_feature_refs : [],
+    mapCoverage: location.map_coverage,
+  };
 }
