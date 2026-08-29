@@ -385,17 +385,17 @@ export function LocationSearch({
       setLocating(false);
       if (result.status === "matched") {
         onSelect(result.location);
-        setLocatorMessage(locale === "bn"
-          ? `${result.location.upazilaBn || result.location.upazila} পাওয়া গেছে। সঠিক না হলে অন্য এলাকা লিখুন।`
-          : `Located ${result.location.upazila}. If that is not right, search another area.`);
+        setLocatorMessage(result.approximate
+          ? locale === "bn"
+            ? `কাছের এলাকা হিসেবে ${result.location.upazilaBn || result.location.upazila} বেছে নেওয়া হয়েছে। সঠিক না হলে অন্য এলাকা লিখুন।`
+            : `Selected ${result.location.upazila} as the closest mapped area. Search another area if needed.`
+          : locale === "bn"
+            ? `${result.location.upazilaBn || result.location.upazila} পাওয়া গেছে। সঠিক না হলে অন্য এলাকা লিখুন।`
+            : `Located ${result.location.upazila}. If that is not right, search another area.`);
       } else if (result.status === "outside") {
         setLocatorMessage(locale === "bn"
           ? "লোকেশনটি বাংলাদেশের বাইরে মনে হচ্ছে। এলাকা লিখে খুঁজুন।"
           : "This location appears to be outside Bangladesh. Search manually.");
-      } else {
-        setLocatorMessage(locale === "bn"
-          ? "সঠিক থানা নিশ্চিত করা যায়নি। এলাকা লিখে খুঁজুন।"
-          : "We could not safely choose the exact thana. Search manually.");
       }
     }, (error) => {
       setLocating(false);
