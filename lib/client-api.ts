@@ -22,6 +22,18 @@ export type ForecastWindow = {
   score: number;
 };
 
+export type ReportedOutageWindow = {
+  localStartMinute: number;
+  localEndMinute: number;
+  durationMinutes: number;
+  contributorCount: number;
+  eventCount: number;
+  distinctDayCount: number;
+  mostRecentDate: string;
+  newestEventAt: string;
+  precision: "exact" | "mixed" | "approximate";
+};
+
 export type AreaSnapshot = {
   area: {
     id: string;
@@ -54,6 +66,7 @@ export type AreaSnapshot = {
     windows: ForecastWindow[];
     disclaimer: string;
   };
+  reportedOutageWindows: ReportedOutageWindow[];
   accuracy: number | null;
   officialSources: Array<{ label: string; url: string }>;
 };
@@ -132,6 +145,7 @@ export function emptyAreaSnapshot(area: AreaSnapshot["area"]): AreaSnapshot {
       windows: [],
       disclaimer: "Community estimate. This is not an official utility schedule.",
     },
+    reportedOutageWindows: [],
     accuracy: null,
     officialSources: [],
   };

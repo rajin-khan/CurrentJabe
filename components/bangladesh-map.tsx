@@ -1,11 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useLanguage } from "@/components/language-provider";
 import {
   MAP_ATTRIBUTION,
   MAP_ATTRIBUTION_URL,
-  MAP_VIEW_BOX,
+  MAP_VIEW_BOX_DIMENSIONS,
   getMapFeaturesForLocation,
   mapFeatures,
 } from "@/lib/geo-map";
@@ -27,6 +27,9 @@ export function BangladeshMap({
 }) {
   const { locale, text } = useLanguage();
   const [hoveredSlug, setHoveredSlug] = useState<string | null>(null);
+  const [viewBox, setViewBox] = useState<number[]>([...MAP_VIEW_BOX_DIMENSIONS]);
+  const [showFullMap, setShowFullMap] = useState(false);
+  const animationRef = useRef<number | null>(null);
   const hovered = hoveredSlug ? getLocationBySlug(hoveredSlug) : null;
   const highlighted = hovered ?? selected ?? null;
   const activeCount = useMemo(
@@ -50,6 +53,61 @@ export function BangladeshMap({
     : "";
   const openDetails = onOpenDetails ?? onSelect;
 
+  const targetViewBox = useMemo(() => {
+    if (!selected || showFullMap) return [...MAP_VIEW_BOX_DIMENSIONS];
+    let features = [...getMapFeaturesForLocation(selected)];
+    if (features.length === 0) {
+      features = mapFeatures.filter((feature) => feature.district === selected.district);
+    }
+    if (features.length === 0) return [...MAP_VIEW_BOX_DIMENSIONS];
+    const minX = Math.min(...features.map((feature) => feature.bbox[0]));
+    const minY = Math.min(...features.map((feature) => feature.bbox[1]));
+    const maxX = Math.max(...features.map((feature) => feature.bbox[0] + feature.bbox[2]));
+    const maxY = Math.max(...features.map((feature) => feature.bbox[1] + feature.bbox[3]));
+    const fullAspect = MAP_VIEW_BOX_DIMENSIONS[2] / MAP_VIEW_BOX_DIMENSIONS[3];
+    let width = Math.max(120, (maxX - minX) * 1.7);
+    let height = Math.max(160, (maxY - minY) * 1.7);
+    if (width / height > fullAspect) height = width / fullAspect;
+    else width = height * fullAspect;
+    width = Math.min(MAP_VIEW_BOX_DIMENSIONS[2], width);
+    height = Math.min(MAP_VIEW_BOX_DIMENSIONS[3], height);
+    const centerX = (minX + maxX) / 2;
+    const centerY = (minY + maxY) / 2;
+    return [
+      Math.max(0, Math.min(MAP_VIEW_BOX_DIMENSIONS[2] - width, centerX - width / 2)),
+      Math.max(0, Math.min(MAP_VIEW_BOX_DIMENSIONS[3] - height, centerY - height / 2)),
+      width,
+      height,
+    ];
+  }, [selected, showFullMap]);
+
+  useEffect(() => setShowFullMap(false), [selected?.id]);
+
+  useEffect(() => {
+    if (animationRef.current !== null) cancelAnimationFrame(animationRef.current);
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion) {
+      setViewBox(targetViewBox);
+      return;
+    }
+    const from = [...viewBox];
+    const startedAt = performance.now();
+    const duration = 720;
+    const tick = (now: number) => {
+      const progress = Math.min(1, (now - startedAt) / duration);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setViewBox(from.map((value, index) => value + (targetViewBox[index] - value) * eased));
+      if (progress < 1) animationRef.current = requestAnimationFrame(tick);
+      else animationRef.current = null;
+    };
+    animationRef.current = requestAnimationFrame(tick);
+    return () => {
+      if (animationRef.current !== null) cancelAnimationFrame(animationRef.current);
+    };
+    // The current camera is intentionally captured only when a new target begins.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [targetViewBox]);
+
   return (
     <div
       className={`bangladesh-map${compact ? " bangladesh-map--compact" : ""}`}
@@ -57,6 +115,13 @@ export function BangladeshMap({
     >
       <div className="bangladesh-map__topline">
         <span>{text.hero.mapLabel}</span>
+        <div className="map-tools">
+          {selected ? (
+            <button type="button" onClick={() => setShowFullMap(true)}>
+              {locale === "bn" ? "পুরো মানচিত্র" : "Full map"}
+            </button>
+          ) : null}
+        </div>
       </div>
 
       <div className="bangladesh-map__canvas">
@@ -69,7 +134,7 @@ export function BangladeshMap({
           className="bangladesh-map__svg"
           preserveAspectRatio="xMidYMid meet"
           role="img"
-          viewBox={MAP_VIEW_BOX}
+          viewBox={viewBox.join(" ")}
         >
           <g className="map-grid" aria-hidden="true">
             {Array.from({ length: 8 }, (_, index) => (
@@ -107,10 +172,14 @@ export function BangladeshMap({
                 <path
                   className={className}
                   d={feature.path}
+                  data-map-feature-id={feature.id}
                   data-slug={feature.slug}
                   fillRule="evenodd"
                   key={feature.id}
-                  onClick={() => setHoveredSlug(hoverSlug)}
+                  onClick={() => {
+                    setHoveredSlug(hoverSlug);
+                    if (featureLocation) onSelect?.(featureLocation);
+                  }}
                   onMouseEnter={() => setHoveredSlug(hoverSlug)}
                 />
               );

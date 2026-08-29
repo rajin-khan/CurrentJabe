@@ -65,6 +65,18 @@ type MappingRow = {
   confidence: "confirmed" | "probable" | "unverified";
 };
 
+type PublicOutageWindowRow = {
+  local_start_minute: number;
+  local_end_minute: number;
+  duration_minutes: number;
+  contributor_count: number;
+  event_count: number;
+  distinct_day_count: number;
+  most_recent_date: string;
+  newest_event_at: string;
+  time_precision: "exact" | "mixed" | "approximate";
+};
+
 function cleanSearch(value: string | null): string {
   return (value ?? "").normalize("NFKC").trim().toLocaleLowerCase().slice(0, 60);
 }
@@ -237,9 +249,15 @@ export async function getAreaSnapshot(args: {
     p_feeder_id: args.feederId ?? null,
   });
   const since = new Date(Date.now() - 35 * 24 * 60 * 60 * 1000).toISOString();
-  const [liveState, evidenceRows, officialSources, accuracy] = await Promise.all([
+  const [liveState, evidenceRows, reportedWindowRows, officialSources, accuracy] = await Promise.all([
     getLiveState(selection),
     restRpc<ForecastEvidenceRow[]>("get_forecast_evidence", {
+      p_upazila_id: area.id,
+      p_provider_id: args.providerId ?? null,
+      p_feeder_id: args.feederId ?? null,
+      p_since: since,
+    }),
+    restRpc<PublicOutageWindowRow[]>("get_public_outage_windows", {
       p_upazila_id: area.id,
       p_provider_id: args.providerId ?? null,
       p_feeder_id: args.feederId ?? null,
@@ -276,6 +294,21 @@ export async function getAreaSnapshot(args: {
     confidence: source.confidence,
     sourceVerifiedAt: source.source_verified_at,
   }));
+  const reportedOutageWindows = reportedWindowRows.map((window) => ({
+    localStartMinute: Number(window.local_start_minute),
+    localEndMinute: Number(window.local_end_minute),
+    durationMinutes: Number(window.duration_minutes),
+    contributorCount: Number(window.contributor_count),
+    eventCount: Number(window.event_count),
+    distinctDayCount: Number(window.distinct_day_count),
+    mostRecentDate: window.most_recent_date,
+    newestEventAt: window.newest_event_at,
+    precision: window.time_precision,
+  })).sort((left, right) =>
+    right.contributorCount - left.contributorCount ||
+    left.localStartMinute - right.localStartMinute ||
+    Date.parse(right.newestEventAt) - Date.parse(left.newestEventAt),
+  );
 
   if (forecast.eligible) {
     try {
@@ -315,6 +348,7 @@ export async function getAreaSnapshot(args: {
     selection: { ...selection, precision: locationPrecision(selection) },
     liveState,
     forecast: publicForecast,
+    reportedOutageWindows,
     accuracy:
       Number(accuracy.evaluated_count ?? 0) >= 20 && accuracy.accuracy !== null
         ? Number(accuracy.accuracy)

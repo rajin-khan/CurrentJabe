@@ -39,8 +39,14 @@ export default function MethodologyPage() {
         combined into one prediction, and low-precision results are labelled accordingly.
       </p>
 
-      <h2>Forecast eligibility</h2>
-      <p>A forecast remains locked until an area has all of the following:</p>
+      <h2>Reported times and forecast strength</h2>
+      <p>
+        Every usable completed outage time appears in the public aggregated history, including a
+        window supported by one person. Similar times are grouped, and no contributor identity or
+        individual history is published. Sparse evidence may produce an early pattern, but
+        CurrentJabe does not call it a forecast.
+      </p>
+      <p>A pattern receives the stronger community forecast label only when it has all of the following:</p>
       <ul>
         <li>Ten independent contributors.</li>
         <li>At least ten usable timed outage events.</li>

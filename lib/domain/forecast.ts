@@ -199,17 +199,6 @@ export function computeCommunityForecast(
   const eligible = evidence.missing.length === 0;
   const disclaimer = "Community estimate. This is not an official electricity schedule.";
 
-  if (!eligible) {
-    return {
-      eligible: false,
-      generatedAt: now.toISOString(),
-      evidence,
-      strength: "insufficient",
-      windows: [],
-      disclaimer,
-    };
-  }
-
   const binScores = Array.from({ length: 48 }, () => 0);
   for (const event of events) addEventToBins(binScores, event, baseWeight(event, now));
   const hourScores = Array.from({ length: 24 }, (_, hour) => binScores[hour * 2] + binScores[hour * 2 + 1]);
@@ -222,10 +211,10 @@ export function computeCommunityForecast(
   const strength = strengthScore >= 0.72 ? "high" : strengthScore >= 0.42 ? "medium" : "low";
 
   return {
-    eligible: windows.length > 0,
+    eligible: eligible && windows.length > 0,
     generatedAt: now.toISOString(),
     evidence,
-    strength: windows.length > 0 ? strength : "insufficient",
+    strength: eligible && windows.length > 0 ? strength : "insufficient",
     windows,
     disclaimer,
   };

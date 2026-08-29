@@ -16,7 +16,7 @@
   <a href="#run-locally">Local setup</a>
 </p>
 
-CurrentJabe turns small, anonymous community reports into a clearer picture of local electricity outages. People can check recent reports, contribute the outage times they remember, and see likely outage windows once their area has gathered enough evidence.
+CurrentJabe turns small, anonymous community reports into a clearer picture of local electricity outages. People can check recent reports, contribute the outage times they remember, and see every usable reported window without waiting for an area to cross a display threshold.
 
 It is built around a practical question: **when should I charge, plan, study, work, or prepare for the power to go out?**
 
@@ -29,7 +29,7 @@ It is built around a practical question: **when should I charge, plan, study, wo
 - Check whether an area has a recent community signal: **on**, **out**, or **unknown**.
 - Report the current status in seconds without creating an account.
 - Add remembered outage windows from today or yesterday, even if you remember only one.
-- View a next-24-hour community prediction after the area earns enough evidence.
+- View reported outage windows immediately and see an emerging or stronger pattern when the evidence supports one.
 - Share a direct area page with its live status and prediction.
 - Use the interface in English or Bangla.
 
@@ -37,12 +37,13 @@ It is built around a practical question: **when should I charge, plan, study, wo
 
 1. **Report:** someone says the current is on or out, or records a recent outage window.
 2. **Corroborate:** independent reports from the same area strengthen or contradict the signal.
-3. **Predict:** recurring time patterns become visible only after the area crosses the evidence threshold.
+3. **Interpret:** every usable time remains visible, while recurring patterns gain stronger labels as evidence grows.
 
 | Result | Minimum evidence | Behaviour |
 | --- | --- | --- |
 | Live status | 10 independent contributors within a rolling 24-hour window | The area appears on or out. The state expires after one hour unless qualifying reports refresh or reverse it. |
-| Next-24-hour prediction | 10 independent contributors, 10 usable timed events, reports across 3 days, and recent evidence | The strongest recurring outage windows appear with their sample size and evidence range. |
+| Reported outage times | 1 usable completed timed event | A privacy-safe, aggregated time window appears immediately. |
+| Stronger community forecast | 10 independent contributors, 10 usable timed events, reports across 3 days, and recent evidence | The strongest recurring outage windows gain a forward-looking forecast label. |
 
 The predictor compares outage overlap in half-hour time-of-day bins, separate from the 24-hour live-confirmation window, and presents the strongest contiguous patterns as clear one-hour windows. Recent, independent evidence receives more weight.
 
@@ -141,4 +142,4 @@ CurrentJabe is independent community software. It is not affiliated with an elec
 
 ## Credits
 
-Built by [The Program Company](https://theprogramcompany.vercel.app) × Rajin Khan.
+Built by [The Program Company](https://theprogramcompany.vercel.app).

@@ -9,7 +9,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { ChevronIcon, MapPinIcon, PlusIcon, SearchIcon } from "@/components/icons";
+import { ChevronIcon, LocateIcon, MapPinIcon, PlusIcon, SearchIcon } from "@/components/icons";
 import { useLanguage } from "@/components/language-provider";
 import { createLocality, getLocalities } from "@/lib/client-api";
 import {
@@ -19,6 +19,7 @@ import {
   parentRelativeNormalizedLocationName,
 } from "@/lib/domain/locality";
 import { browseParentIdFor } from "@/lib/domain/catalog";
+import { matchCoordinatesToLocation } from "@/lib/client-locator";
 import { locations, providers, type LocationRecord } from "@/lib/locations";
 
 type LocalityOption =
@@ -130,6 +131,8 @@ export function LocationSearch({
   const [addingLocality, setAddingLocality] = useState(false);
   const [localityError, setLocalityError] = useState<string | null>(null);
   const [announcement, setAnnouncement] = useState("");
+  const [locating, setLocating] = useState(false);
+  const [locatorMessage, setLocatorMessage] = useState<string | null>(null);
 
   const deferredParentQuery = useDeferredValue(parentQuery);
   const deferredLocalityQuery = useDeferredValue(localityQuery);
@@ -365,6 +368,43 @@ export function LocationSearch({
     ? `${localityListboxId}-option-${option.location.id}`
     : `${localityListboxId}-option-add`;
 
+  const locateUser = useCallback(() => {
+    if (!navigator.geolocation) {
+      setLocatorMessage(locale === "bn"
+        ? "এই ব্রাউজারে লোকেশন পাওয়া যায় না। এলাকা লিখে খুঁজুন।"
+        : "Location is unavailable in this browser. Search manually.");
+      return;
+    }
+    setLocating(true);
+    setLocatorMessage(null);
+    navigator.geolocation.getCurrentPosition((position) => {
+      const result = matchCoordinatesToLocation(
+        position.coords.longitude,
+        position.coords.latitude,
+      );
+      setLocating(false);
+      if (result.status === "matched") {
+        onSelect(result.location);
+        setLocatorMessage(locale === "bn"
+          ? `${result.location.upazilaBn || result.location.upazila} পাওয়া গেছে। সঠিক না হলে অন্য এলাকা লিখুন।`
+          : `Located ${result.location.upazila}. If that is not right, search another area.`);
+      } else if (result.status === "outside") {
+        setLocatorMessage(locale === "bn"
+          ? "লোকেশনটি বাংলাদেশের বাইরে মনে হচ্ছে। এলাকা লিখে খুঁজুন।"
+          : "This location appears to be outside Bangladesh. Search manually.");
+      } else {
+        setLocatorMessage(locale === "bn"
+          ? "সঠিক থানা নিশ্চিত করা যায়নি। এলাকা লিখে খুঁজুন।"
+          : "We could not safely choose the exact thana. Search manually.");
+      }
+    }, (error) => {
+      setLocating(false);
+      setLocatorMessage(error.code === error.PERMISSION_DENIED
+        ? locale === "bn" ? "লোকেশন অনুমতি বন্ধ আছে। ব্রাউজারের সাইট সেটিংস থেকে অনুমতি দিন, অথবা এলাকা লিখুন।" : "Location permission is blocked. Allow it in your browser's site settings, or search manually."
+        : locale === "bn" ? "এখন লোকেশন পাওয়া যাচ্ছে না। এলাকা লিখে খুঁজুন।" : "Your location could not be read. Search manually.");
+    }, { enableHighAccuracy: false, timeout: 9000, maximumAge: 300000 });
+  }, [locale, onSelect]);
+
   return (
     <div
       aria-label={labels.group}
@@ -373,9 +413,10 @@ export function LocationSearch({
     >
       <div className="location-search__field location-search__field--parent">
         <label className="location-search__label" htmlFor={parentInputId}>{labels.parent}</label>
-        <div className={`location-search__control${parentOpen ? " is-open" : ""}`}>
-          <SearchIcon />
-          <input
+        <div className="location-search__parent-row">
+          <div className={`location-search__control${parentOpen ? " is-open" : ""}`}>
+            <SearchIcon />
+            <input
             id={parentInputId}
             aria-activedescendant={
               parentOpen && parentResults[parentActiveIndex]
@@ -423,9 +464,22 @@ export function LocationSearch({
                 setParentOpen(false);
               }
             }}
-          />
-          <ChevronIcon />
+            />
+            <ChevronIcon />
+          </div>
+          <button
+            className="location-search__locate"
+            disabled={locating}
+            type="button"
+            onClick={locateUser}
+          >
+            <LocateIcon />
+            <span>{locating
+              ? locale === "bn" ? "খোঁজা হচ্ছে" : "Locating"
+              : locale === "bn" ? "আমার এলাকা" : "Locate me"}</span>
+          </button>
         </div>
+        {locatorMessage ? <p className="location-search__locator-message" role="status">{locatorMessage}</p> : null}
 
         {parentOpen ? (
           <div className="location-results location-results--parent" id={parentListboxId} role="listbox">

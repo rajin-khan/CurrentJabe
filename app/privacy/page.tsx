@@ -46,9 +46,10 @@ export default function PrivacyPage() {
 
       <h2>What the public sees</h2>
       <p>
-        The public sees only aggregated area status, evidence counts, historical patterns and
-        forecasts. CurrentJabe never publishes an individual report location, contributor
-        history or household-level pin.
+        The public sees only aggregated area status, evidence counts, grouped reported outage
+        windows, historical patterns and forecasts. A grouped window may be shown when only one
+        person reported it, but CurrentJabe never publishes an individual report location,
+        contributor history or household-level pin.
       </p>
 
       <h2>Service providers</h2>

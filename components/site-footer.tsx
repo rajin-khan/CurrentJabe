@@ -22,17 +22,6 @@ export function SiteFooter() {
             <span className="footer-logo__program">PrOgRaM</span>
             <span className="footer-logo__company">COMPANY</span>
           </a>
-          <span className="footer-signature">
-            <span>x</span>
-            <a
-              href="https://rajinkhan.com"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Visit Rajin Khan"
-            >
-              Rajin Khan
-            </a>
-          </span>
         </div>
         <div className="footer-center">
           <nav aria-label="Footer navigation">
