@@ -1250,12 +1250,15 @@ html[data-locale="bn"] .hero__copy h1 em {
   min-width: 0;
   height: 3.8rem;
   flex: 1;
+  overflow-x: auto;
   color: var(--ink);
   border: 0;
   outline: none;
   background: transparent;
   font-size: 0.92rem;
   font-weight: 500;
+  text-overflow: clip;
+  white-space: nowrap;
 }
 
 .location-search__control input::placeholder {
@@ -1292,6 +1295,7 @@ html[data-locale="bn"] .hero__copy h1 em {
   padding: 0.45rem;
   overflow-y: auto;
   overscroll-behavior: contain;
+  scrollbar-gutter: stable;
   border: 1px solid var(--line-strong);
   border-radius: 1rem;
   background: var(--paper-bright);
