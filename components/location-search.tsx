@@ -141,7 +141,7 @@ export function LocationSearch({
     ? ({
         group: "এলাকা নির্বাচন",
         parent: "থানা বা বড় এলাকা",
-        parentPlaceholder: "মিরপুর বা ধানমন্ডি",
+        parentPlaceholder: "মিরপুর বা ধানমন্ডি খুঁজুন",
         locality: "নির্দিষ্ট এলাকা (ঐচ্ছিক)",
         localityPlaceholder: "যেমন ধানমন্ডি ৬/এ",
         localityHint: "না থাকলে পাড়া বা রোডের নাম যোগ করুন। বাসা, ফোন নম্বর বা ব্যক্তিগত তথ্য নয়।",
@@ -163,7 +163,7 @@ export function LocationSearch({
     : ({
         group: "Location selection",
         parent: "Thana or broad area",
-        parentPlaceholder: "Mirpur or Dhanmondi",
+        parentPlaceholder: "Search Mirpur or Dhanmondi",
         locality: "Specific area (optional)",
         localityPlaceholder: "e.g. Dhanmondi 6/A",
         localityHint: "Choose one or add a neighborhood or road. Never add a house, phone number or personal detail.",
